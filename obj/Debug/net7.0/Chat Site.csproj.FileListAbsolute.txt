@@ -1,0 +1,26 @@
+F:\_Programming Folder\Projects\Websites\Chat Site\bin\Debug\net7.0\appsettings.Development.json
+F:\_Programming Folder\Projects\Websites\Chat Site\bin\Debug\net7.0\appsettings.json
+F:\_Programming Folder\Projects\Websites\Chat Site\bin\Debug\net7.0\Chat Site.exe
+F:\_Programming Folder\Projects\Websites\Chat Site\bin\Debug\net7.0\Chat Site.deps.json
+F:\_Programming Folder\Projects\Websites\Chat Site\bin\Debug\net7.0\Chat Site.runtimeconfig.json
+F:\_Programming Folder\Projects\Websites\Chat Site\bin\Debug\net7.0\Chat Site.dll
+F:\_Programming Folder\Projects\Websites\Chat Site\bin\Debug\net7.0\Chat Site.pdb
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\Chat Site.csproj.AssemblyReference.cache
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\Chat Site.GeneratedMSBuildEditorConfig.editorconfig
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\Chat Site.AssemblyInfoInputs.cache
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\Chat Site.AssemblyInfo.cs
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\Chat Site.csproj.CoreCompileInputs.cache
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\Chat Site.MvcApplicationPartsAssemblyInfo.cache
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\staticwebassets\msbuild.Chat Site.Microsoft.AspNetCore.StaticWebAssets.props
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\staticwebassets\msbuild.build.Chat Site.props
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.Chat Site.props
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.Chat Site.props
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\staticwebassets.pack.json
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\staticwebassets.build.json
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\staticwebassets.development.json
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\scopedcss\bundle\Chat Site.styles.css
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\Chat Site.dll
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\refint\Chat Site.dll
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\Chat Site.pdb
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\Chat Site.genruntimeconfig.cache
+F:\_Programming Folder\Projects\Websites\Chat Site\obj\Debug\net7.0\ref\Chat Site.dll

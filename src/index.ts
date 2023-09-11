@@ -1,9 +1,9 @@
 import * as signalR from "@microsoft/signalr";
 import "./css/main.css";
 
-const divMessages: HTMLDivElement = document.querySelector("#divMessages");
-const tbMessage: HTMLInputElement = document.querySelector("#tbMessage");
-const btnSend: HTMLButtonElement = document.querySelector("#btnSend");
+const divMessages: HTMLDivElement = document.querySelector("#divMessages")!;
+const tbMessage: HTMLInputElement = document.querySelector("#tbMessage")!;
+const btnSend: HTMLButtonElement = document.querySelector("#btnSend")!;
 const username = new Date().getTime();
 
 const connection = new signalR.HubConnectionBuilder()
@@ -19,7 +19,7 @@ connection.on("messageReceived", (username: string, message: string) => {
     divMessages.scrollTop = divMessages.scrollHeight;
 });
 
-connection.start().catch((err) => document.write(err));
+connection.start().catch((err: Error) => document.write(String(err)));
 
 tbMessage.addEventListener("keyup", (e: KeyboardEvent) => {
     if (e.key === "Enter") {

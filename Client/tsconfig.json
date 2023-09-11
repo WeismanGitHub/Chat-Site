@@ -1,23 +1,33 @@
 {
   "compilerOptions": {
-    "jsx": "react",
-    "target": "ES2017" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": [ "ES2020", "DOM", "DOM.Iterable" ],
+    "module": "ESNext",
+    "skipLibCheck": true,
 
-    "module": "commonjs" /* Specify what module code is generated. */,
-    //"rootDir": "./src" /* Specify the root folder within your source files. */,
-    "resolveJsonModule": true /* Enable importing .json files. */,
-    "noEmitOnError": true /* Disable emitting files if any type checking errors are reported. */,
-    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
-    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
-    "strict": true /* Enable all strict type-checking options. */,
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true /* Enable error reporting for expressions and declarations with an implied 'any' type. */,
     "strictNullChecks": true /* When type checking, take into account 'null' and 'undefined'. */,
-    "strictFunctionTypes": true /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */,
-    "strictBindCallApply": true /* Check that the arguments for 'bind', 'call', and 'apply' methods match the original function. */,
     "strictPropertyInitialization": true /* Check for class properties that are declared but not set in the constructor. */,
     "noImplicitThis": true /* Enable error reporting when 'this' is given the type 'any'. */,
     "alwaysStrict": true /* Ensure 'use strict' is always emitted. */,
-    "noUnusedLocals": true /* Enable error reporting when local variables aren't read. */,
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */
-  }
+    "strictFunctionTypes": true /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */,
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */
+  },
+  "include": [ "src" ],
+  "references": [ { "path": "./tsconfig.node.json" } ],
 }
+

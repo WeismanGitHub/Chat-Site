@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "Wa69aQ01mDPAvxo9YJWzJAOVBCtfez6rOY15qL5vcvxknYbNuQPIBtEN1QScAWL2i5Os3RJFtLG/jzKThk18XQ==",
+  "success": true,
+  "projectFilePath": "F:\\_Programming Folder\\Projects\\Websites\\ASP.NET Chat Site\\API.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\inane\\.nuget\\packages\\microsoft.typescript.msbuild\\5.2.2\\microsoft.typescript.msbuild.5.2.2.nupkg.sha512"
+  ],
+  "logs": []
+}

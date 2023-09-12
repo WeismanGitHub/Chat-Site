@@ -36,23 +36,25 @@
 
 import { useEffect, useState } from 'react';
 const App = () => {
-    const [final, setFinal] = useState([]);
+    const [final, setFinal] = useState<{ summary: string }[]>([]);
+
     useEffect(() => {
         fetch('http://192.168.1.45:8083/WeatherForecast').then((resp) => resp.json()).then((data) => { setFinal(data) });
     }, [])
 
     console.log(final);
-    //return (
-        //<>
-        //<ul>
-        //{
-        //    final.map((data, index) => {
-        //        console.log(data)
-        //        return <li key={ data.summary }> { data.summary }({ data.temperatureC }) < /li>
-        //    })
-        //}
-        //< /ul>
-        //< />
-    //);
+    return (
+        <>
+            <ul>
+                {
+                    final.map((data) => {
+                        return <li key={ data.summary }>{ data.summary }</li>
+                    })
+                }
+            </ul>
+        </>
+    )
 }
+
+
 export default App;

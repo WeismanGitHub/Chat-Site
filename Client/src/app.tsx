@@ -1,6 +1,10 @@
-// @ts-nocheck
-import React, { Component } from 'react';
+import React from 'react';
 
+export default function App() {
+    return (<>
+        hello world
+    </>)
+}
 export default class App extends Component {
     static displayName = App.name;
 

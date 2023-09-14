@@ -2,7 +2,7 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Data.Entity;
 using API.Models;
 
-namespace API.DAL {
+namespace API.Database {
     public class UserContext : DbContext {
 
         public UserContext() : base("UserContext") {

@@ -5,5 +5,6 @@
         public string Email { get; set; }
         public string Password { get; set; }
         public virtual ICollection<User> Friends { get; set;}
+        public DateTime CreatedTimestamp { get; set; }
     }
 }

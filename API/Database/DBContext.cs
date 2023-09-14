@@ -1,17 +1,18 @@
-using System.Data.Entity.ModelConfiguration.Conventions;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using API.Models;
 
 namespace API.Database {
-    public class UserContext : DbContext {
+    public class DataContext : DbContext {
+        protected readonly IConfiguration Configuration;
 
-        public UserContext() : base("UserContext") {
+        public DataContext(IConfiguration configuration) {
+            Configuration = configuration;
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options) {
+            options.UseSqlite(Configuration.GetConnectionString("SQLiteDatabase"));
         }
 
         public DbSet<User> Users { get; set; }
-
-        protected override void OnModelCreating(DbModelBuilder modelBuilder) {
-            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
-        }
     }
 }

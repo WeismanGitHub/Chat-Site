@@ -15,9 +15,4 @@ public class UserController : ControllerBase {
         context.Users.Add(user);
         context.SaveChanges();
     }
-
-    [HttpGet(Name = "GetUser")]
-    public void Get() {
-        Console.WriteLine("hello world");
-    }
 }

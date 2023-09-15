@@ -1,19 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
+using API.Database;
 using API.Models;
 
 namespace API.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class UserController : ControllerBase {
-    private readonly ILogger<UserController> _logger;
-
-    public UserController(ILogger<UserController> logger) {
-        _logger = logger;
-    }
+    private readonly DataContext context = new DataContext();
 
     [HttpPost(Name = "CreateUser")]
-    public void Post() {
-        Console.WriteLine("x");
+    public void Post(string name, string email, string password) {
+        User user = new User(name, email, password);
+        context.Users.Add(user);
+        context.SaveChanges();
+    }
+
+    [HttpGet(Name = "GetUser")]
+    public void Get() {
+        Console.WriteLine("hello world");
     }
 }

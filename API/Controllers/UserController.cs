@@ -33,4 +33,15 @@ public class UserController : ControllerBase {
 
         return user;
     }
+
+    [HttpGet("{id:guid}", Name = "GetUser")]
+    public async Task<ActionResult<User>> GetUser(Guid id) {
+        User user = await context.Users.FindAsync(id);
+
+        if (user == null) {
+            return NotFound();
+        }
+
+        return user;
+    }
 }

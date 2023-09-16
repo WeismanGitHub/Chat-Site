@@ -22,6 +22,4 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseCors(MyAllowSpecificOrigins);
 
-app.MapGet("/", () => "hello world");
-
 app.Run();

@@ -12,14 +12,15 @@ public class UserController : ControllerBase {
     private readonly DataContext context = new();
 
     [HttpPost(Name = "CreateUser")]
-    public async Task<Guid> CreateUser(User user) {
+    public async Task<ActionResult<Guid>> CreateUser([FromForm] string name, [FromForm] string email, [FromForm] string password) {
+        var user = new User(name, email, password);
         context.Users.Add(user);
         await context.SaveChangesAsync();
 
         return user.ID;
     }
 
-    [HttpDelete(Name = "DeleteUser")]
+    [HttpDelete("{id:guid}", Name = "DeleteUser")]
     public async Task<ActionResult<User>> DeleteUser(Guid id) {
         User user = await context.Users.FindAsync(id);
 

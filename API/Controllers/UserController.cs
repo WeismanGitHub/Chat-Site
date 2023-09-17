@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using API.Models;
+using Microsoft.AspNetCore.Mvc;
 using API.Database;
+using API.Models;
 
-namespace API {
+namespace API.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase {

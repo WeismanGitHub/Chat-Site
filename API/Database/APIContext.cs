@@ -7,5 +7,15 @@ namespace API.Database {
         }
 
         public DbSet<User> User { get; set; } = default!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            // Configure a unique index on the "Email" property of the "User" entity
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
+
 }

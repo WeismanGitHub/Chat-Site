@@ -19,7 +19,6 @@ namespace API.Migrations
                     Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
                     Password = table.Column<string>(type: "TEXT", nullable: false),
-                    CreatedTimestamp = table.Column<DateTime>(type: "TEXT", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {

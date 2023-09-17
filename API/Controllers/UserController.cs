@@ -1,8 +1,7 @@
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
 using API.Database;
 using API.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Data.Entity;
 
 namespace API.Controllers;
 
@@ -12,7 +11,12 @@ public class UserController : ControllerBase {
     private readonly DataContext context = new();
 
     [HttpPost(Name = "CreateUser")]
-    public async Task<ActionResult<Guid>> CreateUser([FromForm] string name, [FromForm] string email, [FromForm] string password) {
+    public async Task<ActionResult<Guid>> CreateUser(
+            [FromForm] string name,
+            [FromForm] string email,
+            [FromForm] string password
+        ) {
+
         var user = new User(name, email, password);
         context.Users.Add(user);
         await context.SaveChangesAsync();
@@ -41,6 +45,38 @@ public class UserController : ControllerBase {
         if (user == null) {
             return NotFound();
         }
+
+        return user;
+    }
+
+    [HttpPatch("{id:guid}", Name = "UpdateUser")]
+        public async Task<ActionResult<User>> UpdateUser(
+            Guid id,
+            [FromForm] string name = null,
+            [FromForm] string email = null,
+            [FromForm] string password = null
+        ) {
+        User user = await context.Users.FindAsync(id);
+        Console.WriteLine(user.Name);
+
+        if (user == null) {
+            return NotFound();
+        }
+
+        if (name != null) {
+            user.Name = name;
+        }
+
+        if (email != null) {
+            user.Email = email;
+
+        }
+
+        if (password != null) {
+            user.Password = password;
+        }
+
+        await context.SaveChangesAsync();
 
         return user;
     }

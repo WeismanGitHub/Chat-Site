@@ -57,7 +57,6 @@ public class UserController : ControllerBase {
             [FromForm] string password = null
         ) {
         User user = await context.Users.FindAsync(id);
-        Console.WriteLine(user.Name);
 
         if (user == null) {
             return NotFound();

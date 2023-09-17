@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using API.Database;
 using API.Models;
 using System.Data.SqlTypes;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Controllers {
     [Route("api/[controller]")]
@@ -41,24 +42,19 @@ namespace API.Controllers {
         }
 
         // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(Guid id, User user) {
-            if (id != user.ID) {
-                return BadRequest();
+        public async Task<IActionResult> PutUser(Guid id, [FromForm] UserDTO userTDO) {
+            var user = await _context.User.FindAsync(id);
+
+            if (user == null) {
+                return NotFound();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            user.Name = userTDO.Name ?? user.Name;
+            user.Email = userTDO.Email ?? user.Email;
+            user.Password = userTDO.Password ?? user.Password;
 
-            try {
-                await _context.SaveChangesAsync();
-            } catch (DbUpdateConcurrencyException) {
-                if (!UserExists(id)) {
-                    return NotFound();
-                } else {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -80,11 +76,12 @@ namespace API.Controllers {
 
             try {
                 await _context.SaveChangesAsync();
-            } catch (DbUpdateConcurrencyException) {
-                if (UserExists(user.ID)) {
+            } catch (Exception error) {
+                try {
+                    await _context.User.SingleAsync(u => u.Email == user.Email);
                     return StatusCode(StatusCodes.Status409Conflict, new { message = "Email is already in database." });
-                } else {
-                    throw;
+                } catch (Exception) {
+                    throw error;
                 }
             }
 
@@ -108,10 +105,6 @@ namespace API.Controllers {
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool UserExists(Guid id) {
-            return (_context.User?.Any(e => e.ID == id)).GetValueOrDefault();
         }
     }
 }

@@ -1,82 +1,104 @@
-using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
-using API.Database;
+using Microsoft.EntityFrameworkCore;
 using API.Models;
+using API.Database;
 
-namespace API.Controllers;
+namespace API {
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UsersController : ControllerBase {
+        private readonly APIContext _context;
 
-[ApiController]
-[Route("api/[controller]")]
-public class UserController : ControllerBase {
-    private readonly DataContext context = new();
-
-    [HttpPost(Name = "CreateUser")]
-    public async Task<ActionResult<Guid>> CreateUser(
-            [FromForm] string name,
-            [FromForm] string email,
-            [FromForm] string password
-        ) {
-
-        var user = new User(name, email, password);
-        context.Users.Add(user);
-        await context.SaveChangesAsync();
-
-        return user.ID;
-    }
-
-    [HttpDelete("{id:guid}", Name = "DeleteUser")]
-    public async Task<ActionResult<User>> DeleteUser(Guid id) {
-        User user = await context.Users.FindAsync(id);
-
-        if (user == null) {
-            return NotFound();
+        public UsersController(APIContext context) {
+            _context = context;
         }
 
-        context.Users.Remove(user);
-        await context.SaveChangesAsync();
+        // GET: api/Users
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<User>>> GetUser() {
+            if (_context.User == null) {
+                return NotFound();
+            }
 
-        return user;
-    }
-
-    [HttpGet("{id:guid}", Name = "GetUser")]
-    public async Task<ActionResult<User>> GetUser(Guid id) {
-        User user = await context.Users.FindAsync(id);
-
-        if (user == null) {
-            return NotFound();
+            return await _context.User.ToListAsync();
         }
 
-        return user;
-    }
+        // GET: api/Users/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> GetUser(Guid id) {
+            if (_context.User == null) {
+                return NotFound();
+            }
 
-    [HttpPatch("{id:guid}", Name = "UpdateUser")]
-        public async Task<ActionResult<User>> UpdateUser(
-            Guid id,
-            [FromForm] string name = null,
-            [FromForm] string email = null,
-            [FromForm] string password = null
-        ) {
-        User user = await context.Users.FindAsync(id);
+            var user = await _context.User.FindAsync(id);
 
-        if (user == null) {
-            return NotFound();
+            if (user == null) {
+                return NotFound();
+            }
+
+            return user;
         }
 
-        if (name != null) {
-            user.Name = name;
+        // PUT: api/Users/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutUser(Guid id, User user) {
+            if (id != user.ID) {
+                return BadRequest();
+            }
+
+            _context.Entry(user).State = EntityState.Modified;
+
+            try {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException) {
+                if (!UserExists(id)) {
+                    return NotFound();
+                }
+                else {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        if (email != null) {
-            user.Email = email;
+        // POST: api/Users
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<User>> PostUser(User user) {
+            if (_context.User == null) {
+                return Problem("Entity set 'APIContext.User'  is null.");
+            }
 
+            _context.User.Add(user);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetUser", new { id = user.ID }, user);
         }
 
-        if (password != null) {
-            user.Password = password;
+        // DELETE: api/Users/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(Guid id) {
+            if (_context.User == null) {
+                return NotFound();
+            }
+
+            var user = await _context.User.FindAsync(id);
+
+            if (user == null) {
+                return NotFound();
+            }
+
+            _context.User.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
-        await context.SaveChangesAsync();
-
-        return user;
+        private bool UserExists(Guid id) {
+            return (_context.User?.Any(e => e.ID == id)).GetValueOrDefault();
+        }
     }
 }

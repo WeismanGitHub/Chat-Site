@@ -12,8 +12,6 @@ namespace API.Models {
         public string Email { get; set; }
         [Required]
         public string Password { get; set; } // I know I need to hash passwords.
-        //[Timestamp]
-        //public Timestamp CreatedTimestamp { get; set; }
     }
 
     public class UserDTO {

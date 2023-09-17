@@ -3,29 +3,29 @@ using System;
 using API.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace API.Migrations
 {
-    [DbContext(typeof(DataContext))]
-    [Migration("20230914144807_AddUserCreatedTimestamp")]
-    partial class AddUserCreatedTimestamp
+    [DbContext(typeof(APIContext))]
+    partial class APIContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
 
             modelBuilder.Entity("API.Models.User", b =>
                 {
-                    b.Property<string>("ID")
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedTimestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -34,32 +34,16 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserID")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("ID");
 
-                    b.HasIndex("UserID");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("API.Models.User", b =>
-                {
-                    b.HasOne("API.Models.User", null)
-                        .WithMany("Friends")
-                        .HasForeignKey("UserID");
-                });
-
-            modelBuilder.Entity("API.Models.User", b =>
-                {
-                    b.Navigation("Friends");
+                    b.ToTable("User");
                 });
 #pragma warning restore 612, 618
         }

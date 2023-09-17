@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using API.Database;
 using API.Models;
+using System.Data.SqlTypes;
 
 namespace API.Controllers {
     [Route("api/[controller]")]
@@ -51,12 +52,10 @@ namespace API.Controllers {
 
             try {
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException) {
+            } catch (DbUpdateConcurrencyException) {
                 if (!UserExists(id)) {
                     return NotFound();
-                }
-                else {
+                } else {
                     throw;
                 }
             }
@@ -78,7 +77,16 @@ namespace API.Controllers {
             };
 
             _context.User.Add(user);
-            await _context.SaveChangesAsync();
+
+            try {
+                await _context.SaveChangesAsync();
+            } catch (DbUpdateConcurrencyException) {
+                if (UserExists(user.ID)) {
+                    return StatusCode(StatusCodes.Status409Conflict, new { message = "Email is already in database." });
+                } else {
+                    throw;
+                }
+            }
 
             return CreatedAtAction("GetUser", new { id = user.ID }, user);
         }

@@ -15,16 +15,6 @@ namespace API.Controllers {
             _context = context;
         }
 
-        // GET: api/Users
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser() {
-            if (_context.User == null) {
-                return NotFound();
-            }
-
-            return await _context.User.ToListAsync();
-        }
-
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(Guid id) {
@@ -43,7 +33,7 @@ namespace API.Controllers {
 
         // PUT: api/Users/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(Guid id, [FromForm] UserDTO userTDO) {
+        public async Task<IActionResult> PutUser(Guid id, [FromForm] UserOptionalDTO userTDO) {
             var user = await _context.User.FindAsync(id);
 
             if (user == null) {

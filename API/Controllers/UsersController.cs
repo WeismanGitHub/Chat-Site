@@ -15,16 +15,6 @@ namespace API.Controllers {
             _context = context;
         }
 
-        // GET: api/Users
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser() {
-            if (_context.User == null) {
-                return NotFound();
-            }
-
-            return await _context.User.ToListAsync();
-        }
-
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(Guid id) {

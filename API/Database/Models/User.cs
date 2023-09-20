@@ -22,12 +22,11 @@ namespace API.Models {
         [Required]
         public string Password { get; set; } // I know I need to hash passwords.
     }
-    public class UserOptionaleDTO {
-        [Required, MaxLength(100), MinLength(1)]
+    public class UserOptionalDTO {
+        [MaxLength(100), MinLength(1)]
         public string? Name { get; set; }
-        [Required, EmailAddress, Index(nameof(Email), IsUnique = true)]
+        [EmailAddress, Index(nameof(Email), IsUnique = true)]
         public string? Email { get; set; }
-        [Required]
         public string? Password { get; set; } // I know I need to hash passwords.
     }
 }

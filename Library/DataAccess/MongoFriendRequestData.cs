@@ -8,7 +8,7 @@ public interface IFriendRequestData {
 
 public class MongoFriendRequestData : IFriendRequestData {
     private readonly IMongoCollection<FriendRequest> _friendRequests;
-    public MongoFriendRequestData(DbConnection db) {
+    public MongoFriendRequestData(IDbConnection db) {
         _friendRequests = db.FriendRequestCollection;
     }
 

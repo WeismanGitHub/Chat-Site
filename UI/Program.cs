@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components;
 using UI;
 
 var builder = WebApplication.CreateBuilder(args);

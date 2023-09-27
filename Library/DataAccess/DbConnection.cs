@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 
 namespace Library.DataAccess;
+
 public interface IDbConnection {
     MongoClient Client { get; }
     IMongoCollection<Conversation> ConversationCollection { get; }
@@ -32,8 +33,28 @@ public class DbConnection : IDbConnection {
         DbName = _config["DatabaseName"]!;
         _db = Client.GetDatabase(DbName);
 
+        CreateCollections();
+        CreateIndexes();
+    }
+
+    private void CreateCollections() {
         FriendRequestCollection = _db.GetCollection<FriendRequest>(FriendRequestsCollectionName);
         ConversationCollection = _db.GetCollection<Conversation>(ConversationCollectionName);
         UserCollection = _db.GetCollection<User>(UserCollectionName);
+    }
+
+    private void CreateIndexes() {
+        FriendRequestCollection.Indexes.CreateOne(
+            new CreateIndexModel<FriendRequest>(
+                Builders<FriendRequest>.IndexKeys.Ascending(req => req.RecipientId)
+            )
+        );
+
+        UserCollection.Indexes.CreateOne(
+            new CreateIndexModel<User>(
+                Builders<User>.IndexKeys.Ascending(user => user.Email),
+                new CreateIndexOptions() { Unique = true }
+            )
+        );
     }
 }

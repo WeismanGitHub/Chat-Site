@@ -1,3 +1,8 @@
-﻿@page "/"
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+
+@page "/"
+
+@inject NavigationManager navManager;
+@inject ProtectedSessionStorage sessionStorage;
 
 <PageTitle>Chat Site v2</PageTitle>

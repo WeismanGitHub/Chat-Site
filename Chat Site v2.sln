@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UI", "UI\UI.csproj", "{04646131-C45D-4408-8E9D-8C04A0AC2975}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library", "Library\Library.csproj", "{275D61CF-2EA0-449C-A24D-A29230930848}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library", "Library\Library.csproj", "{275D61CF-2EA0-449C-A24D-A29230930848}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

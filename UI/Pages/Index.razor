@@ -2,8 +2,11 @@
 
 @page "/"
 
+@inject ProtectedLocalStorage localStorage;
 @inject NavigationManager navManager;
-@inject ProtectedSessionStorage sessionStorage;
+
+@inject IConversationData conversationData;
+@inject IUserData userData;
 
 <div class="navbar">
     <button @onclick="@(()=>navManager.NavigateTo("/Account"))">
@@ -16,17 +19,46 @@
         <div>Chats</div>
         <div>Friends</div>
     </button>
+    @*
+    @{
+        void ShowFriend(User friend) {
+            <div>@friend.DisplayName</div>
+        }
+
+        void ShowConversation(Conversation conversation) {
+            <div>@conversation.Name</div>
+        }
+
+        if (selectedToggle == MenuToggle.Chats) {
+            friends.ForEach(friend => ShowFriend(friend));
+        } else {
+            conversations.ForEach(convo => ShowConversation(convo));
+        }
+    }
+    *@
 </div>
 
 @code {
-    private enum MenuToggle { Friends, Chats };
-    private MenuToggle ChosenToggle = MenuToggle.Chats;
-    private List<Conversation> Conversations;
-    private List<User> Friends;
+    private List<Conversation> conversations;
+    private List<User> friends;
 
-    private void Toggle() {
-        Console.WriteLine(ChosenToggle);
-        ChosenToggle = ChosenToggle == MenuToggle.Chats ? MenuToggle.Friends : MenuToggle.Chats;
+    private enum MenuToggle { Friends, Chats };
+    private MenuToggle selectedToggle;
+
+    protected async override Task OnInitializedAsync() {
+        // populate friends/conversations
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (!firstRender) return;
+
+        var toggleResults = await localStorage.GetAsync<MenuToggle>("MenuToggle");
+        selectedToggle = toggleResults.Success ? toggleResults.Value : MenuToggle.Chats;
+    }
+
+    private async void Toggle() {
+        selectedToggle = selectedToggle == MenuToggle.Chats ? MenuToggle.Friends : MenuToggle.Chats;
+        await localStorage.SetAsync("MenuToggle", selectedToggle);
     }
 
     private void GetFriends() {

@@ -5,4 +5,35 @@
 @inject NavigationManager navManager;
 @inject ProtectedSessionStorage sessionStorage;
 
-<PageTitle>Chat Site v2</PageTitle>
+<div class="navbar">
+    <button @onclick="@(()=>navManager.NavigateTo("/Account"))">
+        Account
+    </button>
+</div>
+
+<div class="menu">
+    <button @onclick="Toggle">
+        <div>Chats</div>
+        <div>Friends</div>
+    </button>
+</div>
+
+@code {
+    private enum MenuToggle { Friends, Chats };
+    private MenuToggle ChosenToggle = MenuToggle.Chats;
+    private List<Conversation> Conversations;
+    private List<User> Friends;
+
+    private void Toggle() {
+        Console.WriteLine(ChosenToggle);
+        ChosenToggle = ChosenToggle == MenuToggle.Chats ? MenuToggle.Friends : MenuToggle.Chats;
+    }
+
+    private void GetFriends() {
+
+    }
+
+    private void GetConversations() {
+        
+    }
+}

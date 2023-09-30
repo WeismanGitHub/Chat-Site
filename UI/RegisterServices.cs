@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Identity.Web.UI;
 using Microsoft.Identity.Web;
 
 namespace UI;
@@ -6,6 +7,7 @@ public static class RegisterServices {
     public static void ConfigureServices(this WebApplicationBuilder builder) {
         builder.Services.AddServerSideBlazor();
         builder.Services.AddRazorPages();
+        builder.Services.AddControllersWithViews().AddMicrosoftIdentityUI();
 
         builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureADB2C"));

@@ -8,7 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Shared\" />
+    <Content Remove="Shared\NotAuthorized.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
@@ -19,6 +22,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Library\Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\NotAuthorized.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Shared\NotAuthorized.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Shared\NotAuthorized.razor" />
   </ItemGroup>
 
 </Project>

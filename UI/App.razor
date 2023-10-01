@@ -2,7 +2,13 @@
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                <NotAuthorized/>
+                <NotAuthorized>
+                    @inject NavigationManager navManager
+
+                    @{
+                        navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn");
+                    }
+                </NotAuthorized>
             </AuthorizeRouteView>
 
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />

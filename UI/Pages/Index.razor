@@ -14,6 +14,10 @@
     <button @onclick="@(()=>navManager.NavigateTo("/Account"))">
         Account
     </button>
+    
+    <button @onclick="@(()=>navManager.NavigateTo("/MicrosoftIdentity/Account/SignOut"))">
+        Logout
+    </button>
 </div>
 
 <div class="menu">
@@ -69,11 +73,6 @@
 
             string displayName = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
             string email = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("email"))?.Value;
-
-            authState.User.Claims.FirstOrDefault(c => {
-                Console.WriteLine(c);
-                return false;
-            });
 
             bool isDirty = false;
 

@@ -1,7 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 @page "/"
+@attribute [Authorize]
 
+@inject AuthenticationStateProvider authProvider;
 @inject ProtectedLocalStorage localStorage;
 @inject NavigationManager navManager;
 
@@ -41,11 +43,13 @@
 @code {
     private List<Conversation> conversations;
     private List<User> friends;
+    private User loggedInUser;
 
     private enum MenuToggle { Friends, Chats };
     private MenuToggle selectedToggle;
 
     protected async override Task OnInitializedAsync() {
+        await LoadAndVerifyUser();
         // populate friends/conversations
     }
 
@@ -54,6 +58,48 @@
 
         var toggleResults = await localStorage.GetAsync<MenuToggle>("MenuToggle");
         selectedToggle = toggleResults.Success ? toggleResults.Value : MenuToggle.Chats;
+    }
+
+    private async Task LoadAndVerifyUser() {
+        var authState = await authProvider.GetAuthenticationStateAsync();
+        var objectId = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier"))?.Value;
+
+        if (string.IsNullOrWhiteSpace(objectId) == false) {
+            loggedInUser = await userData.GetUserFromAuthentication(objectId) ?? new();
+
+            string displayName = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
+            string email = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("email"))?.Value;
+
+            authState.User.Claims.FirstOrDefault(c => {
+                Console.WriteLine(c);
+                return false;
+            });
+
+            bool isDirty = false;
+
+            if (objectId.Equals(loggedInUser.ObjectIdentifier) == false) {
+                isDirty = true;
+                loggedInUser.ObjectIdentifier = objectId;
+            }
+
+            if (displayName?.Equals(loggedInUser.DisplayName) == false) {
+                isDirty = true;
+                loggedInUser.DisplayName = displayName;
+            }
+
+            if (email?.Equals(loggedInUser.Email) == false) {
+                isDirty = true;
+                loggedInUser.Email = email;
+            }
+
+            if (!isDirty) return;
+
+            if (string.IsNullOrWhiteSpace(loggedInUser.Id)) {
+                await userData.CreateUser(loggedInUser);
+            } else {
+                await userData.UpdateUser(loggedInUser);
+            }
+        }
     }
 
     private async void Toggle() {

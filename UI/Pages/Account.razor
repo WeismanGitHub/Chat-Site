@@ -1,0 +1,14 @@
+﻿@page "/Account";
+@attribute [Authorize];
+
+@inject NavigationManager navManager;
+
+<h3>Account</h3>
+
+<button @onclick="@(()=>navManager.NavigateTo("/MicrosoftIdentity/Account/EditProfile"))">
+    Edit Account
+</button>
+
+@code {
+
+}

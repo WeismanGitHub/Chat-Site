@@ -14,15 +14,13 @@
     <button @onclick="@(()=>navManager.NavigateTo("/Account"))">
         Account
     </button>
-    
-    <button @onclick="@(()=>navManager.NavigateTo("/MicrosoftIdentity/Account/SignOut"))">
-        Logout
-    </button>
+
+    <a href="/MicrosoftIdentity/Account/SignOut">Logout</a>
 </div>
 
 <div class="menu">
     <button @onclick="Toggle">
-        <div>Chats</div>
+        <div>Convos</div>
         <div>Friends</div>
     </button>
     @*
@@ -35,7 +33,7 @@
             <div>@conversation.Name</div>
         }
 
-        if (selectedToggle == MenuToggle.Chats) {
+        if (selectedToggle == MenuToggle.Convos) {
             friends.ForEach(friend => ShowFriend(friend));
         } else {
             conversations.ForEach(convo => ShowConversation(convo));
@@ -49,7 +47,7 @@
     private List<User> friends;
     private User loggedInUser;
 
-    private enum MenuToggle { Friends, Chats };
+    private enum MenuToggle { Friends, Convos };
     private MenuToggle selectedToggle;
 
     protected async override Task OnInitializedAsync() {
@@ -61,7 +59,7 @@
         if (!firstRender) return;
 
         var toggleResults = await localStorage.GetAsync<MenuToggle>("MenuToggle");
-        selectedToggle = toggleResults.Success ? toggleResults.Value : MenuToggle.Chats;
+        selectedToggle = toggleResults.Success ? toggleResults.Value : MenuToggle.Convos;
     }
 
     private async Task LoadAndVerifyUser() {
@@ -102,7 +100,7 @@
     }
 
     private async void Toggle() {
-        selectedToggle = selectedToggle == MenuToggle.Chats ? MenuToggle.Friends : MenuToggle.Chats;
+        selectedToggle = selectedToggle == MenuToggle.Convos ? MenuToggle.Friends : MenuToggle.Convos;
         await localStorage.SetAsync("MenuToggle", selectedToggle);
     }
 

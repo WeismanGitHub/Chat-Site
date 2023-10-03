@@ -3,12 +3,4 @@
 
 @inject NavigationManager navManager;
 
-<h3>Account</h3>
-
-<button @onclick="@(()=>navManager.NavigateTo("/MicrosoftIdentity/Account/EditProfile"))">
-    Edit Account
-</button>
-
-@code {
-
-}
+<a href="/MicrosoftIdentity/Account/EditProfile">Edit Account</a>

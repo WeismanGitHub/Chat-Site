@@ -10,41 +10,46 @@
 @inject IConversationData conversationData;
 @inject IUserData userData;
 
-<div class="navbar">
-    <button @onclick="@(()=>navManager.NavigateTo("/Account"))">
-        Account
-    </button>
+<NavigationBar />
 
-    <a href="/MicrosoftIdentity/Account/SignOut">Logout</a>
-</div>
-
-<div class="menu">
+<div class="convos-friends-menu">
     <button @onclick="Toggle">
         <div>Convos</div>
         <div>Friends</div>
     </button>
-    @*
+
     @{
         void ShowFriend(User friend) {
-            <div>@friend.DisplayName</div>
+            <div class="friend">@friend.DisplayName</div>
         }
 
         void ShowConversation(Conversation conversation) {
-            <div>@conversation.Name</div>
+            <div class="conversation">@conversation.Name</div>
+        }
+
+        void NotFound(string name) {
+            <div>No @name Found</div>
         }
 
         if (selectedToggle == MenuToggle.Convos) {
+            if (conversations.Count == 0) {
+                NotFound("Convos");
+            }
+
             friends.ForEach(friend => ShowFriend(friend));
         } else {
+            if (friends.Count == 0) {
+                NotFound("Friends");
+            }
+
             conversations.ForEach(convo => ShowConversation(convo));
         }
     }
-    *@
 </div>
 
 @code {
-    private List<Conversation> conversations;
-    private List<User> friends;
+    private List<Conversation> conversations = new();
+    private List<User> friends = new();
     private User loggedInUser;
 
     private enum MenuToggle { Friends, Convos };
@@ -62,40 +67,42 @@
         selectedToggle = toggleResults.Success ? toggleResults.Value : MenuToggle.Convos;
     }
 
-    private async Task LoadAndVerifyUser() {
+    public async Task LoadAndVerifyUser() {
         var authState = await authProvider.GetAuthenticationStateAsync();
         var objectId = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier"))?.Value;
 
-        if (string.IsNullOrWhiteSpace(objectId) == false) {
-            loggedInUser = await userData.GetUserFromAuthentication(objectId) ?? new();
+        if (string.IsNullOrWhiteSpace(objectId)) {
+            return;
+        }
 
-            string displayName = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
-            string email = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("email"))?.Value;
+        loggedInUser = await userData.GetUserFromAuthentication(objectId) ?? new();
 
-            bool isDirty = false;
+        string displayName = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
+        string email = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("email"))?.Value;
 
-            if (objectId.Equals(loggedInUser.ObjectIdentifier) == false) {
-                isDirty = true;
-                loggedInUser.ObjectIdentifier = objectId;
-            }
+        bool isDirty = false;
 
-            if (displayName?.Equals(loggedInUser.DisplayName) == false) {
-                isDirty = true;
-                loggedInUser.DisplayName = displayName;
-            }
+        if (objectId.Equals(loggedInUser.ObjectIdentifier) == false) {
+            isDirty = true;
+            loggedInUser.ObjectIdentifier = objectId;
+        }
 
-            if (email?.Equals(loggedInUser.Email) == false) {
-                isDirty = true;
-                loggedInUser.Email = email;
-            }
+        if (displayName?.Equals(loggedInUser.DisplayName) == false) {
+            isDirty = true;
+            loggedInUser.DisplayName = displayName;
+        }
 
-            if (!isDirty) return;
+        if (email?.Equals(loggedInUser.Email) == false) {
+            isDirty = true;
+            loggedInUser.Email = email;
+        }
 
-            if (string.IsNullOrWhiteSpace(loggedInUser.Id)) {
-                await userData.CreateUser(loggedInUser);
-            } else {
-                await userData.UpdateUser(loggedInUser);
-            }
+        if (!isDirty) return;
+
+        if (string.IsNullOrWhiteSpace(loggedInUser.Id)) {
+            await userData.CreateUser(loggedInUser);
+        } else {
+            await userData.UpdateUser(loggedInUser);
         }
     }
 

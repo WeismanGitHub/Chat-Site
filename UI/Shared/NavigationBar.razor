@@ -1,0 +1,11 @@
+﻿@inject NavigationManager navManager;
+
+@inject IConversationData conversationData;
+
+<div class="navbar">
+    <button @onclick="@(()=>navManager.NavigateTo("/Account"))">
+        Account
+    </button>
+
+    <a href="/MicrosoftIdentity/Account/SignOut">Logout</a>
+</div>

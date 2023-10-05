@@ -1,3 +1,5 @@
+using Library;
+
 using Microsoft.AspNetCore.Rewrite;
 using UI;
 
@@ -5,7 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureServices();
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment()) { 
+if (app.Environment.IsDevelopment()) {
+    int seed = int.Parse(builder.Configuration["DataGenerationSeed"]);
+    var dataGenerator = new DataGenerator(seed);
+
+    if (dataGenerator.CollectionsAreEmpty()) {
+        await dataGenerator.ReplaceDatabaseWithBogus();
+    }
+} else {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }

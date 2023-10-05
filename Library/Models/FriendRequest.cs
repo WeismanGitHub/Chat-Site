@@ -5,7 +5,7 @@ public enum Status {
     Declined,
     Pending
 }
-public class FriendRequest {
+public class FriendRequestModel {
     [BsonId, BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; }
     [BsonRepresentation(BsonType.ObjectId)]

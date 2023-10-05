@@ -1,43 +1,43 @@
 ﻿namespace Library.DataAccess;
 
 public interface IUserData {
-    Task CreateUser(User user);
-    Task<User> GetUser(string id);
-    Task<User> GetUserFromAuthentication(string objectId);
-    Task<List<User>> GetUsers();
-    Task UpdateUser(User user);
+    Task CreateUser(UserModel user);
+    Task<UserModel> GetUser(string id);
+    Task<UserModel> GetUserFromAuthentication(string objectId);
+    Task<List<UserModel>> GetUsers();
+    Task UpdateUser(UserModel user);
 }
 
 public class MongoUserData : IUserData {
-    private readonly IMongoCollection<User> _users;
+    private readonly IMongoCollection<UserModel> _users;
 
     public MongoUserData(IDbConnection db) {
         _users = db.UserCollection;
     }
 
-    public async Task<List<User>> GetUsers() {
+    public async Task<List<UserModel>> GetUsers() {
         var results = await _users.FindAsync(_ => true);
 
         return results.ToList();
     }
 
-    public async Task<User> GetUser(string id) {
+    public async Task<UserModel> GetUser(string id) {
         var user = await _users.FindAsync(user => user.Id == id);
 
         return user.FirstOrDefault();
     }
-    public async Task<User> GetUserFromAuthentication(string objectId) {
+    public async Task<UserModel> GetUserFromAuthentication(string objectId) {
         var user = await _users.FindAsync(user => user.ObjectIdentifier == objectId);
 
         return user.FirstOrDefault();
     }
 
-    public Task CreateUser(User user) {
+    public Task CreateUser(UserModel user) {
         return _users.InsertOneAsync(user);
     }
 
-    public Task UpdateUser(User user) {
-        var filter = Builders<User>.Filter.Eq("Id", user.Id);
+    public Task UpdateUser(UserModel user) {
+        var filter = Builders<UserModel>.Filter.Eq("Id", user.Id);
         var options = new ReplaceOptions { IsUpsert = true };
 
         return _users.ReplaceOneAsync(filter, user, options);

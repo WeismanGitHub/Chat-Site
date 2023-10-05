@@ -4,12 +4,12 @@ namespace Library.DataAccess;
 
 public interface IDbConnection {
     MongoClient Client { get; }
-    IMongoCollection<Conversation> ConversationCollection { get; }
+    IMongoCollection<ConversationModel> ConversationCollection { get; }
     string ConversationCollectionName { get; }
     string DbName { get; }
-    IMongoCollection<FriendRequest> FriendRequestCollection { get; }
+    IMongoCollection<FriendRequestModel> FriendRequestCollection { get; }
     string FriendRequestsCollectionName { get; }
-    IMongoCollection<User> UserCollection { get; }
+    IMongoCollection<UserModel> UserCollection { get; }
     string UserCollectionName { get; }
 }
 
@@ -24,9 +24,9 @@ public class DbConnection : IDbConnection {
     public string UserCollectionName { get; private set; } = "Users";
 
     public MongoClient Client { get; private set; }
-    public IMongoCollection<FriendRequest> FriendRequestCollection { get; private set; }
-    public IMongoCollection<Conversation> ConversationCollection { get; private set; }
-    public IMongoCollection<User> UserCollection { get; private set; }
+    public IMongoCollection<FriendRequestModel> FriendRequestCollection { get; private set; }
+    public IMongoCollection<ConversationModel> ConversationCollection { get; private set; }
+    public IMongoCollection<UserModel> UserCollection { get; private set; }
     public DbConnection(IConfiguration config) {
         _config = config;
         Client = new MongoClient(_config.GetConnectionString(_connectionId));
@@ -38,21 +38,21 @@ public class DbConnection : IDbConnection {
     }
 
     private void CreateCollections() {
-        FriendRequestCollection = _db.GetCollection<FriendRequest>(FriendRequestsCollectionName);
-        ConversationCollection = _db.GetCollection<Conversation>(ConversationCollectionName);
-        UserCollection = _db.GetCollection<User>(UserCollectionName);
+        FriendRequestCollection = _db.GetCollection<FriendRequestModel>(FriendRequestsCollectionName);
+        ConversationCollection = _db.GetCollection<ConversationModel>(ConversationCollectionName);
+        UserCollection = _db.GetCollection<UserModel>(UserCollectionName);
     }
 
     private void CreateIndexes() {
         FriendRequestCollection.Indexes.CreateOne(
-            new CreateIndexModel<FriendRequest>(
-                Builders<FriendRequest>.IndexKeys.Ascending(req => req.RecipientId)
+            new CreateIndexModel<FriendRequestModel>(
+                Builders<FriendRequestModel>.IndexKeys.Ascending(req => req.RecipientId)
             )
         );
 
         UserCollection.Indexes.CreateOne(
-            new CreateIndexModel<User>(
-                Builders<User>.IndexKeys.Ascending(user => user.Email),
+            new CreateIndexModel<UserModel>(
+                Builders<UserModel>.IndexKeys.Ascending(user => user.Email),
                 new CreateIndexOptions() { Unique = true }
             )
         );

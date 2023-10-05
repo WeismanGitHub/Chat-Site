@@ -28,11 +28,11 @@
     </button>
 
     @{
-        void ShowFriend(User friend) {
+        void ShowFriend(UserModel friend) {
             <div class="friend">@friend.DisplayName</div>
         }
 
-        void ShowConversation(Conversation conversation) {
+        void ShowConversation(ConversationModel conversation) {
             <div class="conversation">@conversation.Name</div>
         }
 
@@ -57,9 +57,9 @@
 </div>
 
 @code {
-    private List<Conversation> conversations = new();
-    private List<User> friends = new();
-    private User loggedInUser;
+    private List<ConversationModel> conversations = new();
+    private List<UserModel> friends = new();
+    private UserModel loggedInUser;
 
     private enum MenuToggle { Friends, Convos };
     private MenuToggle selectedToggle;

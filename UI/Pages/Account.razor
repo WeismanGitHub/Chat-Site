@@ -16,7 +16,7 @@
 </div>
 
 @code {
-    private User loggedInUser;
+    private UserModel loggedInUser;
 
     protected async override Task OnInitializedAsync() {
         loggedInUser = await authProvider.GetUserFromAuth(userData);

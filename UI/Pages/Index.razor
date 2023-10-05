@@ -13,6 +13,15 @@
 <NavigationBar />
 
 <div class="convos-friends-menu">
+    <div class="convos-friends-creation">
+        <button @onclick="ConvoInput">
+            Create Convo
+        </button>
+        <button>
+            Add Friend
+        </button>
+    </div>
+
     <button @onclick="Toggle">
         <div>Convos</div>
         <div>Friends</div>
@@ -111,11 +120,11 @@
         await localStorage.SetAsync("MenuToggle", selectedToggle);
     }
 
-    private void GetFriends() {
+    private void ConvoInput() {
+        string name = "";
 
-    }
-
-    private void GetConversations() {
-        
+        // <div>
+        //     <input type="text" @oninput="@{ (s => name = s.Value;)} "/>
+        // </div>
     }
 }

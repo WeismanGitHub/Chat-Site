@@ -1,7 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
-@page "/"
-@attribute [Authorize]
+@attribute [Route(PageRoutes.Index), Authorize]
 
 @inject AuthenticationStateProvider authProvider;
 @inject ProtectedLocalStorage localStorage;

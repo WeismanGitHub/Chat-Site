@@ -1,5 +1,4 @@
-﻿@page "/Account";
-@attribute [Authorize];
+﻿@attribute [Route(PageRoutes.Account), Authorize];
 
 @inject AuthenticationStateProvider authProvider;
 @inject NavigationManager navManager;

@@ -11,8 +11,8 @@ if (app.Environment.IsDevelopment()) {
     int seed = int.Parse(builder.Configuration["DataGenerationSeed"]);
     var dataGenerator = new DataGenerator(seed);
 
-    if (dataGenerator.CollectionsAreEmpty()) {
-        await dataGenerator.ReplaceDatabaseWithBogus();
+    if (await dataGenerator.CollectionsAreEmpty()) {
+        await dataGenerator.PopulateDatabaseWithBogus();
     }
 } else {
     app.UseExceptionHandler("/Error");

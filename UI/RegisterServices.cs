@@ -14,7 +14,7 @@ public static class RegisterServices {
             .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureADB2C"));
 
         string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        string connectionId = env == "Development" ? "MongoDBDev" : "MongoDBProd";
+        string connectionId = env == "Development" ? "MongoDev" : "MongoProd";
 
         builder.Services.AddSingleton<IDbConnection, DbConnection>(_ => new DbConnection(builder.Configuration, connectionId));
         builder.Services.AddSingleton<IFriendRequestData, MongoFriendRequestData>();

@@ -14,8 +14,6 @@ public interface IDbConnection {
 }
 
 public class DbConnection : IDbConnection {
-    private string _connectionId = "MongoDB";
-    private readonly IConfiguration _config;
     private readonly IMongoDatabase _db;
 
     public string DbName { get; private set; }
@@ -27,10 +25,9 @@ public class DbConnection : IDbConnection {
     public IMongoCollection<FriendRequestModel> FriendRequestCollection { get; private set; }
     public IMongoCollection<ConversationModel> ConversationCollection { get; private set; }
     public IMongoCollection<UserModel> UserCollection { get; private set; }
-    public DbConnection(IConfiguration config) {
-        _config = config;
-        Client = new MongoClient(_config.GetConnectionString(_connectionId));
-        DbName = _config["DatabaseName"]!;
+    public DbConnection(IConfiguration config, string connectionId) {
+        Client = new MongoClient(config.GetConnectionString(connectionId));
+        DbName = config["DatabaseName"]!;
         _db = Client.GetDatabase(DbName);
 
         CreateCollections();

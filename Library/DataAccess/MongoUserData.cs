@@ -1,4 +1,6 @@
-﻿namespace Library.DataAccess;
+﻿using Bogus;
+
+namespace Library.DataAccess;
 
 public interface IUserData : ICollectionData<UserModel> {
     Task CreateUser(UserModel user);
@@ -9,9 +11,16 @@ public interface IUserData : ICollectionData<UserModel> {
 
 public class MongoUserData : IUserData {
     private readonly IMongoCollection<UserModel> _users;
+    public readonly Faker<UserModel> faker;
 
     public MongoUserData(IDbConnection db) {
         _users = db.UserCollection;
+        var x = _users.Find(x => true);
+
+        faker = new Faker<UserModel>()
+            .RuleFor(u => u.ObjectIdentifier, _ => Guid.NewGuid().ToString())
+            .RuleFor(u => u.Email, f => f.Internet.Email())
+            .RuleFor(u => u.DisplayName, f => f.Internet.UserName());
     }
 
     public async Task<List<UserModel>> GetAll() {

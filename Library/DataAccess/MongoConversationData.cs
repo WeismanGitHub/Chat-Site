@@ -14,7 +14,7 @@ public class MongoConversationData : IConversationData {
         _conversations = db.ConversationCollection;
 
         faker = new Faker<ConversationModel>()
-            .RuleFor(f => f.Name, f => f.Lorem.Text())
+            .RuleFor(f => f.Name, f => f.Lorem.Text());
     }
 
     public async Task<List<ConversationModel>> GetAll() {

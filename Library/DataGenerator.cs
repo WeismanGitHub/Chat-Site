@@ -2,21 +2,22 @@
 
 namespace Library;
 public class DataGenerator {
-    private Faker<UserModel> fakeUserModel;
-    public DataGenerator(int seed) {
+    private MongoFriendRequestData friendRequestData { get; }
+    private MongoConversationData conversationData { get; }
+    private MongoUserData userData { get; set; }
+    public DataGenerator(IDbConnection db, int seed) {
         Randomizer.Seed = new Random(seed);
 
-        fakeUserModel = new Faker<UserModel>()
-            .RuleFor(u => u.ObjectIdentifier, f => Guid.NewGuid().ToString())
-            .RuleFor(u => u.Email, f => f.Internet.Email())
-            .RuleFor(u => u.DisplayName, f => f.Internet.UserName());
+        friendRequestData = new MongoFriendRequestData(db);
+        conversationData = new MongoConversationData(db);
+        userData = new MongoUserData(db);
     }
 
-    public async Task<bool> CollectionsAreEmpty() {
-        return true;
-    }
+    public async void PopulateWithBogus() {
+        if ((await userData.GetAll()).Count > 0) return;
 
-    public async Task PopulateDatabaseWithBogus() {
-
+        foreach (var fakeUser in userData.faker.GenerateForever().Take(10)) {
+            await userData.CreateUser(fakeUser);
+        }
     }
 }

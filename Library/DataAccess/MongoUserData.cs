@@ -1,10 +1,9 @@
 ﻿namespace Library.DataAccess;
 
-public interface IUserData {
+public interface IUserData : ICollectionData<UserModel> {
     Task CreateUser(UserModel user);
     Task<UserModel> GetUser(string id);
     Task<UserModel> GetUserFromAuthentication(string objectId);
-    Task<List<UserModel>> GetUsers();
     Task UpdateUser(UserModel user);
 }
 
@@ -15,7 +14,7 @@ public class MongoUserData : IUserData {
         _users = db.UserCollection;
     }
 
-    public async Task<List<UserModel>> GetUsers() {
+    public async Task<List<UserModel>> GetAll() {
         var results = await _users.FindAsync(_ => true);
 
         return results.ToList();

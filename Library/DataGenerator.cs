@@ -15,9 +15,22 @@ public class DataGenerator {
 
     public async void PopulateWithBogus() {
         if ((await userData.GetAll()).Count > 0) return;
+        
+        var users = await CreateUsers();
 
-        foreach (var fakeUser in userData.faker.GenerateForever().Take(10)) {
-            await userData.CreateUser(fakeUser);
+        foreach (var user in users) {
+            Console.WriteLine(user.Id);
         }
+    }
+
+    public async Task<List<UserModel>> CreateUsers() {
+        List<UserModel> users = new();
+
+        foreach (var fakeUser in userData.faker.GenerateForever().Take(25)) {
+            await userData.CreateUser(fakeUser);
+            users.Add(fakeUser);
+        }
+
+        return users;
     }
 }

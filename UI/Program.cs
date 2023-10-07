@@ -3,17 +3,17 @@ using Library;
 using Microsoft.AspNetCore.Rewrite;
 using UI;
 
+
+string connectionId = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? "MongoDev" : "MongoProd";
 var builder = WebApplication.CreateBuilder(args);
-builder.ConfigureServices();
+builder.ConfigureServices(connectionId);
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment()) {
     int seed = int.Parse(builder.Configuration["DataGenerationSeed"]);
-    var dataGenerator = new DataGenerator(seed);
-
-    if (await dataGenerator.CollectionsAreEmpty()) {
-        await dataGenerator.PopulateDatabaseWithBogus();
-    }
+    var db = new DbConnection(builder.Configuration, connectionId);
+    var dataGenerator = new DataGenerator(db, seed);
+    dataGenerator.PopulateWithBogus();
 } else {
     app.UseExceptionHandler("/Error");
     app.UseHsts();

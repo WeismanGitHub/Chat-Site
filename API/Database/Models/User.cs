@@ -1,32 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using NuGet.Packaging.Signing;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace API.Models {
-    public class User {
-        [Key]
-        public Guid ID { get; set; } = new Guid();
-        [Required, MaxLength(100), MinLength(1)]
-        public string Name { get; set; }
-        [Required, EmailAddress, Index(nameof(Email), IsUnique = true)]
-        public string Email { get; set; }
-        [Required]
-        public string Password { get; set; } // I know I need to hash passwords.
-    }
-
-    public class UserDTO {
-        [Required, MaxLength(100), MinLength(1)]
-        public string Name { get; set; }
-        [Required, EmailAddress, Index(nameof(Email), IsUnique = true)]
-        public string Email { get; set; }
-        [Required]
-        public string Password { get; set; } // I know I need to hash passwords.
-    }
-    public class UserOptionalDTO {
-        [MaxLength(100), MinLength(1)]
-        public string? Name { get; set; }
-        [EmailAddress, Index(nameof(Email), IsUnique = true)]
-        public string? Email { get; set; }
-        public string? Password { get; set; } // I know I need to hash passwords.
-    }
+namespace Database.Models;
+public class UserModel {
+    [BsonId, BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; }
+    public string ObjectIdentifier { get; set; }
+    [BsonRequired]
+    public string DisplayName { get; set; }
+    [BsonRequired]
+    public string Email { get; set; }
+    [MaxLength(100, ErrorMessage = "Cannot add more than 100 friends.")]
+    public HashSet<string> FriendIds { get; set; } = new();
+    [MaxLength(100, ErrorMessage = "Cannot join more than 100 conversations.")]
+    public HashSet<string> ConversationIds { get; set; } = new();
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

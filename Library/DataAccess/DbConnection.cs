@@ -25,8 +25,8 @@ public class DbConnection : IDbConnection {
     public IMongoCollection<FriendRequestModel> FriendRequestCollection { get; private set; }
     public IMongoCollection<ConversationModel> ConversationCollection { get; private set; }
     public IMongoCollection<UserModel> UserCollection { get; private set; }
-    public DbConnection(IConfiguration config, string connectionId) {
-        Client = new MongoClient(config.GetConnectionString(connectionId));
+    public DbConnection(IConfiguration config) {
+        Client = new MongoClient(config["MongoURI"]);
         DbName = config["DatabaseName"]!;
         _db = Client.GetDatabase(DbName);
 

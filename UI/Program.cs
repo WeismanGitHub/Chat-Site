@@ -3,15 +3,15 @@ using Library;
 using Microsoft.AspNetCore.Rewrite;
 using UI;
 
-
 string connectionId = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? "MongoDev" : "MongoProd";
 var builder = WebApplication.CreateBuilder(args);
-builder.ConfigureServices(connectionId);
+builder.Configuration["MongoURI"] = builder.Configuration.GetConnectionString(connectionId);
+builder.ConfigureServices();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment()) {
     int seed = int.Parse(builder.Configuration["DataGenerationSeed"]);
-    var db = new DbConnection(builder.Configuration, connectionId);
+    var db = new DbConnection(builder.Configuration);
     var dataGenerator = new DataGenerator(db, seed);
     dataGenerator.PopulateWithBogus();
 } else {

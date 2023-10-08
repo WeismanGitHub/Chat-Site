@@ -1,43 +1,35 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.Identity.Web;
+﻿using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Bson.Serialization;
+using FastEndpoints.Swagger;
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder();
+var config = builder.Configuration;
 
-//services.AddSingleton<IDbConnection, DbConnection>(_ => new DbConnection(builder.Configuration));
-
-JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(options => { builder.Configuration.Bind("AzureAdB2C", options); },
-    options => { builder.Configuration.Bind("AzureAdB2C", options); });
-
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddCors(options => {
-    options.AddPolicy(name: MyAllowSpecificOrigins, policy => {
-        policy.WithOrigins("https://localhost:5173");
-    });
-});
+string connectionId = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? "MongoDev" : "MongoProd";
+var settings = builder.Configuration.GetSection("Settings").Get<Settings>()!;
+settings.Database.ConnectionString = builder.Configuration.GetConnectionString(connectionId)!;
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment()) {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-} else {
-    app.UseHsts();
+app.UseFastEndpoints()
+    .UseAuthentication()
+    .UseHttpsRedirection()
+    .UseAuthorization()
+    .UseResponseCaching()
+    .UseFastEndpoints(c => c.Serializer.Options.PropertyNamingPolicy = null);
+
+await InitDatabase();
+
+if (!builder.Environment.IsProduction()) {
+    app.UseSwaggerGen();
 }
 
-app.UseHttpsRedirection();
-app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
-app.UseCors(MyAllowSpecificOrigins);
-
 app.Run();
+
+async Task InitDatabase() {
+    BsonSerializer.RegisterSerializer(new ObjectSerializer(type =>
+        ObjectSerializer.DefaultAllowedTypes(type) || type.Name!.EndsWith("Message"))
+    );
+    await DB.InitAsync(settings.Database.ConnectionString);
+    await DB.MigrateAsync();
+}

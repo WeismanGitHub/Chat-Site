@@ -1,5 +1,4 @@
-﻿using FastEndpoints;
-using FastEndpoints.Swagger;
+﻿using FastEndpoints.Swagger;
 
 namespace API;
 

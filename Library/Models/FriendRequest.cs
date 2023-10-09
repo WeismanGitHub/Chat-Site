@@ -15,4 +15,17 @@ public class FriendRequestModel {
     public string Message { get; set; }
     public Status Status { get; set; } = Status.Pending;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public async void AcceptFriendRequest(UserModel user) {
+        if (user.Id != RecipientId) throw new UnauthorizedAccessException();
+        
+        Status = Status.Accepted;
+        user.FriendIds.Add(RequesterId);
+    }
+    public void DeclineFriendRequest(UserModel user) {
+        if (user.Id != RecipientId) throw new UnauthorizedAccessException();
+    }
+    public void DeleteFriendRequest(FriendRequestModel friendRequest) {
+
+    }
 }

@@ -6,6 +6,7 @@ public static class ConfigureServices {
     public static void Configure(IServiceCollection services) {
         services.AddFastEndpoints()
             .SwaggerDocument()
+            .AddAuthorization()
             .AddResponseCaching();
 
         services.AddCors(options => {

@@ -1,4 +1,4 @@
-﻿namespace Database.Models;
+﻿namespace Database.Entities;
 
 public class Conversation : Entity {
     [BsonId, BsonRepresentation(BsonType.ObjectId)]

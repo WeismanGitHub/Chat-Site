@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Database.Models;
+namespace Database.Entities;
 public class User : Entity {
     public string Name  = "Users";
     public string CollectionAttribute(string name) {

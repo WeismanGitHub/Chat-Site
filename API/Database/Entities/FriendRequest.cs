@@ -1,6 +1,4 @@
-﻿using Database.Models;
-
-namespace Database.Models;
+﻿namespace Database.Entities;
 
 public enum Status {
     Accepted,

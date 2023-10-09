@@ -2,7 +2,7 @@
 
 //using System.Data;
 
-//namespace Library;
+//namespace Database;
 //public class DataGenerator {
 //    public DataGenerator(IDbConnection db, int seed) {
 //        Randomizer.Seed = new Random(seed);

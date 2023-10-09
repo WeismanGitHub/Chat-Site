@@ -1,6 +1,6 @@
 ﻿using Database.Models;
 
-namespace Library.Models;
+namespace Database.Models;
 
 public enum Status {
     Accepted,

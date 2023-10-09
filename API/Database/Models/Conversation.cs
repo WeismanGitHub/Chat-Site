@@ -1,4 +1,5 @@
-﻿namespace Library.Models;
+﻿namespace Database.Models;
+
 public class Conversation : Entity {
     [BsonId, BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; }

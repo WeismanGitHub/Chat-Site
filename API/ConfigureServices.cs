@@ -5,9 +5,15 @@ namespace API;
 public static class ConfigureServices {
     public static void Configure(IServiceCollection services) {
         services.AddFastEndpoints()
-            .SwaggerDocument()
             .AddAuthorization()
-            .AddResponseCaching();
+            .AddResponseCaching()
+            .SwaggerDocument(swagger => {
+                swagger.DocumentSettings = settings => {
+                    settings.Title = "Chat Site API";
+                    settings.Version = "v1";
+                };
+            });
+
 
         services.AddCors(options => {
             options.AddPolicy(name: "_myAllowSpecificOrigins", policy => {

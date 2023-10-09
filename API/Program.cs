@@ -15,17 +15,15 @@ builder.Services.AddAuthentication().AddJwtBearer(settings.Auth.SigningKey);
 var app = builder.Build();
 
 app.UseAuthentication()
+    .UseFastEndpoints(c => c.Endpoints.RoutePrefix = "API")
     .UseHttpsRedirection()
     .UseAuthorization()
     .UseResponseCaching()
-    .UseSwaggerGen()
-    .UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api");
+    .UseSwaggerGen();
 
-await InitDatabase();
-
+//await InitDatabase();
 
 app.Run();
-
 async Task InitDatabase() {
     BsonSerializer.RegisterSerializer(new ObjectSerializer(type =>
         ObjectSerializer.DefaultAllowedTypes(type) || type.Name!.EndsWith("Message"))

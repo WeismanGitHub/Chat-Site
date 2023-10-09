@@ -10,8 +10,6 @@ public class User : Entity {
     [BsonId, BsonRepresentation(BsonType.ObjectId), Required]
     public string Id { get; set; }
     [Required]
-    public string ObjectIdentifier { get; set; }
-    [BsonRequired, Required]
     public string DisplayName { get; set; }
     [BsonRequired, Required]
     public string Email { get; set; }

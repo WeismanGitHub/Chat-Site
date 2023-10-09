@@ -19,7 +19,6 @@ public class DataGenerator {
         var users = await CreateUsers();
 
         foreach (var user in users) {
-            Console.WriteLine(user.Id);
         }
     }
 

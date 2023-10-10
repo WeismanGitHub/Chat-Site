@@ -6,11 +6,8 @@ public class User : Entity {
         return "Users";
     }
 
-    [BsonRequired]
     public string DisplayName { get; set; }
-    [BsonRequired]
     public string Email { get; set; }
-    [BsonRequired]
     public string PasswordHash { get; set; }
     [MaxLength(100, ErrorMessage = "Cannot add more than 100 friends.")]
     public HashSet<string> FriendIds { get; set; } = new();

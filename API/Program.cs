@@ -15,6 +15,7 @@ builder.Services.AddAuthentication().AddJwtBearer(settings.Auth.SigningKey);
 var app = builder.Build();
 
 app.UseAuthentication()
+    .UseDefaultExceptionHandler()
     .UseFastEndpoints(c => c.Endpoints.RoutePrefix = "API")
     .UseHttpsRedirection()
     .UseAuthorization()
@@ -22,7 +23,6 @@ app.UseAuthentication()
     .UseSwaggerGen();
 
 await InitDatabase();
-
 app.Run();
 
 async Task InitDatabase() {

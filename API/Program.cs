@@ -31,7 +31,6 @@ async Task InitDatabase() {
     );
 
     await DB.InitAsync(settings.Database.Name, MongoClientSettings.FromConnectionString(settings.Database.ConnectionString));
-    await DB.MigrateAsync();
 
     await DB.Index<User>()
         .Key(u => u.Email, KeyType.Ascending)
@@ -41,4 +40,7 @@ async Task InitDatabase() {
     await DB.Index<FriendRequest>()
         .Key(fr => fr.RecipientId, KeyType.Ascending)
         .CreateAsync();
+
+    await DB.MigrateAsync();
+
 }

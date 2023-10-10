@@ -2,11 +2,11 @@
 
 namespace Database.Entities;
 public class User : Entity {
-    public string Name  = "Users";
     public string CollectionAttribute() {
         return "Users";
     }
 
+    [BsonRequired]
     public string DisplayName { get; set; }
     [BsonRequired]
     public string Email { get; set; }

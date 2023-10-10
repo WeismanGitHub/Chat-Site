@@ -8,6 +8,7 @@ public static class ConfigureServices {
             .AddAuthorization()
             .AddResponseCaching()
             .SwaggerDocument(swagger => {
+                swagger.ShortSchemaNames = true;
                 swagger.DocumentSettings = settings => {
                     settings.Title = "Chat Site API";
                     settings.Version = "v1";

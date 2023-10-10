@@ -19,15 +19,19 @@ internal sealed class Endpoint : Endpoint<SignupReq, SignupRes, Mapper> {
     public override async Task HandleAsync(SignupReq req, CancellationToken cancellationToken) {
         var user = Map.ToEntity(req);
 
-        var emailIsTaken = await Data.EmailAddressIsTaken(user.Email);
-
-        if (emailIsTaken) {
-            AddError(r => r.Email, "That Email is unavailable.");
-        }
-
         ThrowIfAnyErrors();
 
-        await Data.CreateNewUser(user);
+        try {
+            await user.SaveAsync();
+        } catch (Exception) {
+            var emailIsTaken = await Data.EmailAddressIsTaken(user.Email);
+
+            if (emailIsTaken) {
+                ThrowError(r => r.Email, "That Email is unavailable.");
+            }
+
+            throw;
+        }
 
         await SendAsync(new SignupRes() {
             Message = "Signed up!"

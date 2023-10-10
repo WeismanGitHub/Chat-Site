@@ -7,8 +7,6 @@ public class User : Entity {
         return "Users";
     }
 
-    [BsonId, BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
     public string DisplayName { get; set; }
     [BsonRequired]
     public string Email { get; set; }

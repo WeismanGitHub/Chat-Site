@@ -1,12 +1,12 @@
 ﻿namespace API.Features.Users.Signup;
 
-internal sealed class Request {
+internal sealed class SignupReq {
     public string DisplayName { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
 }
 
-internal sealed class Validator : Validator<Request> {
+internal sealed class Validator : Validator<SignupReq> {
     private int MaxNameLength;
     private int MinPasswordLength;
     private int MaxPasswordLength;
@@ -35,6 +35,6 @@ internal sealed class Validator : Validator<Request> {
     }
 }
 
-internal sealed class Response {
+internal sealed class SignupRes {
     public string Message { get; set; }
 }

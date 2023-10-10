@@ -1,4 +1,4 @@
-﻿namespace API.Features.Users.Signup;
+﻿namespace API.Endpoints.Users.Signup;
 
 public static class Data {
     internal static Task<bool> EmailAddressIsTaken(string email) {

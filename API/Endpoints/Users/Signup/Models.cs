@@ -1,4 +1,4 @@
-﻿namespace API.Features.Users.Signup;
+﻿namespace API.Endpoints.Users.Signup;
 
 internal sealed class SignupReq {
     public string DisplayName { get; set; }

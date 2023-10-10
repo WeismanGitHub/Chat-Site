@@ -1,4 +1,4 @@
-﻿namespace API.Features.Users.Signup;
+﻿namespace API.Endpoints.Users.Signup;
 
 internal sealed class Endpoint : Endpoint<SignupReq, SignupRes, Mapper> {
     public override void Configure() {

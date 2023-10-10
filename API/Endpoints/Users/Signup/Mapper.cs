@@ -1,4 +1,4 @@
-﻿namespace API.Features.Users.Signup;
+﻿namespace API.Endpoints.Users.Signup;
 
 internal sealed class Mapper : Mapper<SignupReq, SignupRes, User> {
     public override User ToEntity(SignupReq req) => new() {

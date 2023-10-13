@@ -11,6 +11,7 @@
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Bogus" Version="34.0.2" />
     <PackageReference Include="FastEndpoints" Version="5.18.0" />
+    <PackageReference Include="FastEndpoints.Security" Version="5.18.0" />
     <PackageReference Include="FastEndpoints.Swagger" Version="5.18.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />

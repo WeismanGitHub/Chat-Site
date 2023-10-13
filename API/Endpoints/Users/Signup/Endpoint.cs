@@ -5,6 +5,7 @@ internal sealed class Endpoint : Endpoint<SignupReq, SignupRes, Mapper> {
         Post("/Signup");
         Group<UsersGroup>();
         AllowAnonymous();
+        Version(1);
         
         Summary(settings => {
             settings.Summary = "Create a user.";

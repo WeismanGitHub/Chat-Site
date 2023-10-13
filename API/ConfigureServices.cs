@@ -7,14 +7,14 @@ public static class ConfigureServices {
         services.AddFastEndpoints()
             .AddAuthorization()
             .AddResponseCaching()
-            .SwaggerDocument(swagger => {
-                swagger.ShortSchemaNames = true;
-                swagger.DocumentSettings = settings => {
-                    settings.Title = "Chat Site API";
+            .SwaggerDocument(options => {
+                options.MaxEndpointVersion = 1;
+                options.ShortSchemaNames = true;
+                options.DocumentSettings = settings => {
+                    settings.Title = "Chat Site API v1";
                     settings.Version = "v1";
                 };
             });
-
 
         services.AddCors(options => {
             options.AddPolicy(name: "_myAllowSpecificOrigins", policy => {

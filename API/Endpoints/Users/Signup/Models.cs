@@ -29,7 +29,6 @@ internal sealed class Validator : Validator<SignupReq> {
             .Matches(@"[A-Z]+").WithMessage("Password must contain at least one uppercase letter.")
             .Matches(@"[a-z]+").WithMessage("Password must contain at least one lowercase letter.")
             .Matches(@"[0-9]+").WithMessage("Password must contain at least one number.")
-
             .MinimumLength(MinPasswordLength).WithMessage($"Password must be at least {MinPasswordLength} characters.")
             .MaximumLength(MaxPasswordLength).WithMessage($"Password cannot be longer than {MaxPasswordLength} characters.");
     }

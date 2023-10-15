@@ -6,7 +6,6 @@ public static class ConfigureServices {
     public static void Configure(IServiceCollection services) {
         services.AddFastEndpoints()
             .AddAuthorization()
-            .AddResponseCaching()
             .SwaggerDocument(options => {
                 options.MaxEndpointVersion = 1;
                 options.ShortSchemaNames = true;

@@ -4,7 +4,7 @@ using API.Auth;
 
 namespace API.Endpoints.Users.Signin;
 
-internal sealed class Endpoint : Endpoint<SigninReq, SigninRes> {
+internal sealed class Endpoint : Endpoint<Request, Response> {
     public IOptions<Settings> Settings { get; set; } = null!;
 
     public override void Configure() {
@@ -15,14 +15,14 @@ internal sealed class Endpoint : Endpoint<SigninReq, SigninRes> {
         
         Summary(settings => {
             settings.Summary = "Sign in.";
-            settings.ExampleRequest = new SigninReq {
+            settings.ExampleRequest = new Request {
                 Email = "person1@email.com",
                 Password = "Password123",
             };
         });
     }
 
-    public override async Task HandleAsync(SigninReq req, CancellationToken cancellationToken) {
+    public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
         var account = await Data.GetAccount(req.Email);
 
         if (account == null) {

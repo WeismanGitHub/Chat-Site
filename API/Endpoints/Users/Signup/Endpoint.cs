@@ -1,6 +1,6 @@
 ﻿namespace API.Endpoints.Users.Signup;
 
-internal sealed class Endpoint : Endpoint<SignupReq, SignupRes, Mapper> {
+internal sealed class Endpoint : Endpoint<Request, Response, Mapper> {
     public override void Configure() {
         Post("/Signup");
         Group<UsersGroup>();
@@ -9,7 +9,7 @@ internal sealed class Endpoint : Endpoint<SignupReq, SignupRes, Mapper> {
         
         Summary(settings => {
             settings.Summary = "Create a user.";
-            settings.ExampleRequest = new SignupReq {
+            settings.ExampleRequest = new Request {
                 DisplayName = "Person 1",
                 Email = "person1@email.com",
                 Password = "Password123",
@@ -17,7 +17,7 @@ internal sealed class Endpoint : Endpoint<SignupReq, SignupRes, Mapper> {
         });
     }
 
-    public override async Task HandleAsync(SignupReq req, CancellationToken cancellationToken) {
+    public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
         var user = Map.ToEntity(req);
 
         ThrowIfAnyErrors();
@@ -34,7 +34,7 @@ internal sealed class Endpoint : Endpoint<SignupReq, SignupRes, Mapper> {
             throw;
         }
 
-        await SendAsync(new SignupRes() {
+        await SendAsync(new Response() {
             Message = "Signed up!"
         });
     }

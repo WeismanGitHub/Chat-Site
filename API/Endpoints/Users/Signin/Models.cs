@@ -2,12 +2,12 @@
 
 namespace API.Endpoints.Users.Signin;
 
-internal sealed class SigninReq {
+internal sealed class Request {
     public string Email { get; set; }
     public string Password { get; set; }
 }
 
-internal sealed class Validator : Validator<SigninReq> {
+internal sealed class Validator : Validator<Request> {
     private int MinPasswordLength;
     private int MaxPasswordLength;
     public Validator() {
@@ -25,7 +25,7 @@ internal sealed class Validator : Validator<SigninReq> {
     }
 }
 
-internal sealed class SigninRes {
+internal sealed class Response {
     public string Message { get; set; }
     public JwtToken Token { get; set; } = new JwtToken();
 

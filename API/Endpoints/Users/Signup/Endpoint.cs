@@ -33,9 +33,5 @@ internal sealed class Endpoint : Endpoint<Request, Response, Mapper> {
 
             throw;
         }
-
-        await SendAsync(new Response() {
-            Message = "Signed up!"
-        });
     }
 }

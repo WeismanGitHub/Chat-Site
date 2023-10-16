@@ -26,7 +26,6 @@ internal sealed class Validator : Validator<Request> {
 }
 
 internal sealed class Response {
-    public string Message { get; set; }
     public JwtToken Token { get; set; } = new JwtToken();
 
 }

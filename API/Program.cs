@@ -7,10 +7,14 @@ ConfigureServices.Configure(builder.Services);
 var config = builder.Configuration;
 
 string connectionId = "MongoProd";// Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? "MongoDev" : "MongoProd";
-var settings = builder.Configuration.GetSection("Settings").Get<Settings>()!;
-settings.Database.ConnectionString = builder.Configuration.GetConnectionString(connectionId)!;
-settings.Auth.SigningKey = builder.Configuration["SigningKey"]!;
-builder.Services.AddAuthentication().AddJwtBearer(settings.Auth.SigningKey);
+var section = config.GetSection("Settings");
+var settings = section.Get<Settings>()!;
+settings.Database.ConnectionString = config.GetConnectionString(connectionId)!;
+
+builder.Services
+    .Configure<Settings>(section)
+    .AddAuthentication()
+    .AddJwtBearer(settings.Auth.SigningKey);
 
 var app = builder.Build();
 
@@ -42,5 +46,4 @@ async Task InitDatabase() {
         .CreateAsync();
 
     await DB.MigrateAsync();
-
 }

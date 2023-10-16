@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using FastEndpoints.Security;
+using API.Auth;
 
 namespace API.Endpoints.Users.Signin;
 
@@ -30,12 +31,12 @@ internal sealed class Endpoint : Endpoint<SigninReq, SigninRes> {
             ThrowError("Invalid Credentials");
         }
 
-        var expiryDate = DateTime.UtcNow.AddDays(1);
+        var expiryDate = DateTime.UtcNow.AddMinutes(Settings.Value.Auth.TokenValidityMinutes);
 
         Response.Token.Expiry = expiryDate.ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss");
         Response.Token.Value = JWTBearer.CreateToken(
             signingKey: Settings.Value.Auth.SigningKey,
-            expireAt: expiryDate
-        );
+            expireAt: expiryDate,
+            privileges: u => { u[Claim.UserID] = account.ID!; });
     }
 }

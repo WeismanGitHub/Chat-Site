@@ -20,6 +20,5 @@ public static class ConfigureServices {
                 policy.WithOrigins("https://localhost:5173");
             });
         });
-
     }
 }

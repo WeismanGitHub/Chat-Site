@@ -5,4 +5,5 @@ global using MongoDB.Entities;
 global using MongoDB.Driver;
 global using FastEndpoints;
 global using MongoDB.Bson;
+global using API.Auth;
 global using API;

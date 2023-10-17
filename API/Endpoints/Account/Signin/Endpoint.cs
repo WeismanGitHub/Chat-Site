@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using FastEndpoints.Security;
-using API.Auth;
 
 namespace API.Endpoints.Account.Signin;
 

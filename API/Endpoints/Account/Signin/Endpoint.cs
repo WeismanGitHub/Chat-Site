@@ -2,19 +2,19 @@
 using FastEndpoints.Security;
 using API.Auth;
 
-namespace API.Endpoints.Users.Signin;
+namespace API.Endpoints.Account.Signin;
 
 internal sealed class Endpoint : Endpoint<Request, Response> {
     public IOptions<Settings> Settings { get; set; } = null!;
 
     public override void Configure() {
         Post("/Signin");
-        Group<UsersGroup>();
+        Group<AccountGroup>();
         AllowAnonymous();
         Version(1);
         
         Summary(settings => {
-            settings.Summary = "Sign in.";
+            settings.Summary = "Sign into an account.";
             settings.ExampleRequest = new Request {
                 Email = "person1@email.com",
                 Password = "Password123",
@@ -37,6 +37,6 @@ internal sealed class Endpoint : Endpoint<Request, Response> {
         Response.Token.Value = JWTBearer.CreateToken(
             signingKey: Settings.Value.Auth.SigningKey,
             expireAt: expiryDate,
-            privileges: u => { u[Claim.UserID] = account.ID!; });
+            privileges: u => { u[Claim.AccountID] = account.ID!; });
     }
 }

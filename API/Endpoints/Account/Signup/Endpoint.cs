@@ -1,14 +1,14 @@
-﻿namespace API.Endpoints.Users.Signup;
+﻿namespace API.Endpoints.Account.Signup;
 
 internal sealed class Endpoint : Endpoint<Request, Response, Mapper> {
     public override void Configure() {
         Post("/Signup");
-        Group<UsersGroup>();
+        Group<AccountGroup>();
         AllowAnonymous();
         Version(1);
         
         Summary(settings => {
-            settings.Summary = "Create a user.";
+            settings.Summary = "Create an account.";
             settings.ExampleRequest = new Request {
                 DisplayName = "Person 1",
                 Email = "person1@email.com",
@@ -18,14 +18,14 @@ internal sealed class Endpoint : Endpoint<Request, Response, Mapper> {
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-        var user = Map.ToEntity(req);
+        var account = Map.ToEntity(req);
 
         ThrowIfAnyErrors();
 
         try {
-            await user.SaveAsync();
+            await account.SaveAsync();
         } catch (Exception) {
-            var emailIsTaken = await Data.EmailAddressIsTaken(user.Email);
+            var emailIsTaken = await Data.EmailAddressIsTaken(account.Email);
 
             if (emailIsTaken) {
                 ThrowError(r => r.Email, "That Email is unavailable.");

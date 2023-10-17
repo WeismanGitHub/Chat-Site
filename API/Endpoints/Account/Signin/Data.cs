@@ -1,4 +1,4 @@
-﻿namespace API.Endpoints.Users.Signin;
+﻿namespace API.Endpoints.Account.Signin;
 
 public static class Data {
     internal static Task<User?> GetAccount(string email) {

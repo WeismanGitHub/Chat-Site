@@ -1,4 +1,4 @@
-﻿namespace API.Endpoints.Users.Signup;
+﻿namespace API.Endpoints.Account.Signup;
 
 internal sealed class Request {
     public string DisplayName { get; set; }
@@ -15,16 +15,16 @@ internal sealed class Validator : Validator<Request> {
         MinPasswordLength = 10;
         MaxPasswordLength = 70;
 
-        RuleFor(user => user.DisplayName)
+        RuleFor(account => account.DisplayName)
             .NotEmpty().WithMessage("DisplayName is required.")
             .MinimumLength(1).WithMessage("DisplayName cannot be empty.")
             .MaximumLength(MaxNameLength).WithMessage($"DisplayName cannot be longer than {MaxNameLength} characters.");
 
-        RuleFor(user => user.Email)
+        RuleFor(account => account.Email)
             .NotEmpty().WithMessage("Email is required.")
             .EmailAddress().WithMessage("The format of your email address is invalid.");
 
-        RuleFor(x => x.Password)
+        RuleFor(account => account.Password)
             .NotEmpty().WithMessage("Password is required.")
             .Matches(@"[A-Z]+").WithMessage("Password must contain at least one uppercase letter.")
             .Matches(@"[a-z]+").WithMessage("Password must contain at least one lowercase letter.")

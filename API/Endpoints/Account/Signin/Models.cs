@@ -8,20 +8,15 @@ internal sealed class Request {
 }
 
 internal sealed class Validator : Validator<Request> {
-    private int MinPasswordLength;
-    private int MaxPasswordLength;
     public Validator() {
-        MinPasswordLength = 10;
-        MaxPasswordLength = 70;
-
         RuleFor(account => account.Email)
             .NotEmpty().WithMessage("Email is required.")
             .EmailAddress().WithMessage("The format of your email address is invalid.");
 
         RuleFor(account => account.Password)
             .NotEmpty().WithMessage("Password is required.")
-            .MinimumLength(MinPasswordLength).WithMessage($"Password must be at least {MinPasswordLength} characters.")
-            .MaximumLength(MaxPasswordLength).WithMessage($"Password cannot be longer than {MaxPasswordLength} characters.");
+            .MinimumLength(User.MinPasswordLength).WithMessage($"Password must be at least {User.MinPasswordLength} characters.")
+            .MaximumLength(User.MaxPasswordLength).WithMessage($"Password cannot be longer than {User.MaxPasswordLength} characters.");
     }
 }
 

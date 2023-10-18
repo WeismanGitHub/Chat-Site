@@ -1,15 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Database.Entities;
+
+[Collection("Users")]
 public class User : Entity {
     public static readonly int MaxNameLength = 50;
     public static readonly int MinNameLength = 1;
     public static readonly int MaxPasswordLength = 70;
     public static readonly int MinPasswordLength = 10;
-
-    public string CollectionAttribute() {
-        return "Users";
-    }
 
     public string DisplayName { get; set; }
     public string Email { get; set; }

@@ -1,9 +1,10 @@
 ﻿using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
 using FastEndpoints.Swagger;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder();
-ConfigureServices.Configure(builder.Services);
+ConfigureServices.Configure(builder);
 var config = builder.Configuration;
 
 string connectionId = "MongoProd";// Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? "MongoDev" : "MongoProd";
@@ -11,18 +12,33 @@ var section = config.GetSection("Settings");
 var settings = section.Get<Settings>()!;
 settings.Database.ConnectionString = config.GetConnectionString(connectionId)!;
 
-builder.Services
-    .Configure<Settings>(section)
-    .AddAuthentication()
-    .AddJwtBearer(settings.Auth.SigningKey);
-
 var app = builder.Build();
 
 app.UseAuthentication()
     .UseDefaultExceptionHandler()
-    .UseFastEndpoints(c => c.Endpoints.RoutePrefix = "API")
-    .UseHttpsRedirection()
     .UseAuthorization()
+    .UseAuthentication()
+    .UseFastEndpoints(config => {
+        config.Endpoints.RoutePrefix = "API";
+
+        config.Errors.ResponseBuilder = (failures, ctx, statusCode) => {
+            Console.WriteLine(failures.FirstOrDefault());
+            Console.WriteLine(ctx.Request.Cookies.Count());
+            Console.WriteLine(statusCode);
+            return new ValidationProblemDetails(
+                failures.GroupBy(f => f.PropertyName)
+                .ToDictionary(
+                    keySelector: e => e.Key,
+                    elementSelector: e => e.Select(m => m.ErrorMessage).ToArray())) {
+                    Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                    Title = "One or more validation errors occurred.",
+                    Status = statusCode,
+                    Instance = ctx.Request.Path,
+                    Extensions = { { "traceId", ctx.TraceIdentifier } }
+                };
+        };
+    })
+    .UseHttpsRedirection()
     .UseResponseCaching()
     .UseSwaggerGen();
 

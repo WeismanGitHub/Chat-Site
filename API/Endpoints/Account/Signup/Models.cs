@@ -19,11 +19,7 @@ internal sealed class Validator : Validator<Request> {
 
         RuleFor(account => account.Password)
             .NotEmpty().WithMessage("Password is required.")
-            .Matches(@"[A-Z]+").WithMessage("Password must contain at least one uppercase letter.")
-            .Matches(@"[a-z]+").WithMessage("Password must contain at least one lowercase letter.")
-            .Matches(@"[0-9]+").WithMessage("Password must contain at least one number.")
-            .MinimumLength(User.MinPasswordLength).WithMessage($"Password must be at least {User.MinPasswordLength} characters.")
-            .MaximumLength(User.MaxPasswordLength).WithMessage($"Password cannot be longer than {User.MaxPasswordLength} characters.");
+            .Must(password => password.IsAValidPassword()).WithMessage("Password is invalid.");
     }
 }
 

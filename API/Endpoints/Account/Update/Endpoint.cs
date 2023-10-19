@@ -15,8 +15,14 @@ internal sealed class Endpoint : Endpoint<Request, Response, Mapper> {
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-        var account = Map.ToEntity(req);
+        if (req.Email != null) {
+            User? account = await DB.Find<User>().Match(u => u.ID == newData.AccountID).ExecuteSingleAsync();
 
-        await Data.Update(account);
+            if (account == null) {
+                ThrowError("Could not find your account.", 404);
+            }
+        }
+
+        await Data.Update(req);
     }
 }

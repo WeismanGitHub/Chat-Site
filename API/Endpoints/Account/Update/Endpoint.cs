@@ -1,6 +1,6 @@
 ﻿namespace API.Endpoints.Account.Update;
 
-internal sealed class Endpoint : Endpoint<Request, Response, Mapper> {
+internal sealed class Endpoint : Endpoint<Request, Response> {
     public override void Configure() {
         Patch("/");
         Group<AccountGroup>();
@@ -16,7 +16,7 @@ internal sealed class Endpoint : Endpoint<Request, Response, Mapper> {
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
         if (req.Email != null) {
-            User? account = await DB.Find<User>().Match(u => u.ID == newData.AccountID).ExecuteSingleAsync();
+            User? account = await DB.Find<User>().Match(u => u.ID == req.AccountID).ExecuteSingleAsync();
 
             if (account == null) {
                 ThrowError("Could not find your account.", 404);

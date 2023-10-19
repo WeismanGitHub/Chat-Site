@@ -12,7 +12,7 @@ public static class Data {
             update.Modify(u => u.Email, newData.Email);
         }
 
-        if (newData.DisplayName != null) {
+        if (newData.Password != null) {
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(newData.Password);
             update.Modify(u => u.PasswordHash, passwordHash);
         }

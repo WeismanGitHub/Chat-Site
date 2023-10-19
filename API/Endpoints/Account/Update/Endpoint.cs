@@ -1,8 +1,8 @@
 ﻿namespace API.Endpoints.Account.Update;
 
-internal sealed class Endpoint : Endpoint<Request, Response> {
+internal sealed class Endpoint : Endpoint<Request> {
     public override void Configure() {
-        Patch("/");
+        Patch("/Update");
         Group<AccountGroup>();
         Version(1);
 
@@ -15,6 +15,14 @@ internal sealed class Endpoint : Endpoint<Request, Response> {
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
+        if (
+            req.DisplayName == null && 
+            req.Email == null && 
+            req.Password == null
+        ) {
+            ThrowError("Must modify something.", 400);
+        }
+
         if (req.Email != null) {
             User? account = await DB.Find<User>().Match(u => u.ID == req.AccountID).ExecuteSingleAsync();
 

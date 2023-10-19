@@ -3,7 +3,7 @@ using FastEndpoints.Security;
 
 namespace API.Endpoints.Account.Signout;
 
-internal sealed class Endpoint : Endpoint<Request, Response> {
+internal sealed class Endpoint : EndpointWithoutRequest {
     public IOptions<Settings> Settings { get; set; } = null!;
 
     public override void Configure() {
@@ -16,7 +16,7 @@ internal sealed class Endpoint : Endpoint<Request, Response> {
         });
     }
 
-    public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
+    public override async Task HandleAsync(CancellationToken cancellationToken) {
         await CookieAuth.SignOutAsync();
     }
 }

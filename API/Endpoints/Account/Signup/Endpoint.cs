@@ -1,4 +1,6 @@
-﻿namespace API.Endpoints.Account.Signup;
+﻿using FastEndpoints.Security;
+
+namespace API.Endpoints.Account.Signup;
 
 internal sealed class Endpoint : Endpoint<Request, Response, Mapper> {
     public override void Configure() {
@@ -33,5 +35,7 @@ internal sealed class Endpoint : Endpoint<Request, Response, Mapper> {
 
             throw;
         }
+
+        await CookieAuth.SignInAsync(u => u["AccountID"] = account.ID!);
     }
 }

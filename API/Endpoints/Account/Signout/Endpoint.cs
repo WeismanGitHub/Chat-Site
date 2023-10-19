@@ -12,7 +12,7 @@ internal sealed class Endpoint : Endpoint<Request, Response> {
         Version(1);
 
         Summary(settings => {
-            settings.Summary = "Delete the auth cooke, signing you out.";
+            settings.Summary = "Delete the auth cookie, signing you out.";
         });
     }
 

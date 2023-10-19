@@ -2,7 +2,7 @@
 
 public static class Data {
     internal static Task Update(Request newData) {
-        var update = DB.Update<User>();
+        var update = DB.Update<User>().MatchID(newData.AccountID);
 
         if (newData.DisplayName != null) {
             update.Modify(u => u.DisplayName, newData.DisplayName);

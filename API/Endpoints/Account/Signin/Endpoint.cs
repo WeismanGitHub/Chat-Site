@@ -30,12 +30,6 @@ internal sealed class Endpoint : Endpoint<Request, Response> {
             ThrowError("Invalid Credentials");
         }
 
-        var expiryDate = DateTime.UtcNow.AddMinutes(Settings.Value.Auth.TokenValidityMinutes);
-
-        Response.Token.Expiry = expiryDate.ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss");
-        Response.Token.Value = JWTBearer.CreateToken(
-            signingKey: Settings.Value.Auth.SigningKey,
-            expireAt: expiryDate,
-            privileges: u => { u[Claim.AccountID] = account.ID!; });
+        await CookieAuth.SignInAsync(u => u["AccountID"] = account.ID!);
     }
 }

@@ -19,6 +19,3 @@ internal sealed class Validator : Validator<Request> {
             .MaximumLength(User.MaxPasswordLength).WithMessage($"Password cannot be longer than {User.MaxPasswordLength} characters.");
     }
 }
-
-internal sealed class Response {
-}

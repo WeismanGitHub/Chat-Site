@@ -3,7 +3,7 @@ using FastEndpoints.Security;
 
 namespace API.Endpoints.Account.Signin;
 
-internal sealed class Endpoint : Endpoint<Request, Response> {
+internal sealed class Endpoint : Endpoint<Request> {
     public IOptions<Settings> Settings { get; set; } = null!;
 
     public override void Configure() {

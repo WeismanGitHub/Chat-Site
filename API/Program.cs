@@ -22,9 +22,6 @@ app.UseAuthentication()
         config.Endpoints.RoutePrefix = "API";
 
         config.Errors.ResponseBuilder = (failures, ctx, statusCode) => {
-            Console.WriteLine(failures.FirstOrDefault());
-            Console.WriteLine(ctx.Request.Cookies.Count());
-            Console.WriteLine(statusCode);
             return new ValidationProblemDetails(
                 failures.GroupBy(f => f.PropertyName)
                 .ToDictionary(

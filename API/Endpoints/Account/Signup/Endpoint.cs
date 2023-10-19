@@ -2,7 +2,7 @@
 
 namespace API.Endpoints.Account.Signup;
 
-internal sealed class Endpoint : Endpoint<Request, Response, Mapper> {
+internal sealed class Endpoint : Endpoint<Request> {
     public override void Configure() {
         Post("/Signup");
         Group<AccountGroup>();
@@ -20,7 +20,11 @@ internal sealed class Endpoint : Endpoint<Request, Response, Mapper> {
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-        var account = Map.ToEntity(req);
+        User account = new() {
+            Email = req.Email.ToLower(),
+            DisplayName = req.DisplayName,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password)
+        };
 
         ThrowIfAnyErrors();
 

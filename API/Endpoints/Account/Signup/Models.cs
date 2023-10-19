@@ -22,6 +22,3 @@ internal sealed class Validator : Validator<Request> {
             .Must(password => password.IsAValidPassword()).WithMessage("Password is invalid.");
     }
 }
-
-internal sealed class Response {
-}

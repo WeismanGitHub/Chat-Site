@@ -24,6 +24,3 @@ internal sealed class Validator : Validator<Request> {
         }).WithMessage("Password is invalid.");
     }
 }
-
-internal sealed class Response {
-}

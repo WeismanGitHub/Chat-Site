@@ -2,7 +2,7 @@
 
 internal sealed class Endpoint : Endpoint<Request, Response, Mapper> {
     public override void Configure() {
-        Patch("/Update");
+        Patch("/");
         Group<AccountGroup>();
         Version(1);
 

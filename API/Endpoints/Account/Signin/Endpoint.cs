@@ -25,7 +25,7 @@ internal sealed class Endpoint : Endpoint<Request, Response> {
         var account = await Data.GetAccount(req.Email);
 
         if (account == null) {
-            ThrowError("Could not find account with that email.");
+            ThrowError("Could not find an account with that email.");
         } else if (!BCrypt.Net.BCrypt.Verify(req.Password, account.PasswordHash)) {
             ThrowError("Invalid Credentials");
         }

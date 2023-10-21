@@ -3,7 +3,7 @@ using FastEndpoints.Security;
 
 namespace API.Endpoints.Account.Signout;
 
-internal sealed class Endpoint : EndpointWithoutRequest {
+public sealed class Endpoint : EndpointWithoutRequest {
     public IOptions<Settings> Settings { get; set; } = null!;
 
     public override void Configure() {

@@ -1,8 +1,6 @@
-﻿using API.Auth;
+﻿namespace API.Endpoints.Account.Signin;
 
-namespace API.Endpoints.Account.Signin;
-
-internal sealed class Request {
+public sealed class Request {
     public string Email { get; set; }
     public string Password { get; set; }
 }

@@ -60,3 +60,5 @@ async Task InitDatabase() {
 
     await DB.MigrateAsync();
 }
+
+public partial class Program { }

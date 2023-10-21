@@ -1,6 +1,6 @@
 ﻿namespace API.Endpoints.Account.Update;
 
-internal sealed class Request {
+sealed class Request {
     [From(Claim.AccountID, IsRequired = true)]
     public string? AccountID { get; set; }
     public string? DisplayName { get; set; }

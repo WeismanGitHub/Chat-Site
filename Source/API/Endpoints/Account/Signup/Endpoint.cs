@@ -2,7 +2,7 @@
 
 namespace API.Endpoints.Account.Signup;
 
-internal sealed class Endpoint : Endpoint<Request> {
+public sealed class Endpoint : Endpoint<Request> {
     public override void Configure() {
         Post("/Signup");
         Group<AccountGroup>();

@@ -1,6 +1,6 @@
 ﻿namespace API.Endpoints.Account.Signup;
 
-internal sealed class Request {
+public sealed class Request {
     public string DisplayName { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }

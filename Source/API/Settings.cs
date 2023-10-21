@@ -1,6 +1,6 @@
 ﻿namespace API;
 
-internal sealed class Settings {
+public sealed class Settings {
     public DatabaseSettings Database { get; set; }
     public JWTAuthSettings Auth { get; set; }
 

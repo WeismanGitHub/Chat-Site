@@ -1,4 +1,4 @@
-﻿namespace Database.Entities;
+﻿namespace API.Database.Entities;
 
 [Collection("Conversations")]
 public class Conversation : Entity {

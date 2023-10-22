@@ -1,5 +1,4 @@
-﻿namespace Database.Entities;
-
+﻿namespace API.Database.Entities;
 public enum Status {
     Accepted,
     Declined,

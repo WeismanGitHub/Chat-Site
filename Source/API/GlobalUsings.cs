@@ -1,5 +1,5 @@
 ﻿global using MongoDB.Bson.Serialization.Attributes;
-global using Database.Entities;
+global using API.Database.Entities;
 global using FluentValidation;
 global using MongoDB.Entities;
 global using MongoDB.Driver;

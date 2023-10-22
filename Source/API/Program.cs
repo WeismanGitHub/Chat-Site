@@ -7,10 +7,8 @@ var builder = WebApplication.CreateBuilder();
 ConfigureServices.Configure(builder);
 var config = builder.Configuration;
 
-string connectionId = "MongoProd";// Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? "MongoDev" : "MongoProd";
 var section = config.GetSection("Settings");
 var settings = section.Get<Settings>()!;
-settings.Database.ConnectionString = config.GetConnectionString(connectionId)!;
 
 var app = builder.Build();
 
@@ -47,7 +45,9 @@ async Task InitDatabase() {
         ObjectSerializer.DefaultAllowedTypes(type) || type.Name!.EndsWith("Message"))
     );
 
-    await DB.InitAsync(settings.Database.Name, MongoClientSettings.FromConnectionString(settings.Database.ConnectionString));
+    var connectionString = settings.Database.MongoProd; // Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? settings.Database.MongoDev : settings.Database.MongoProd;
+
+    await DB.InitAsync(settings.Database.Name, MongoClientSettings.FromConnectionString(connectionString));
 
     await DB.Index<User>()
         .Key(u => u.Email, KeyType.Ascending)

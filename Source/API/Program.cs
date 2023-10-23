@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
-using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Mvc;
+using FastEndpoints.Swagger;
 
 var builder = WebApplication.CreateBuilder();
 ConfigureServices.Configure(builder);

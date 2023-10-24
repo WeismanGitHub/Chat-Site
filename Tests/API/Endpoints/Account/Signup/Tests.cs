@@ -7,16 +7,17 @@ public class Tests : TestClass<Fixture> {
 
     [Fact]
     public async Task Valid_User_Input() {
-        var rsp = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
             DisplayName = "Valid Name",
             Email = "valid@email.com",
             Password = "ValidPassword1"
         });
-        Console.WriteLine("hello world");
 
         Fixture.userEmails.Add("valid@email.com");
 
-        rsp.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        res.Headers.Any(header => header.Key == "Set-Cookie").Should().BeTrue();
+        res.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 
     //[Fact, Priority(1)]

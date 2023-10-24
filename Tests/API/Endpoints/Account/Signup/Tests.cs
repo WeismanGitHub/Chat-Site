@@ -22,6 +22,17 @@ public class Tests : TestClass<Fixture> {
         acc.Should().NotBeNull();
     }
 
+    [Fact, Priority(2)]
+    public async Task Taken_Email() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            DisplayName = ValidAccount.Email,
+            Email = ValidAccount.Email,
+            Password = ValidAccount.Password
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
     [Fact]
     public async Task Empty_DisplayName() {
         var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {

@@ -5,8 +5,6 @@ namespace Tests.API.Endpoints.Account.Signup;
 
 public class Fixture : TestFixture<Program> {
     public Fixture(IMessageSink sink) : base(sink) { }
-
-    public string AccountEmail { get; set; }
     public string Token { get; set; }
 
     protected override Task SetupAsync() {
@@ -17,6 +15,6 @@ public class Fixture : TestFixture<Program> {
     }
 
     protected override async Task TearDownAsync() {
-        await DB.DeleteAsync<User>(u => u.Email == AccountEmail);
+        await DB.DeleteAsync<User>(u => u.Email == ValidAccount.Email);
     }
 }

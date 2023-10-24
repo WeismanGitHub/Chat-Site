@@ -1,33 +1,164 @@
 using API.Endpoints.Account.Signup;
+using API.Database.Entities;
+using MongoDB.Entities;
 
 namespace Tests.API.Endpoints.Account.Signup;
 
 public class Tests : TestClass<Fixture> {
     public Tests(Fixture fixture, ITestOutputHelper output) : base(fixture, output) { }
 
-    [Fact]
+    [Fact, Priority(1)]
     public async Task Valid_User_Input() {
-        var rsp = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-            DisplayName = "Valid Name",
-            Email = "valid@email.com",
-            Password = "ValidPassword1"
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            DisplayName = ValidAccount.DisplayName,
+            Email = ValidAccount.Email,
+            Password = ValidAccount.Password
         });
-        Console.WriteLine("hello world");
 
-        Fixture.userEmails.Add("valid@email.com");
+        res.IsSuccessStatusCode.Should().BeTrue();
+        res.Headers.Any(header => header.Key == "Set-Cookie").Should().BeTrue();
 
-        rsp.StatusCode.Should().Be(HttpStatusCode.OK);
+        var acc = await DB.Find<User>().Match(u => u.Email == ValidAccount.Email).ExecuteSingleAsync();
+        acc.Should().NotBeNull();
     }
 
-    //[Fact, Priority(1)]
-    //public async Task Invalid_User_Input() {
-    //    var (rsp, res) = await Fixture.Client.POSTAsync<Endpoint, Request, ErrorResponse>(new() {
-    //        DisplayName = "",
-    //        LastName = "y"
-    //    });
+    [Fact, Priority(2)]
+    public async Task Taken_Email() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            DisplayName = ValidAccount.Email,
+            Email = ValidAccount.Email,
+            Password = ValidAccount.Password
+        });
 
-    //    rsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    //    res!.Errors.Count.Should().Be(2);
-    //    res.Errors.Keys.Should().Equal("firstName", "lastName");
-    //}
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Empty_DisplayName() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            DisplayName = "",
+            Email = ValidAccount.Email,
+            Password = ValidAccount.Password
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task DisplayName_Too_Long() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            DisplayName = new string('*', 51),
+            Email = ValidAccount.Email,
+            Password = ValidAccount.Password
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+    
+    [Fact]
+    public async Task Null_DisplayName() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            Email = ValidAccount.Email,
+            Password = ValidAccount.Password
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+    
+    [Fact]
+    public async Task Empty_Email() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            DisplayName = ValidAccount.DisplayName,
+            Email = "",
+            Password = ValidAccount.Password
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Null_Email() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            DisplayName = ValidAccount.DisplayName,
+            Password = ValidAccount.Password
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task EmptyPassword() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            DisplayName = "",
+            Email = ValidAccount.Email,
+            Password = ValidAccount.Password
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Null_Password() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            Email = ValidAccount.Email,
+            Password = ValidAccount.Password
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Password_Too_Long() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            DisplayName = ValidAccount.DisplayName,
+            Email = ValidAccount.Email,
+            Password = "VP1" + new string('*', 68) // VP1 is to meet the other requirements.
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Password_Too_Short() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            DisplayName = ValidAccount.DisplayName,
+            Email = ValidAccount.Email,
+            Password = "VP1" + new string('*', 6) // VP1 is to meet the other requirements.
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+    
+    [Fact]
+    public async Task Password_Missing_Digit() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            DisplayName = ValidAccount.DisplayName,
+            Email = ValidAccount.Email,
+            Password = "InvalidPassword"
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }    
+
+    [Fact]
+    public async Task Password_Missing_Uppercase() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            DisplayName = ValidAccount.DisplayName,
+            Email = ValidAccount.Email,
+            Password = "invalidpassword1"
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Password_Missing_Lowercase() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            DisplayName = ValidAccount.DisplayName,
+            Email = ValidAccount.Email,
+            Password = "INVALIDPASSWORD1"
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
 }

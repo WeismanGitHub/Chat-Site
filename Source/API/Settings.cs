@@ -6,11 +6,11 @@ public sealed class Settings {
 
     public class DatabaseSettings {
         public string Name { get; set; }
-        public string ConnectionString { get; set; }
+        public string MongoProd { get; set; }
+        public string MongoDev { get; set; }
     }
 
     public class JWTAuthSettings {
         public int TokenValidityMinutes { get; set; }
-        public string SigningKey { get; set; }
     }
 }

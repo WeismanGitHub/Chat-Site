@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 
-using System.Security.Cryptography.Pkcs;
-
 namespace API.Endpoints.Friends.Requests.Send;
 
 public sealed class Endpoint : Endpoint<Request> {

@@ -14,7 +14,13 @@ sealed class Endpoint : Endpoint<Request> {
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-        await Data.DeleteUser(req.AccountID);
+        var user = await DB.Find<User>().OneAsync(req.AccountID);
+
+        if (user == null) {
+            ThrowError("Could not find user.", 404);
+        }
+
+        await Data.DeleteUser(user);
         await CookieAuth.SignOutAsync();
     }
 }

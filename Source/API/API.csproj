@@ -30,4 +30,12 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Endpoints\Friends\Remove\" />
+    <Folder Include="Endpoints\Friends\Requests\Accept\" />
+    <Folder Include="Endpoints\Friends\Requests\Decline\" />
+    <Folder Include="Endpoints\Friends\Requests\Delete\" />
+    <Folder Include="Endpoints\Friends\Requests\Send\" />
+  </ItemGroup>
+
 </Project>

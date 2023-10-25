@@ -2,12 +2,12 @@
 
 sealed class Endpoint : Endpoint<Request> {
     public override void Configure() {
-        Patch("/Update");
+        Patch("/");
         Group<AccountGroup>();
         Version(1);
 
         Summary(settings => {
-            settings.Summary = "Update an account.";
+            settings.Summary = "Update logged in account.";
             settings.ExampleRequest = new Request {
                 DisplayName = "New Name",
             };

@@ -35,7 +35,7 @@
     <Folder Include="Endpoints\Friends\Requests\Accept\" />
     <Folder Include="Endpoints\Friends\Requests\Decline\" />
     <Folder Include="Endpoints\Friends\Requests\Delete\" />
-    <Folder Include="Endpoints\Friends\Requests\Send\" />
+    <Folder Include="Endpoints\Friends\Requests\Get\" />
   </ItemGroup>
 
 </Project>

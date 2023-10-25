@@ -1,4 +1,6 @@
-﻿using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
+﻿using System.ComponentModel.DataAnnotations;
+
+using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
 
 namespace API.Database.Entities;
 public enum Status {
@@ -13,6 +15,7 @@ public class FriendRequest: Entity {
     public string RequesterId { get; set; }
     [BsonRepresentation(BsonType.ObjectId)]
     public string RecipientId { get; set; }
+    [MaxLength(250)]
     public string? Message { get; set; }
     public Status Status { get; set; } = Status.Pending;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

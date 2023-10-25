@@ -19,7 +19,7 @@ public class User : Entity {
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public User() {
-        this.InitManyToMany(() => Friends, user => user.ID);
-        this.InitManyToMany(() => Conversations, convo => convo.ID);
+        this.InitOneToMany(() => Friends);
+        //this.InitManyToMany(() => Conversations, convo => convo.Members);
     }
 }

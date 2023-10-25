@@ -1,4 +1,6 @@
-﻿namespace API.Database.Entities;
+﻿using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
+
+namespace API.Database.Entities;
 public enum Status {
     Accepted,
     Declined,
@@ -14,6 +16,10 @@ public class FriendRequest: Entity {
     public string Message { get; set; }
     public Status Status { get; set; } = Status.Pending;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public FriendRequest() {
+        //this.InitOneToMany(() => RecipientId, member => member.ID);
+    }
 
     public async void AcceptFriendRequest(User? user) {
         if (user == null) {

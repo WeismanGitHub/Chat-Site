@@ -19,7 +19,7 @@ public sealed class Endpoint : Endpoint<Request> {
         var account = await DB.Find<User>().OneAsync(req.AccountID);
 
         if (account == null) {
-            ThrowError("Could not find an account with that email.", 404);
+            ThrowError("Could not find your account.", 404);
         }
 
         return await Data.GetFriends(account);

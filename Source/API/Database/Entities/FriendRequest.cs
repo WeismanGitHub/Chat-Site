@@ -12,30 +12,30 @@ public enum Status {
 [Collection("FriendRequests")]
 public class FriendRequest: Entity {
     [BsonRepresentation(BsonType.ObjectId)]
-    public string RequesterId { get; set; }
+    public string RequesterID { get; set; }
     [BsonRepresentation(BsonType.ObjectId)]
-    public string RecipientId { get; set; }
+    public string RecipientID { get; set; }
     [MaxLength(250)]
     public string? Message { get; set; }
     public Status Status { get; set; } = Status.Pending;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public FriendRequest() {
-        //this.InitOneToMany(() => RecipientId, member => member.ID);
+        //this.InitOneToMany(() => RecipientID, member => member.ID);
     }
 
     public async void AcceptFriendRequest(User? user) {
         if (user == null) {
-            user = await DB.Find<User>().OneAsync(RecipientId);
+            user = await DB.Find<User>().OneAsync(RecipientID);
         }
         
-        if (user?.ID != RecipientId) throw new UnauthorizedAccessException();
+        if (user?.ID != RecipientID) throw new UnauthorizedAccessException();
 
         Status = Status.Accepted;
         await user.Friends.AddAsync(user);
     }
     public void DeclineFriendRequest(User user) {
-        if (user.ID != RecipientId) throw new UnauthorizedAccessException();
+        if (user.ID != RecipientID) throw new UnauthorizedAccessException();
     }
     public void DeleteFriendRequest(FriendRequest friendRequest) {
 

@@ -55,7 +55,7 @@ async Task InitDatabase() {
         .CreateAsync();
 
     await DB.Index<FriendRequest>()
-        .Key(fr => fr.RecipientId, KeyType.Ascending)
+        .Key(fr => fr.RecipientID, KeyType.Ascending)
         .CreateAsync();
 
     await DB.MigrateAsync();

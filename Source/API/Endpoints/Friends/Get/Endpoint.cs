@@ -1,0 +1,27 @@
+﻿using Microsoft.Extensions.Options;
+
+namespace API.Endpoints.Friends.Get;
+
+public sealed class Endpoint : Endpoint<Request> {
+    public IOptions<Settings> Settings { get; set; } = null!;
+
+    public override void Configure() {
+        Get("/");
+        Group<FriendGroup>();
+        Version(1);
+        
+        Summary(settings => {
+            settings.Summary = "Get logged in account's friends.";
+        });
+    }
+
+    public override async Task<List<User>> HandleAsync(Request req, CancellationToken cancellationToken) {
+        var account = await DB.Find<User>().OneAsync(req.AccountID);
+
+        if (account == null) {
+            ThrowError("Could not find an account with that email.", 404);
+        }
+
+        return await Data.GetFriends(account);
+    }
+}

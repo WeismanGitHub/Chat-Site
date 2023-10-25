@@ -13,8 +13,13 @@ public class User : Entity {
     public string Email { get; set; }
     public string PasswordHash { get; set; }
     [MaxLength(100, ErrorMessage = "Cannot add more than 100 friends.")]
-    public HashSet<string> FriendIds { get; set; } = new();
+    public Many<User> Friends { get; set; }
     [MaxLength(100, ErrorMessage = "Cannot join more than 100 conversations.")]
-    public HashSet<string> ConversationIds { get; set; } = new();
+    public Many<Conversation> Conversations { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public User() {
+        this.InitManyToMany(() => Friends, user => user.ID);
+        this.InitManyToMany(() => Conversations, convo => convo.ID);
+    }
 }

@@ -15,11 +15,15 @@ public class FriendRequest: Entity {
     public Status Status { get; set; } = Status.Pending;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public async void AcceptFriendRequest(User user) {
-        if (user.ID != RecipientId) throw new UnauthorizedAccessException();
+    public async void AcceptFriendRequest(User? user) {
+        if (user == null) {
+            user = await DB.Find<User>().OneAsync(RecipientId);
+        }
+        
+        if (user?.ID != RecipientId) throw new UnauthorizedAccessException();
 
         Status = Status.Accepted;
-        user.FriendIds.Add(RequesterId);
+        await user.Friends.AddAsync(user);
     }
     public void DeclineFriendRequest(User user) {
         if (user.ID != RecipientId) throw new UnauthorizedAccessException();

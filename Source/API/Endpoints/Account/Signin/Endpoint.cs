@@ -25,9 +25,9 @@ public sealed class Endpoint : Endpoint<Request> {
         var account = await Data.GetAccount(req.Email);
 
         if (account == null) {
-            ThrowError("Could not find an account with that email.");
+            ThrowError("Could not find an account with that email.", 404);
         } else if (!BCrypt.Net.BCrypt.Verify(req.Password, account.PasswordHash)) {
-            ThrowError("Invalid Credentials");
+            ThrowError("Invalid Credentials", 401);
         }
 
         await CookieAuth.SignInAsync(u => u["AccountID"] = account.ID!);

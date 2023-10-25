@@ -34,7 +34,7 @@ public sealed class Endpoint : Endpoint<Request> {
             var emailIsTaken = await Data.EmailAddressIsTaken(account.Email);
 
             if (emailIsTaken) {
-                ThrowError(r => r.Email, "That Email is unavailable.");
+                ThrowError(r => r.Email, "That Email is unavailable.", 409);
             }
 
             throw;

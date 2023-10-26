@@ -1,11 +1,8 @@
-﻿using Microsoft.Extensions.Options;
-using FastEndpoints.Security;
+﻿using FastEndpoints.Security;
 
 namespace API.Endpoints.Account.Signin;
 
 public sealed class Endpoint : Endpoint<Request> {
-    public IOptions<Settings> Settings { get; set; } = null!;
-
     public override void Configure() {
         Post("/Signin");
         Group<AccountGroup>();

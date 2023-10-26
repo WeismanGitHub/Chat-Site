@@ -1,11 +1,8 @@
-﻿using Microsoft.Extensions.Options;
-using FastEndpoints.Security;
+﻿using FastEndpoints.Security;
 
 namespace API.Endpoints.Account.Signout;
 
 public sealed class Endpoint : EndpointWithoutRequest {
-    public IOptions<Settings> Settings { get; set; } = null!;
-
     public override void Configure() {
         Post("/Signout");
         Group<AccountGroup>();

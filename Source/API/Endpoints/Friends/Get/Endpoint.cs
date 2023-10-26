@@ -1,10 +1,6 @@
-﻿using Microsoft.Extensions.Options;
-
-namespace API.Endpoints.Friends.Get;
+﻿namespace API.Endpoints.Friends.Get;
 
 public sealed class Endpoint : Endpoint<Request> {
-    public IOptions<Settings> Settings { get; set; } = null!;
-
     public override void Configure() {
         Get("/");
         Group<FriendGroup>();

@@ -6,6 +6,8 @@ public class Endpoint : Endpoint<Request> {
         Group<RequestGroup>();
         Version(1);
 
+        Description(builder => builder.Accepts<Request>());
+
         Summary(settings => {
             settings.Summary = "Accept a friend request.";
         });

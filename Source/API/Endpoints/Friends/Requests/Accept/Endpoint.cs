@@ -22,6 +22,19 @@ public class Endpoint : Endpoint<Request> {
             ThrowError("You cannot accept this FriendRequest.", 403);
         }
 
-        Console.WriteLine(friendRequest.Message);
+        // These should be whatever the equivalent of Promise.all is in C#.
+        var recipient = await DB.Find<User>().MatchID(friendRequest.RecipientID).ExecuteSingleAsync();
+        var requester = await DB.Find<User>().MatchID(friendRequest.RequesterID).ExecuteSingleAsync();
+
+        if (requester == null) {
+            ThrowError("Could not find requester.", 404);
+        } else if (recipient == null) {
+            ThrowError("Could not find your account.", 401);
+        }
+
+        var transaction = DB.Transaction();
+        await requester.Friends.AddAsync(recipient, transaction.Session);
+        await recipient.Friends.AddAsync(requester, transaction.Session);
+        await transaction.CommitAsync();
     }
 }

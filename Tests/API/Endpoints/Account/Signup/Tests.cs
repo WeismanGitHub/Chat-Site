@@ -30,7 +30,7 @@ public class Tests : TestClass<Fixture> {
             Password = ValidAccount.Password
         });
 
-        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        res.StatusCode.Should().Be(HttpStatusCode.Conflict);
     }
 
     [Fact]

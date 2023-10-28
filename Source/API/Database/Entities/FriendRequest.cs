@@ -19,25 +19,4 @@ public class FriendRequest: Entity {
     public string? Message { get; set; }
     public Status Status { get; set; } = Status.Pending;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    public FriendRequest() {
-        //this.InitOneToMany(() => RecipientID, member => member.ID);
-    }
-
-    public async void AcceptFriendRequest(User? user) {
-        if (user == null) {
-            user = await DB.Find<User>().OneAsync(RecipientID);
-        }
-        
-        if (user?.ID != RecipientID) throw new UnauthorizedAccessException();
-
-        Status = Status.Accepted;
-        await user.Friends.AddAsync(user);
-    }
-    public void DeclineFriendRequest(User user) {
-        if (user.ID != RecipientID) throw new UnauthorizedAccessException();
-    }
-    public void DeleteFriendRequest(FriendRequest friendRequest) {
-
-    }
 }

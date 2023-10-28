@@ -14,8 +14,6 @@ internal sealed class Validator : Validator<Request> {
 
         RuleFor(req => req.RecipientID)
             .NotEmpty()
-            .Equal(req => req.AccountID)
-            .WithMessage("You cannot befriend yourself.")
             .Must(id => ObjectId.TryParse(id, out _))
             .WithMessage("Invalid RecipientID.")
             .MustAsync((id, _) => DB.Find<User>().MatchID(id).ExecuteAnyAsync())
@@ -26,6 +24,8 @@ internal sealed class Validator : Validator<Request> {
             .MaximumLength(250);
 
         RuleFor(req => req)
+            .Must(req => req.AccountID != req.RecipientID)
+            .WithMessage("You cannot befriend yourself.")
             .Must(req => ObjectId.TryParse(req.RecipientID, out _))
             .WithMessage("Invalid RecipientID.")
             .MustAsync(async (req, _) => {

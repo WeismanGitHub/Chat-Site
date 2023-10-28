@@ -6,7 +6,6 @@ namespace Tests.API.Endpoints.Account.Signup;
 
 public class Fixture : TestFixture<Program> {
     public Fixture(IMessageSink sink) : base(sink) { }
-    public string Token { get; set; }
 
     protected override Task SetupAsync() {
         return Task.CompletedTask;

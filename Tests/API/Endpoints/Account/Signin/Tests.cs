@@ -23,6 +23,16 @@ public class Tests : TestClass<Fixture> {
             Password = ValidAccount.Password
         });
 
-        res.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Invalid_Password() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            Email = ValidAccount.Email,
+            Password = "invalidpassword"
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 }

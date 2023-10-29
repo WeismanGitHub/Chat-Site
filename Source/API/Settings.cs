@@ -5,9 +5,8 @@ public sealed class Settings {
     public JWTAuthSettings Auth { get; set; }
 
     public class DatabaseSettings {
+        public string MongoURI { get; set; }
         public string Name { get; set; }
-        public string MongoProd { get; set; }
-        public string MongoDev { get; set; }
     }
 
     public class JWTAuthSettings {

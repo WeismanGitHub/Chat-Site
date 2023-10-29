@@ -6,10 +6,8 @@ using FastEndpoints.Swagger;
 var builder = WebApplication.CreateBuilder();
 ConfigureServices.Configure(builder);
 var config = builder.Configuration;
-
 var section = config.GetSection("Settings");
 var settings = section.Get<Settings>()!;
-
 var app = builder.Build();
 
 app.UseAuthentication()
@@ -25,11 +23,12 @@ app.UseAuthentication()
                 .ToDictionary(
                     keySelector: e => e.Key,
                     elementSelector: e => e.Select(m => m.ErrorMessage).ToArray())) {
-                    Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                    Title = "One or more validation errors occurred.",
-                    Status = statusCode,
-                    Instance = ctx.Request.Path,
-                    Extensions = { { "traceId", ctx.TraceIdentifier } }
+                        Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                        Title = "One or more validation errors occurred.",
+                        Status = statusCode,
+                        Instance = ctx.Request.Path,
+                        Extensions = { { "traceId", ctx.TraceIdentifier }
+                    }
                 };
         };
     })
@@ -45,9 +44,8 @@ async Task InitDatabase() {
         ObjectSerializer.DefaultAllowedTypes(type) || type.Name!.EndsWith("Message"))
     );
 
-    var connectionString = settings.Database.MongoProd; // Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? settings.Database.MongoDev : settings.Database.MongoProd;
-
-    await DB.InitAsync(settings.Database.Name, MongoClientSettings.FromConnectionString(connectionString));
+    var connectionString = settings.Database.MongoURI;
+    await DB.InitAsync(settings.Database.Name, MongoClientSettings.FromConnectionString((connectionString)));
 
     await DB.Index<User>()
         .Key(u => u.Email, KeyType.Ascending)

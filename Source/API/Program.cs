@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using FastEndpoints.Swagger;
 
-var builder = WebApplication.CreateBuilder();
+var builder = WebApplication.CreateBuilder(args);
 ConfigureServices.Configure(builder);
 var config = builder.Configuration;
 var section = config.GetSection("Settings");

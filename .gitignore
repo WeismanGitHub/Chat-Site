@@ -481,3 +481,4 @@ $RECYCLE.BIN/
 *.lnk
 /API/SQLite.db-shm
 /API/SQLite.db-wal
+/Source/API/appsettings.Testing.json

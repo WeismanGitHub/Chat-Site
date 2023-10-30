@@ -1,4 +1,4 @@
-﻿using API.Endpoints.Account.Signin;
+﻿using Signin = API.Endpoints.Account.Signin;
 using API.Database.Entities;
 using MongoDB.Entities;
 using MongoDB.Bson;
@@ -34,7 +34,7 @@ public class Fixture : TestFixture<Program> {
         await DB.DeleteAsync<FriendRequest>(u => u.RequesterID == UserID1);
     }
 
-    public Task SignClientIn(Request req) {
-        return Client.POSTAsync<Endpoint, Request>(req);
+    public Task SignClientIn(Signin.Request req) {
+        return Client.POSTAsync<Signin.Endpoint, Signin.Request>(req);
     }
 }

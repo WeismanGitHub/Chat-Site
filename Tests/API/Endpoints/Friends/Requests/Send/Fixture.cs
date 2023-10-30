@@ -1,13 +1,14 @@
 ﻿using API.Endpoints.Account.Signin;
 using API.Database.Entities;
 using MongoDB.Entities;
+using MongoDB.Bson;
 
 namespace Tests.API.Endpoints.Friends.Requests.Send;
 
 public class Fixture : TestFixture<Program> {
     public Fixture(IMessageSink sink) : base(sink) { }
-    public readonly string UserID1 = "653c997d105a14b194a7e30b";
-    public readonly string UserID2 = "653c997d105a14b194a7e30a";
+    public readonly string UserID1 = ObjectId.GenerateNewId().ToString();
+    public readonly string UserID2 = ObjectId.GenerateNewId().ToString();
 
     protected override async Task SetupAsync() {
         await DB.InsertAsync(new User() {

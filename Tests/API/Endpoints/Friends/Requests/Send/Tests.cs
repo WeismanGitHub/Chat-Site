@@ -1,5 +1,6 @@
-using Signin = API.Endpoints.Account.Signin;
 using API.Endpoints.Friends.Requests.Send;
+using API.Database.Entities;
+using MongoDB.Entities;
 using MongoDB.Bson;
 
 namespace Tests.API.Endpoints.Friends.Requests.Send;
@@ -16,6 +17,32 @@ public class Tests : TestClass<Fixture> {
         });
 
         res.IsSuccessStatusCode.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Duplicated_Friend_Request() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            AccountID = Fixture.UserID1,
+            Message = "Let's be friends.",
+            RecipientID = Fixture.UserID2
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+	[Fact]
+	public async Task Already_Friends() {
+		await DB.Update<User>()
+			.Modify(u => u.FriendIDs, new List<string> { Fixture.UserID1 })
+			.MatchID(Fixture.UserID2).ExecuteAsync();
+
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            AccountID = Fixture.UserID1,
+            Message = "Let's be friends.",
+            RecipientID = Fixture.UserID2
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]

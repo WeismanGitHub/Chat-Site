@@ -14,23 +14,22 @@ sealed class Endpoint : Endpoint<Request> {
         });
     }
 
-    public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-        if (
-            req.DisplayName == null && 
-            req.Email == null && 
-            req.Password == null
-        ) {
-            ThrowError("Must modify something.", 400);
+    public override async Task HandleAsync(Request newData, CancellationToken cancellationToken) {
+        var update = DB.Update<User>().MatchID(newData.AccountID);
+
+        if (newData.DisplayName != null) {
+            update.Modify(u => u.DisplayName, newData.DisplayName);
         }
 
-        if (req.Email != null) {
-            User? account = await DB.Find<User>().Match(u => u.ID == req.AccountID).ExecuteSingleAsync();
-
-            if (account == null) {
-                ThrowError("Could not find your account.", 404);
-            }
+        if (newData.Email != null) {
+            update.Modify(u => u.Email, newData.Email);
         }
 
-        await Data.Update(req);
+        if (newData.Password != null) {
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(newData.Password);
+            update.Modify(u => u.PasswordHash, passwordHash);
+        }
+
+        await update.ExecuteAsync(cancellationToken);
     }
 }

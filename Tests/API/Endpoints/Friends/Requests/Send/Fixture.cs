@@ -24,7 +24,12 @@ public class Fixture : TestFixture<Program> {
             Email = "2@email.com",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password)
         });
-    }
+
+		await Fixture.SignClientIn(new Signin.Request() {
+			Email = ValidAccount.Email,
+			Password = ValidAccount.Password,
+		});
+	}
 
     protected override void ConfigureServices(IServiceCollection services) {
     }

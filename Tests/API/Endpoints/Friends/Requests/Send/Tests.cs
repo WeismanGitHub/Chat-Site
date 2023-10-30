@@ -9,11 +9,6 @@ public class Tests : TestClass<Fixture> {
 
     [Fact, Priority(1)]
     public async Task Valid_Friend_Request() {
-        await Fixture.SignClientIn(new Signin.Request() {
-            Email = ValidAccount.Email,
-            Password = ValidAccount.Password,
-        });
-
         var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
             AccountID = Fixture.UserID1,
             Message = "Let's be friends.",

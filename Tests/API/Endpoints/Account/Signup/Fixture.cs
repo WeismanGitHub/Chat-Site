@@ -1,10 +1,10 @@
 ﻿using API.Database.Entities;
 using MongoDB.Entities;
 
-namespace Tests.API.Endpoints.Account.Signup;
+namespace Tests.API.Endpoints.Account;
 
-public class Fixture : TestFixture<Program> {
-    public Fixture(IMessageSink sink) : base(sink) { }
+public class SignupFixture : TestFixture<Program> {
+    public SignupFixture(IMessageSink sink) : base(sink) { }
 
     protected override Task SetupAsync() {
         return Task.CompletedTask;

@@ -2,10 +2,10 @@ using Signin = API.Endpoints.Account.Signin;
 using API.Endpoints.Friends.Requests.Send;
 using MongoDB.Bson;
 
-namespace Tests.API.Endpoints.Friends.Requests.Send;
+namespace Tests.API.Endpoints.Friends.Requests;
 
-public class Tests : TestClass<Fixture> {
-    public Tests(Fixture fixture, ITestOutputHelper output) : base(fixture, output) { }
+public class Send : TestClass<SendFixture> {
+    public Send(SendFixture fixture, ITestOutputHelper output) : base(fixture, output) { }
 
     [Fact, Priority(1)]
     public async Task Valid_Friend_Request() {

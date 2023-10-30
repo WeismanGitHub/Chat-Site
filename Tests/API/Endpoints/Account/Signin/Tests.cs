@@ -1,9 +1,9 @@
 using API.Endpoints.Account.Signin;
 
-namespace Tests.API.Endpoints.Account.Signin;
+namespace Tests.API.Endpoints.Account;
 
-public class Tests : TestClass<Fixture> {
-    public Tests(Fixture fixture, ITestOutputHelper output) : base(fixture, output) { }
+public class Signin : TestClass<SigninFixture> {
+    public Signin(SigninFixture fixture, ITestOutputHelper output) : base(fixture, output) { }
 
     [Fact]
     public async Task Valid_Input() {

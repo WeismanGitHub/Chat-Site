@@ -3,10 +3,10 @@ using API.Database.Entities;
 using MongoDB.Entities;
 using MongoDB.Bson;
 
-namespace Tests.API.Endpoints.Friends.Requests.Send;
+namespace Tests.API.Endpoints.Friends.Requests;
 
-public class Fixture : TestFixture<Program> {
-    public Fixture(IMessageSink sink) : base(sink) { }
+public class SendFixture : TestFixture<Program> {
+    public SendFixture(IMessageSink sink) : base(sink) { }
     public readonly string UserID1 = ObjectId.GenerateNewId().ToString();
     public readonly string UserID2 = ObjectId.GenerateNewId().ToString();
 

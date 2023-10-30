@@ -1,5 +1,6 @@
 using Signin = API.Endpoints.Account.Signin;
 using API.Endpoints.Friends.Requests.Send;
+using MongoDB.Bson;
 
 namespace Tests.API.Endpoints.Friends.Requests.Send;
 
@@ -33,6 +34,22 @@ public class Tests : TestClass<Fixture> {
             AccountID = Fixture.UserID1,
             Message = "Let's be friends.",
             RecipientID = "invalid id"
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Invalid_Recipient() {
+        await Fixture.SignClientIn(new Signin.Request() {
+            Email = ValidAccount.Email,
+            Password = ValidAccount.Password,
+        });
+
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            AccountID = Fixture.UserID1,
+            Message = "Let's be friends.",
+            RecipientID = ObjectId.GenerateNewId().ToString()
         });
 
         res.StatusCode.Should().Be(HttpStatusCode.BadRequest);

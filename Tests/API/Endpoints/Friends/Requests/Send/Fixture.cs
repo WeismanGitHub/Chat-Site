@@ -25,21 +25,14 @@ public class Fixture : TestFixture<Program> {
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password)
         });
 
-		await Fixture.SignClientIn(new Signin.Request() {
+		await Client.POSTAsync<Signin.Endpoint, Signin.Request>(new Signin.Request() {
 			Email = ValidAccount.Email,
 			Password = ValidAccount.Password,
 		});
 	}
 
-    protected override void ConfigureServices(IServiceCollection services) {
-    }
-
     protected override async Task TearDownAsync() {
         await DB.DeleteAsync<User>(u => u.Email == ValidAccount.Email || u.Email == "2@email.com");
         await DB.DeleteAsync<FriendRequest>(u => u.RequesterID == UserID1);
-    }
-
-    public Task SignClientIn(Signin.Request req) {
-        return Client.POSTAsync<Signin.Endpoint, Signin.Request>(req);
     }
 }

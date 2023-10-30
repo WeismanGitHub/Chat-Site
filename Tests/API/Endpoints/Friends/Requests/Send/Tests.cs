@@ -25,11 +25,6 @@ public class Tests : TestClass<Fixture> {
 
     [Fact]
     public async Task Invalid_RecipientID() {
-        await Fixture.SignClientIn(new Signin.Request() {
-            Email = ValidAccount.Email,
-            Password = ValidAccount.Password,
-        });
-
         var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
             AccountID = Fixture.UserID1,
             Message = "Let's be friends.",
@@ -38,14 +33,20 @@ public class Tests : TestClass<Fixture> {
 
         res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+    
+    [Fact]
+    public async Task Invalid_Account() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            AccountID = ObjectId.GenerateNewId().ToString(),
+            Message = "Let's be friends.",
+            RecipientID = Fixture.UserID2
+        });
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
 
     [Fact]
     public async Task Invalid_Recipient() {
-        await Fixture.SignClientIn(new Signin.Request() {
-            Email = ValidAccount.Email,
-            Password = ValidAccount.Password,
-        });
-
         var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
             AccountID = Fixture.UserID1,
             Message = "Let's be friends.",
@@ -57,11 +58,6 @@ public class Tests : TestClass<Fixture> {
 
     [Fact]
     public async Task Message_Too_Long() {
-        await Fixture.SignClientIn(new Signin.Request() {
-            Email = ValidAccount.Email,
-            Password = ValidAccount.Password,
-        });
-
         var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
             AccountID = Fixture.UserID1,
             Message = new string('*', 251),
@@ -73,11 +69,6 @@ public class Tests : TestClass<Fixture> {
 
     [Fact]
     public async Task Message_Too_Short() {
-        await Fixture.SignClientIn(new Signin.Request() {
-            Email = ValidAccount.Email,
-            Password = ValidAccount.Password,
-        });
-
         var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
             AccountID = Fixture.UserID1,
             Message = "",

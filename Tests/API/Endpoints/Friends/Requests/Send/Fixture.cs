@@ -30,6 +30,7 @@ public class Fixture : TestFixture<Program> {
 
     protected override async Task TearDownAsync() {
         await DB.DeleteAsync<User>(u => u.Email == ValidAccount.Email || u.Email == "2@email.com");
+        await DB.DeleteAsync<FriendRequest>(u => u.RequesterID == UserID1);
     }
 
     public Task SignClientIn(Request req) {

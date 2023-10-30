@@ -2,10 +2,10 @@ using API.Endpoints.Account.Signup;
 using API.Database.Entities;
 using MongoDB.Entities;
 
-namespace Tests.API.Endpoints.Account;
+namespace Tests.API.Endpoints.Account.Signup;
 
-public class Signup : TestClass<SignupFixture> {
-    public Signup(SignupFixture fixture, ITestOutputHelper output) : base(fixture, output) { }
+public class Tests : TestClass<Fixture> {
+    public Tests(Fixture fixture, ITestOutputHelper output) : base(fixture, output) { }
 
     [Fact, Priority(1)]
     public async Task Valid_User_Input() {

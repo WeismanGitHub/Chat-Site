@@ -1,10 +1,10 @@
 ﻿using API.Database.Entities;
 using MongoDB.Entities;
 
-namespace Tests.API.Endpoints.Account;
+namespace Tests.API.Endpoints.Account.Signin;
 
-public class SigninFixture : TestFixture<Program> {
-    public SigninFixture(IMessageSink sink) : base(sink) { }
+public class Fixture : TestFixture<Program> {
+    public Fixture(IMessageSink sink) : base(sink) { }
     protected override Task SetupAsync() {
         return DB.InsertAsync(new User() {
             DisplayName = ValidAccount.DisplayName,

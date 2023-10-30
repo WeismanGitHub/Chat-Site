@@ -1,5 +1,4 @@
 ﻿using API.Database.Entities;
-
 using MongoDB.Entities;
 
 namespace Tests.API.Endpoints.Account.Signin;

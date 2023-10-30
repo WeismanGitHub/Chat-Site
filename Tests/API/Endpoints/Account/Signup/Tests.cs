@@ -47,7 +47,7 @@ public class Tests : TestClass<Fixture> {
     [Fact]
     public async Task DisplayName_Too_Long() {
         var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-            DisplayName = new string('*', 51),
+            DisplayName = new string('*', 26),
             Email = ValidAccount.Email,
             Password = ValidAccount.Password
         });

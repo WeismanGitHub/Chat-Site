@@ -9,13 +9,17 @@ public sealed class Endpoint : Endpoint<Request> {
         Summary(settings => {
             settings.Summary = "Update logged in account.";
             settings.ExampleRequest = new Request {
-                DisplayName = "New Name",
-            };
+				NewData = new() {
+					DisplayName = "New Name",
+				},
+				CurrentPassword = "Password123"
+			};
         });
     }
 
-    public override async Task HandleAsync(Request newData, CancellationToken cancellationToken) {
-        var update = DB.Update<User>().MatchID(newData.AccountID);
+    public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
+        var update = DB.Update<User>().MatchID(req.AccountID);
+		var newData = req.NewData;
 
         if (newData.DisplayName != null) {
             update.Modify(u => u.DisplayName, newData.DisplayName);

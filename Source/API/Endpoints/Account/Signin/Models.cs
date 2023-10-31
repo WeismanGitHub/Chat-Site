@@ -1,8 +1,8 @@
 ﻿namespace API.Endpoints.Account.Signin;
 
 public sealed class Request {
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public required string Email { get; set; }
+    public required string Password { get; set; }
 }
 
 internal sealed class Validator : Validator<Request> {

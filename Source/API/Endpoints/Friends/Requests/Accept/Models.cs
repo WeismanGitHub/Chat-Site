@@ -3,7 +3,7 @@
 public class Request {
         [From(Claim.AccountID, IsRequired = true)]
         public string AccountID { get; set; }
-        public string RequestID { get; set; }
+        public required string RequestID { get; set; }
 }
 
 internal sealed class Validator : Validator<Request> {

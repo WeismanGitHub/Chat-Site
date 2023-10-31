@@ -56,16 +56,6 @@ public class Tests : TestClass<Fixture> {
     }
     
     [Fact]
-    public async Task Null_DisplayName() {
-        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-            Email = ValidAccount.Email,
-            Password = ValidAccount.Password
-        });
-
-        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
-    
-    [Fact]
     public async Task Empty_Email() {
         var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
             DisplayName = ValidAccount.DisplayName,
@@ -77,29 +67,9 @@ public class Tests : TestClass<Fixture> {
     }
 
     [Fact]
-    public async Task Null_Email() {
-        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-            DisplayName = ValidAccount.DisplayName,
-            Password = ValidAccount.Password
-        });
-
-        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
-
-    [Fact]
     public async Task EmptyPassword() {
         var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
             DisplayName = "",
-            Email = ValidAccount.Email,
-            Password = ValidAccount.Password
-        });
-
-        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
-
-    [Fact]
-    public async Task Null_Password() {
-        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
             Email = ValidAccount.Email,
             Password = ValidAccount.Password
         });

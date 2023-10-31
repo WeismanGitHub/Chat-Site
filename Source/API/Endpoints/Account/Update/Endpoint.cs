@@ -1,6 +1,6 @@
 ﻿namespace API.Endpoints.Account.Update;
 
-sealed class Endpoint : Endpoint<Request> {
+public sealed class Endpoint : Endpoint<Request> {
     public override void Configure() {
         Patch("/");
         Group<AccountGroup>();

@@ -3,7 +3,7 @@ using API.Database.Entities;
 using MongoDB.Entities;
 using MongoDB.Bson;
 
-namespace Tests.API.Endpoints.Friends.Requests.Send;
+namespace Tests.Friends.Requests.Send;
 
 public class Fixture : TestFixture<Program> {
     public Fixture(IMessageSink sink) : base(sink) { }

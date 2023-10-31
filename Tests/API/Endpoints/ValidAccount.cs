@@ -1,4 +1,4 @@
-﻿namespace Tests.API.Endpoints;
+﻿namespace Tests;
 
 public static class ValidAccount {
     public static readonly string DisplayName = "Valid Name";

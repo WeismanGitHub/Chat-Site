@@ -2,7 +2,7 @@ using API.Endpoints.Account.Signup;
 using API.Database.Entities;
 using MongoDB.Entities;
 
-namespace Tests.API.Endpoints.Account.Signup;
+namespace Tests.Account.Signup;
 
 public class Tests : TestClass<Fixture> {
     public Tests(Fixture fixture, ITestOutputHelper output) : base(fixture, output) { }

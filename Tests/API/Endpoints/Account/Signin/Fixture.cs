@@ -1,7 +1,7 @@
 ﻿using API.Database.Entities;
 using MongoDB.Entities;
 
-namespace Tests.API.Endpoints.Account.Signin;
+namespace Tests.Account.Signin;
 
 public class Fixture : TestFixture<Program> {
     public Fixture(IMessageSink sink) : base(sink) { }

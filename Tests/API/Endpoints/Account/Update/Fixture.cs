@@ -25,6 +25,6 @@ public class Fixture : TestFixture<Program> {
 	}
 
 	protected override async Task TearDownAsync() {
-        await DB.DeleteAsync<User>(u => u.Email == ValidAccount.Email);
+        await DB.DeleteAsync<User>(AccountID);
     }
 }

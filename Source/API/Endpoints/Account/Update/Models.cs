@@ -41,7 +41,7 @@ internal sealed class Validator : Validator<Request> {
 				.NotEmpty()
 				.EmailAddress().WithMessage("The format of your email address is invalid.")
 				.MustAsync(async (email, _) => !(await DB.Find<User>().Match(u => u.Email == email).ExecuteAnyAsync()))
-				.WithErrorCode(HttpStatusCode.Conflict.ToString())
+				.WithErrorCode(nameof(HttpStatusCode.Conflict))
 				.WithMessage("Email is taken.");
 		});
 

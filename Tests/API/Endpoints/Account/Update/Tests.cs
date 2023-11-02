@@ -10,7 +10,7 @@ public class Tests : TestClass<Fixture> {
     public Tests(Fixture fixture, ITestOutputHelper output) : base(fixture, output) { }
 
 	[Fact, Priority(1)]
-	public async Task Valid_Update () {
+	public async Task Valid_Update() {
         var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
@@ -32,6 +32,30 @@ public class Tests : TestClass<Fixture> {
     }
 
 	[Fact]
+	public async Task Invalid_CurrentPassword() {
+		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.AccountID,
+			NewData = new() {
+				DisplayName = "New DisplayName",
+			},
+			CurrentPassword = "invalid"
+		});
+
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
+
+	[Fact]
+	public async Task No_Changes() {
+		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.AccountID,
+			NewData = new() {},
+			CurrentPassword = ValidAccount.Password
+		});
+
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
+
+	[Fact]
 	public async Task Taken_Email() {
 		await DB.InsertAsync(new User() {
 			DisplayName = ValidAccount.DisplayName,
@@ -42,9 +66,7 @@ public class Tests : TestClass<Fixture> {
 		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
-				DisplayName = "New DisplayName",
 				Email = "taken" + ValidAccount.Email,
-				Password = ValidAccount.Password + "new"
 			},
 			CurrentPassword = ValidAccount.Password
 		});
@@ -58,9 +80,7 @@ public class Tests : TestClass<Fixture> {
 		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
-				DisplayName = "New DisplayName",
 				Email = "",
-				Password = ValidAccount.Password + "new"
 			},
 			CurrentPassword = ValidAccount.Password
 		});
@@ -68,35 +88,31 @@ public class Tests : TestClass<Fixture> {
 		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 	}
 
-	//[Fact]
-	//public async Task Empty_DisplayName() {
-	//    var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-	//        DisplayName = "",
-	//        Email = ValidAccount.Email,
-	//        Password = ValidAccount.Password
-	//    });
+	[Fact]
+	public async Task Empty_DisplayName() {
+		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.AccountID,
+			NewData = new() {
+				DisplayName = "",
+			},
+			CurrentPassword = ValidAccount.Password
+		});
 
-	//    res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-	//}
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
 
-	//[Fact]
-	//public async Task DisplayName_Too_Long() {
-	//    var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-	//        Email = ValidAccount.Email,
-	//        Password = ValidAccount.Password
-	//    });
+	[Fact]
+	public async Task DisplayName_Too_Long() {
+		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.AccountID,
+			NewData = new() {
+				DisplayName = new string('*', User.MaxNameLength + 1),
+			},
+			CurrentPassword = ValidAccount.Password
+		});
 
-	//    res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-	//}
-
-	//[Fact]
-	//public async Task Null_DisplayName() {
-	//    var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-	//        Password = ValidAccount.Password
-	//    });
-
-	//    res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-	//}
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
 
 	//[Fact]
 	//public async Task EmptyPassword() {

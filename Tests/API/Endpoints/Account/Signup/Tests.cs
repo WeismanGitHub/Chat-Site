@@ -93,7 +93,7 @@ public class Tests : TestClass<Fixture> {
         var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
             DisplayName = ValidAccount.DisplayName,
             Email = ValidAccount.Email,
-            Password = "VP1" + new string('*', 6) // VP1 is to meet the other requirements.
+            Password = "VP1" + new string('*', User.MinPasswordLength - 1) // VP1 is to meet the other requirements.
         });
 
         res.StatusCode.Should().Be(HttpStatusCode.BadRequest);

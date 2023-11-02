@@ -19,7 +19,17 @@ public class Tests : TestClass<Fixture> {
         res.IsSuccessStatusCode.Should().BeTrue();
     }
 
-    [Fact]
+	[Fact]
+	public async Task Valid_No_Message() {
+		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.UserID1,
+			RecipientID = Fixture.UserID2
+		});
+
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
+
+	[Fact]
     public async Task Duplicated_Friend_Request() {
         var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
             AccountID = Fixture.UserID1,
@@ -90,7 +100,7 @@ public class Tests : TestClass<Fixture> {
     }
 
     [Fact]
-    public async Task Message_Too_Short() {
+    public async Task Empty_Message() {
         var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
             AccountID = Fixture.UserID1,
             Message = "",

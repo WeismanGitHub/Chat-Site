@@ -114,79 +114,81 @@ public class Tests : TestClass<Fixture> {
 		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 	}
 
-	//[Fact]
-	//public async Task EmptyPassword() {
-	//    var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-	//        DisplayName = "",
-	//        Email = ValidAccount.Email,
-	//        Password = ValidAccount.Password
-	//    });
+	[Fact]
+	public async Task Empty_Password() {
+		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.AccountID,
+			NewData = new() {
+				Password = "",
+			},
+			CurrentPassword = ValidAccount.Password
+		});
 
-	//    res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-	//}
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
 
-	//[Fact]
-	//public async Task Null_Password() {
-	//    var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-	//        Email = ValidAccount.Email,
-	//        Password = ValidAccount.Password
-	//    });
+	[Fact]
+	public async Task Password_Too_Long() {
+		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.AccountID,
+			NewData = new() {
+				Password = "VP1" + new string('*', User.MaxPasswordLength - 2) // VP1 is to meet the other requirements.
+			},
+			CurrentPassword = ValidAccount.Password
+		});
 
-	//    res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-	//}
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
 
-	//[Fact]
-	//public async Task Password_Too_Long() {
-	//    var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-	//        DisplayName = ValidAccount.DisplayName,
-	//        Email = ValidAccount.Email,
-	//        Password = "VP1" + new string('*', 68) // VP1 is to meet the other requirements.
-	//    });
+	[Fact]
+	public async Task Password_Too_Short() {
+		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.AccountID,
+			NewData = new() {
+				Password = "VP1" + new string('*', User.MinPasswordLength - 1) // VP1 is to meet the other requirements.
+			},
+			CurrentPassword = ValidAccount.Password
+		});
 
-	//    res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-	//}
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
 
-	//[Fact]
-	//public async Task Password_Too_Short() {
-	//    var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-	//        DisplayName = ValidAccount.DisplayName,
-	//        Email = ValidAccount.Email,
-	//        Password = "VP1" + new string('*', 6) // VP1 is to meet the other requirements.
-	//    });
+	[Fact]
+	public async Task Password_Missing_Digit() {
+		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+			AccountID= Fixture.AccountID,
+			NewData = new() {
+				Password = "InvalidPassword"
+			},
+			CurrentPassword = ValidAccount.Password
+		});
 
-	//    res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-	//}
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
 
-	//[Fact]
-	//public async Task Password_Missing_Digit() {
-	//    var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-	//        DisplayName = ValidAccount.DisplayName,
-	//        Email = ValidAccount.Email,
-	//        Password = "InvalidPassword"
-	//    });
+	[Fact]
+	public async Task Password_Missing_Uppercase() {
+		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.AccountID,
+			NewData = new() {
+				Password = "invalidpassword1"
+			},
+			CurrentPassword = ValidAccount.Password
+		});
+		
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
 
-	//    res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-	//}    
+	[Fact]
+	public async Task Password_Missing_Lowercase() {
+		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.AccountID,
+			NewData = new() {
+				Password = "INVALIDPASSWORD1"
+			},
+			CurrentPassword = ValidAccount.Password
+		});
 
-	//[Fact]
-	//public async Task Password_Missing_Uppercase() {
-	//    var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-	//        DisplayName = ValidAccount.DisplayName,
-	//        Email = ValidAccount.Email,
-	//        Password = "invalidpassword1"
-	//    });
-
-	//    res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-	//}
-
-	//[Fact]
-	//public async Task Password_Missing_Lowercase() {
-	//    var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-	//        DisplayName = ValidAccount.DisplayName,
-	//        Email = ValidAccount.Email,
-	//        Password = "INVALIDPASSWORD1"
-	//    });
-
-	//    res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-	//}
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
 }

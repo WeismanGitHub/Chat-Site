@@ -26,7 +26,7 @@ public class Tests : TestClass<Fixture> {
 			RecipientID = Fixture.UserID2
 		});
 
-		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+		res.IsSuccessStatusCode.Should().BeTrue();
 	}
 
 	[Fact]
@@ -39,6 +39,17 @@ public class Tests : TestClass<Fixture> {
 
         res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+
+	[Fact]
+	public async Task Request_To_Self() {
+		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.UserID1,
+			Message = "Let's be friends.",
+			RecipientID = Fixture.UserID1
+		});
+
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
 
 	[Fact]
 	public async Task Already_Friends() {

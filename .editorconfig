@@ -270,11 +270,11 @@ dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity:sug
 dotnet_style_parentheses_in_other_binary_operators = always_for_clarity:suggestion
 dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:suggestion
 dotnet_style_parentheses_in_other_operators = always_for_clarity:suggestion
-dotnet_style_qualification_for_field = true:warning
-dotnet_style_qualification_for_property = true:warning
-dotnet_style_qualification_for_method = true:warning
-dotnet_style_qualification_for_event = true:warning
+dotnet_style_qualification_for_field = true:none
+dotnet_style_qualification_for_property = true:none
+dotnet_style_qualification_for_method = true:none
+dotnet_style_qualification_for_event = true:none
 indent_style = tab
 
 # IDE0009: Member access should be qualified.
-dotnet_diagnostic.IDE0009.severity = warning
+dotnet_diagnostic.IDE0009.severity = none

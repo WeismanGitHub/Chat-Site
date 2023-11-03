@@ -12,8 +12,10 @@ public class Fixture : TestFixture<Program> {
     public readonly string UserID1 = ObjectId.GenerateNewId().ToString();
     public readonly string UserID2 = ObjectId.GenerateNewId().ToString();
     public readonly string UserID3 = ObjectId.GenerateNewId().ToString();
+
     public readonly string RequestID1 = ObjectId.GenerateNewId().ToString();
     public readonly string RequestID2 = ObjectId.GenerateNewId().ToString();
+    public readonly string RequestID3 = ObjectId.GenerateNewId().ToString();
 
     protected override async Task SetupAsync() {
         await DB.InsertAsync(new List<User> {
@@ -47,6 +49,11 @@ public class Fixture : TestFixture<Program> {
 				ID = RequestID2,
 				RecipientID = UserID2,
 				RequesterID = UserID3
+			},
+			new () {
+				ID = RequestID3,
+				RecipientID = UserID1,
+				RequesterID = ObjectId.GenerateNewId().ToString(),
 			}
 		});
 

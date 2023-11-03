@@ -5,6 +5,7 @@ using MongoDB.Bson;
 
 namespace Tests.Friends.Requests.Accept;
 
+[DefaultPriority(0)]
 public class Tests : TestClass<Fixture> {
     public Tests(Fixture fixture, ITestOutputHelper output) : base(fixture, output) { }
 
@@ -30,105 +31,73 @@ public class Tests : TestClass<Fixture> {
 		friendRequest!.Status.Should().Be(Status.Accepted);
     }
 
-	//[Fact]
-	//public async Task Valid_No_Message() {
-	//	var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-	//		AccountID = Fixture.UserID1,
-	//		RecipientID = Fixture.UserID2
-	//	});
+    [Fact, Priority(2)]
+    public async Task Request_Not_Pending() {
+        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+            AccountID = Fixture.UserID1,
+			RequestID = Fixture.RequestID1,
+        });
 
-	//	res.IsSuccessStatusCode.Should().BeTrue();
-	//}
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
 
-	//[Fact]
- //   public async Task Duplicated_Friend_Request() {
- //       var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
- //           AccountID = Fixture.UserID1,
- //           Message = "Let's be friends.",
- //           RecipientID = Fixture.UserID2
- //       });
+	[Fact, Priority(2)]
+	public async Task Already_Friends() {
+		var newRequestID = ObjectId.GenerateNewId().ToString();
 
- //       res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
- //   }
+		await DB.InsertAsync(new FriendRequest() {
+			ID = newRequestID,
+			RecipientID = Fixture.UserID1,
+			RequesterID = Fixture.UserID2,
+		});
 
-	//[Fact]
-	//public async Task Request_To_Self() {
-	//	var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-	//		AccountID = Fixture.UserID1,
-	//		Message = "Let's be friends.",
-	//		RecipientID = Fixture.UserID1
-	//	});
+		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.UserID1,
+			RequestID = newRequestID
+		});
 
-	//	res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-	//}
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-	//[Fact]
-	//public async Task Already_Friends() {
-	//	await DB.Update<User>()
-	//		.Modify(u => u.FriendIDs, new List<string> { Fixture.UserID1 })
-	//		.MatchID(Fixture.UserID2).ExecuteAsync();
+		await DB.DeleteAsync<FriendRequest>(newRequestID);
+	}
 
- //       var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
- //           AccountID = Fixture.UserID1,
- //           Message = "Let's be friends.",
- //           RecipientID = Fixture.UserID2
- //       });
+	[Fact]
+	public async Task Invalid_RequestID() {
+		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.UserID1,
+			RequestID = "invalidid"
+		});
 
- //       res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
- //   }
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
 
- //   [Fact]
- //   public async Task Invalid_RecipientID() {
- //       var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
- //           AccountID = Fixture.UserID1,
- //           Message = "Let's be friends.",
- //           RecipientID = "invalid id"
- //       });
+	[Fact]
+	public async Task Nonexistant_Requester() {
+		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.UserID1,
+			RequestID = Fixture.RequestID3
+		});
 
- //       res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
- //   }
-    
- //   [Fact]
- //   public async Task Invalid_Account() {
- //       var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
- //           AccountID = ObjectId.GenerateNewId().ToString(),
- //           Message = "Let's be friends.",
- //           RecipientID = Fixture.UserID2
- //       });
+		res.StatusCode.Should().Be(HttpStatusCode.NotFound);
+	}
 
- //       res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
- //   }
+	[Fact]
+	public async Task Nonexistant_Request() {
+		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.UserID1,
+			RequestID = ObjectId.GenerateNewId().ToString(),
+		});
 
- //   [Fact]
- //   public async Task Invalid_Recipient() {
- //       var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
- //           AccountID = Fixture.UserID1,
- //           Message = "Let's be friends.",
- //           RecipientID = ObjectId.GenerateNewId().ToString()
- //       });
+		res.StatusCode.Should().Be(HttpStatusCode.NotFound);
+	}
 
- //       res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
- //   }
+	[Fact]
+	public async Task Not_Recipient() {
+		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.UserID1,
+			RequestID = Fixture.RequestID2,
+		});
 
- //   [Fact]
- //   public async Task Message_Too_Long() {
- //       var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
- //           AccountID = Fixture.UserID1,
- //           Message = new string('*', 251),
- //           RecipientID = "invalid id"
- //       });
-
- //       res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
- //   }
-
- //   [Fact]
- //   public async Task Empty_Message() {
- //       var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
- //           AccountID = Fixture.UserID1,
- //           Message = "",
- //           RecipientID = "invalid id"
- //       });
-
- //       res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
- //   }/
+		res.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+	}
 }

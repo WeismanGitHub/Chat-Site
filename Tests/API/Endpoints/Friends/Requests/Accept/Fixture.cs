@@ -65,6 +65,6 @@ public class Fixture : TestFixture<Program> {
 
     protected override async Task TearDownAsync() {
         await DB.DeleteAsync<User>(new List<string>() { UserID1, UserID2, UserID3 });
-        await DB.DeleteAsync<FriendRequest>(new List<string>() { RequestID1, RequestID2 });
+        await DB.DeleteAsync<FriendRequest>(new List<string>() { RequestID1, RequestID2, RequestID3 });
     }
 }

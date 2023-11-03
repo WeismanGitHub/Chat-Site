@@ -20,7 +20,9 @@ public class Endpoint : Endpoint<Request> {
             ThrowError("FriendRequest does not exist.", 404);
         } else if (friendRequest.RecipientID != req.AccountID) {
             ThrowError("You cannot accept this FriendRequest.", 403);
-        }
+        } else if (friendRequest.Status != Status.Pending) {
+			ThrowError("You can only accept pending requests.", 400);
+		}
 
         // These should be whatever the equivalent of Promise.all() is in C#.
         var recipient = await DB.Find<User>().MatchID(friendRequest.RecipientID).ExecuteSingleAsync();

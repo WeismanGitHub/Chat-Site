@@ -36,6 +36,12 @@ public class Endpoint : Endpoint<Request> {
             ThrowError("Already friends.", 400);
         }
 
+		if (requester.FriendIDs.Count >= 100) {
+			ThrowError("Requester cannot add any more friends.", 400);
+		} else if (recipient.FriendIDs.Count >= 100) {
+			ThrowError("Recipient cannot add any more friends.", 400);
+		}
+
         friendRequest.Status = Status.Accepted;
         requester.FriendIDs.Add(recipient.ID);
         recipient.FriendIDs.Add(requester.ID);

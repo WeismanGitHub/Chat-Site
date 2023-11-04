@@ -1,6 +1,4 @@
-﻿using API.Database.Entities;
-
-namespace API.Endpoints.Friends.Get;
+﻿namespace API.Endpoints.Friends.Get;
 
 public sealed class Endpoint : Endpoint<Request> {
     public override void Configure() {

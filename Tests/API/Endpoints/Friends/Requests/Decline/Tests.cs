@@ -1,4 +1,4 @@
-using API.Endpoints.Friends.Requests.Accept;
+using API.Endpoints.Friends.Requests.Decline;
 using API.Database.Entities;
 using MongoDB.Entities;
 using MongoDB.Bson;
@@ -16,12 +16,11 @@ public class Tests : TestClass<Fixture> {
 			RequestID = Fixture.RequestID1,
         });
 
+        res.IsSuccessStatusCode.Should().BeTrue();
+
 		var friendRequest = await DB.Find<FriendRequest>().MatchID(Fixture.RequestID1).ExecuteSingleAsync();
 
-        //res.IsSuccessStatusCode.Should().BeTrue();
-		res.StatusCode.Should().Be(HttpStatusCode.OK);
 		friendRequest.Should().NotBeNull();
-
 		friendRequest!.Status.Should().Be(Status.Declined);
     }
 

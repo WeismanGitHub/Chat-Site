@@ -61,6 +61,39 @@ public class Tests : TestClass<Fixture> {
 		await DB.DeleteAsync<FriendRequest>(newRequestID);
 	}
 
+	[Fact, Priority(3)]
+	public async Task Recipient_Has_Max_Friends() {
+		await DB.Update<User>()
+			.MatchID(Fixture.UserID1).Modify(u => u.FriendIDs, Enumerable.Repeat("friendID", 100).ToList())
+			.ExecuteAsync();
+
+		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.UserID1,
+			RequestID = Fixture.RequestID4
+		});
+
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+		await DB.Update<User>()
+			.MatchID(Fixture.UserID1).Modify(u => u.FriendIDs, new List<string>())
+			.ExecuteAsync();
+	}
+
+	[Fact, Priority(3)]
+	public async Task Requester_Has_Max_Friends() {
+		await DB.Update<User>()
+			.MatchID(Fixture.UserID3).Modify(u => u.FriendIDs, Enumerable.Repeat("friendID", 100).ToList())
+			.ExecuteAsync();
+
+		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.UserID1,
+			RequestID = Fixture.RequestID4
+		});
+
+		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
+
+
 	[Fact]
 	public async Task Invalid_RequestID() {
 		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
@@ -70,7 +103,6 @@ public class Tests : TestClass<Fixture> {
 
 		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 	}
-
 	[Fact]
 	public async Task Nonexistant_Requester() {
 		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {

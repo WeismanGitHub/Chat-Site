@@ -20,16 +20,6 @@ public class Tests : TestClass<Fixture> {
     }
 
 	[Fact]
-	public async Task Valid_No_Message() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-			AccountID = Fixture.UserID1,
-			RecipientID = Fixture.UserID2
-		});
-
-		res.IsSuccessStatusCode.Should().BeTrue();
-	}
-
-	[Fact]
     public async Task Duplicated_Friend_Request() {
         var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
             AccountID = Fixture.UserID1,

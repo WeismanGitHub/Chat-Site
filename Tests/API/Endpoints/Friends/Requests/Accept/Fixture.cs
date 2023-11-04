@@ -2,8 +2,6 @@
 using API.Database.Entities;
 using MongoDB.Entities;
 using MongoDB.Bson;
-using Microsoft.Identity.Client;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.DataCollection;
 
 namespace Tests.Friends.Requests.Accept;
 

@@ -1,9 +1,9 @@
 ﻿namespace API.Endpoints.Friends.Requests.Accept;
 
 public class Request {
-        [From(Claim.AccountID, IsRequired = true)]
-        public string AccountID { get; set; }
-        public required string RequestID { get; set; }
+    [From(Claim.AccountID, IsRequired = true)]
+    public string AccountID { get; set; }
+    public required string RequestID { get; set; }
 }
 
 internal sealed class Validator : Validator<Request> {

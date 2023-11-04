@@ -32,7 +32,6 @@
 
   <ItemGroup>
     <Folder Include="Endpoints\Friends\Remove\" />
-    <Folder Include="Endpoints\Friends\Requests\Decline\" />
     <Folder Include="Endpoints\Friends\Requests\Get\" />
   </ItemGroup>
 

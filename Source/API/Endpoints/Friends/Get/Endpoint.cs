@@ -1,6 +1,6 @@
 ﻿namespace API.Endpoints.Friends.Get;
 
-public sealed class Endpoint : Endpoint<Request> {
+public sealed class Endpoint : Endpoint<Request, List<User>> {
     public override void Configure() {
         Get("/");
         Group<FriendGroup>();

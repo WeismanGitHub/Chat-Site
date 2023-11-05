@@ -1,7 +1,6 @@
 ﻿using Signin = API.Endpoints.Account.Signin;
 using API.Database.Entities;
 using MongoDB.Entities;
-using MongoDB.Bson;
 
 namespace Tests.Friends.Requests.Get;
 
@@ -19,6 +18,11 @@ public class Fixture : TestFixture<Program> {
 
 		_users[0] = account;
 		await DB.InsertAsync(_users);
+
+		await Client.POSTAsync<Signin.Endpoint, Signin.Request>(new Signin.Request() {
+			Email = ValidAccount.Email,
+			Password = ValidAccount.Password,
+		});
 	}
 
     protected override async Task TearDownAsync() {

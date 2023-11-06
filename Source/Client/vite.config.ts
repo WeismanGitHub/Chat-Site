@@ -24,6 +24,7 @@ const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 // https://vitejs.dev/config/
 export default defineConfig({
     build: {
+        emptyOutDir: true,
         outDir: '../API/wwwroot',
     },
     plugins: [plugin()],

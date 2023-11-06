@@ -10,7 +10,9 @@ var section = config.GetSection("Settings");
 var settings = section.Get<Settings>()!;
 var app = builder.Build();
 
-app.UseAuthentication()
+app
+	.UseDefaultFiles()
+	.UseStaticFiles()
     .UseDefaultExceptionHandler()
     .UseAuthorization()
     .UseAuthentication()

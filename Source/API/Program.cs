@@ -10,36 +10,37 @@ var section = config.GetSection("Settings");
 var settings = section.Get<Settings>()!;
 var app = builder.Build();
 
-app
-	.UseDefaultFiles()
+app.MapFallbackToFile("/index.html");
+app.UseDefaultFiles()
 	.UseStaticFiles()
-    .UseDefaultExceptionHandler()
-    .UseAuthorization()
-    .UseAuthentication()
-    .UseFastEndpoints(config => {
-        config.Endpoints.RoutePrefix = "API";
+	.UseDefaultExceptionHandler()
+	.UseAuthorization()
+	.UseAuthentication()
+	.UseFastEndpoints(config => {
+		config.Endpoints.RoutePrefix = "API";
 
-        config.Errors.ResponseBuilder = (failures, ctx, statusCode) => {
-            return new ValidationProblemDetails(
-                failures.GroupBy(f => f.PropertyName)
-                .ToDictionary(
-                    keySelector: e => e.Key,
-                    elementSelector: e => e.Select(m => m.ErrorMessage).ToArray())) {
-                        Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                        Title = "One or more validation errors occurred.",
-                        Status = statusCode,
-                        Instance = ctx.Request.Path,
-                        Extensions = { { "traceId", ctx.TraceIdentifier }
-                    }
-                };
-        };
-    })
-    .UseHttpsRedirection()
-    .UseResponseCaching()
-    .UseSwaggerGen();
+		config.Errors.ResponseBuilder = (failures, ctx, statusCode) => {
+			return new ValidationProblemDetails(
+				failures.GroupBy(f => f.PropertyName)
+				.ToDictionary(
+					keySelector: e => e.Key,
+					elementSelector: e => e.Select(m => m.ErrorMessage).ToArray())) {
+				Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+				Title = "One or more validation errors occurred.",
+				Status = statusCode,
+				Instance = ctx.Request.Path,
+				Extensions = { { "traceId", ctx.TraceIdentifier }
+					}
+			};
+		};
+	})
+	.UseHttpsRedirection()
+	.UseResponseCaching()
+	.UseSwaggerGen();
 
 await InitDatabase();
 app.Run();
+
 
 async Task InitDatabase() {
     BsonSerializer.RegisterSerializer(new ObjectSerializer(type =>

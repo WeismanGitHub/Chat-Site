@@ -2,7 +2,7 @@
 
 public sealed class Endpoint : Endpoint<Request, List<User>> {
     public override void Configure() {
-        Get("/remove");
+        Post("/remove");
         Group<FriendGroup>();
         Version(1);
         

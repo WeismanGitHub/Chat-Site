@@ -1,18 +1,32 @@
-// import { useQuery } from '@tanstack/react-query'
-// import ky from 'ky';
+import { useQuery } from '@tanstack/react-query';
+import ky from 'ky';
 
-export default function App() {
-    return <div>hello world</div>;
-    // const { isLoading, error, data } = useQuery({
-    //     queryKey: ['data'],
-    //     queryFn: () => ky.get('https://localhost:7005/').text(),
-    // })
+type friend = {
+    ID: string;
+    DisplayName: string;
+    CreatedAt: string;
+};
 
-    // if (isLoading) return 'Loading...'
+export default function Home() {
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['data'],
+        queryFn: (): Promise<friend[]> => ky.get('/api/friends').json(),
+    });
 
-    // if (error) return 'An error has occurred: ' + (error instanceof Error ? error.message : 'unknown')
+    if (error) {
+        throw error;
+    }
 
-    // return (<>
-    //     {data}
-    // </>)
+    return (
+        <div>
+            {(isLoading == true ? [] : data!).map((friend) => {
+                return (
+                    <>
+                        {friend.DisplayName}
+                        {friend.CreatedAt}
+                    </>
+                );
+            })}
+        </div>
+    );
 }

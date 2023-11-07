@@ -1,30 +1,26 @@
-// import { useQuery } from '@tanstack/react-query'
-import { Form } from 'react-bootstrap';
-// import ky from 'ky';
+import { useState } from 'react';
+
+import Signin from '../components/signin';
+import Signup from '../components/signup';
 
 export default function Auth() {
-    // const { isLoading, error, data } = useQuery({
-    //     queryKey: ['data'],
-    //     queryFn: () => ky.get('https://localhost:7005/').text(),
-    // })
-
-    // if (error) return 'An error has occurred: ' + (error instanceof Error ? error.message : 'unknown')
+    const [showSignin, setShowSignin] = useState<boolean>(true);
 
     return (
-        <>
-            <Form>
-                <div className="mb-3">
-                    <label htmlFor="exampleInputEmail1" className="form-label">
-                        Email address
-                    </label>
-                    <input
-                        type="email"
-                        className="form-control"
-                        id="exampleInputEmail1"
-                        aria-describedby="emailHelp"
-                    />
+        <div>
+            <div className="" style={{ margin: 'auto' }}>
+                <div className="" style={{ margin: 'auto' }}>
+                    {showSignin ? <Signin /> : <Signup />}
+                    <button
+                        type="button"
+                        className=""
+                        onClick={() => setShowSignin(!showSignin)}
+                        style={{ margin: 'auto' }}
+                    >
+                        Click here to {showSignin ? 'signup' : 'signin'}.
+                    </button>
                 </div>
-            </Form>
-        </>
+            </div>
+        </div>
     );
 }

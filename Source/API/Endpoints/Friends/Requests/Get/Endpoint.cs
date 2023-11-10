@@ -1,15 +1,13 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace API.Endpoints.Friends.Requests.Get;
+﻿namespace API.Endpoints.Friends.Requests.Get;
 
 public sealed class Endpoint : Endpoint<Request> {
     public override void Configure() {
-        Post("/");
+        Get("/");
         Group<RequestGroup>();
         Version(1);
         
         Summary(settings => {
-            settings.Summary = "Send a friend request to a user.";
+            settings.Summary = "Get friend requests.";
         });
     }
 

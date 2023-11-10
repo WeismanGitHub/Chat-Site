@@ -35,7 +35,6 @@
     <Folder Include="Endpoints\Conversations\Conversation\Leave\" />
     <Folder Include="Endpoints\Conversations\Conversation\Join\" />
     <Folder Include="Endpoints\Conversations\Get\" />
-    <Folder Include="Endpoints\Conversations\Create\" />
     <Folder Include="Endpoints\Conversations\Conversation\Update\" />
   </ItemGroup>
 

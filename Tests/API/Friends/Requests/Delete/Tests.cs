@@ -1,6 +1,4 @@
 using API.Endpoints.Friends.Requests.Delete;
-using API.Database.Entities;
-using MongoDB.Entities;
 using MongoDB.Bson;
 
 namespace Tests.API.Friends.Requests.Delete;

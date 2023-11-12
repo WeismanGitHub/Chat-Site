@@ -1,7 +1,6 @@
 ﻿using Signin = API.Endpoints.Account.Signin;
 using API.Database.Entities;
 using MongoDB.Entities;
-using Tests.API;
 
 namespace Tests.API.Friends.Get;
 

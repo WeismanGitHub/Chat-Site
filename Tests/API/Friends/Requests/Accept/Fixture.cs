@@ -2,7 +2,6 @@
 using API.Database.Entities;
 using MongoDB.Entities;
 using MongoDB.Bson;
-using Tests.API;
 
 namespace Tests.API.Friends.Requests.Accept;
 

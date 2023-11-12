@@ -1,5 +1,4 @@
 using API.Endpoints.Account.Signin;
-using Tests.API;
 
 namespace Tests.API.Account.Signin;
 

@@ -11,11 +11,12 @@ var settings = section.Get<Settings>()!;
 var app = builder.Build();
 
 app.MapFallbackToFile("/index.html");
-app.UseDefaultFiles()
-	.UseStaticFiles()
+app
+	.UseAuthentication()
 	.UseDefaultExceptionHandler()
 	.UseAuthorization()
-	.UseAuthentication()
+	.UseDefaultFiles()
+	.UseStaticFiles()
 	.UseFastEndpoints(config => {
 		config.Endpoints.RoutePrefix = "API";
 
@@ -41,25 +42,24 @@ app.UseDefaultFiles()
 await InitDatabase();
 app.Run();
 
-
 async Task InitDatabase() {
-    BsonSerializer.RegisterSerializer(new ObjectSerializer(type =>
-        ObjectSerializer.DefaultAllowedTypes(type) || type.Name!.EndsWith("Message"))
-    );
+	BsonSerializer.RegisterSerializer(new ObjectSerializer(type =>
+		ObjectSerializer.DefaultAllowedTypes(type) || type.Name!.EndsWith("Message"))
+	);
 
-    var connectionString = settings.Database.MongoURI;
-    await DB.InitAsync(settings.Database.Name, MongoClientSettings.FromConnectionString((connectionString)));
+	var connectionString = settings.Database.MongoURI;
+	await DB.InitAsync(settings.Database.Name, MongoClientSettings.FromConnectionString((connectionString)));
 
-    await DB.Index<User>()
-        .Key(u => u.Email, KeyType.Ascending)
-        .Option(o => o.Unique = true)
-        .CreateAsync();
+	await DB.Index<User>()
+		.Key(u => u.Email, KeyType.Ascending)
+		.Option(o => o.Unique = true)
+		.CreateAsync();
 
-    await DB.Index<FriendRequest>()
-        .Key(fr => fr.RecipientID, KeyType.Ascending)
-        .CreateAsync();
+	await DB.Index<FriendRequest>()
+		.Key(fr => fr.RecipientID, KeyType.Ascending)
+		.CreateAsync();
 
-    await DB.MigrateAsync();
+	await DB.MigrateAsync();
 }
 
 public partial class Program { }

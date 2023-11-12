@@ -1,7 +1,6 @@
 using API.Endpoints.Account.Update;
 using API.Database.Entities;
 using MongoDB.Entities;
-using Tests.API;
 
 namespace Tests.API.Account.Update;
 

@@ -1,6 +1,6 @@
 ﻿namespace API.Endpoints.Conversations.Create;
 
-public sealed class Endpoint : Endpoint<Request, List<User>> {
+public sealed class Endpoint : Endpoint<Request, Response> {
     public override void Configure() {
         Post("/");
         Group<ConversationGroup>();
@@ -22,14 +22,18 @@ public sealed class Endpoint : Endpoint<Request, List<User>> {
 			ThrowError("Cannot join more than 100 conversations.", 400);
 		}
 
-		//var convo = await DB.InsertAsync<Conversa>
-  //      await DB.Update<User>()
-  //          .M(u => account.FriendIDs.Contains(u.ID))
-  //          .Project(u => new() {
-  //              DisplayName = u.DisplayName,
-  //              ID = u.ID,
-  //              CreatedAt = u.CreatedAt
-  //          })
-  //          .ExecuteAsync();
-    }
+		var convoID = ObjectId.GenerateNewId().ToString();
+		await DB.InsertAsync(new Conversation() {
+			ID = convoID,
+			Name = req.ConversationName,
+			MemberIDs = new List<string>() { account.ID }
+		});
+
+		account.ConversationIDs.Add(convoID);
+		await account.SaveAsync();
+		
+		await SendAsync(new() {
+			ConversationID = convoID
+		});
+	}
 }

@@ -11,7 +11,7 @@ public sealed class Endpoint : Endpoint<Request, List<User>> {
         });
     }
 
-    public override async Task<List<User>> HandleAsync(Request req, CancellationToken cancellationToken) {
+    public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
         var account = await DB.Find<User>()
             .Project(u => new() { FriendIDs = u.FriendIDs })
             .OneAsync(req.AccountID);
@@ -21,10 +21,10 @@ public sealed class Endpoint : Endpoint<Request, List<User>> {
         }
 
         if (account.FriendIDs.Count == 0) {
-            return new List<User>();
+            await SendAsync(new List<User>());
         }
 
-        return await DB
+        var friends = await DB
         .Find<User>()
             .Match(u => account.FriendIDs.Contains(u.ID))
             .Project(u => new() {
@@ -33,5 +33,7 @@ public sealed class Endpoint : Endpoint<Request, List<User>> {
                 CreatedAt = u.CreatedAt
             })
             .ExecuteAsync();
+
+		await SendAsync(friends);
     }
 }

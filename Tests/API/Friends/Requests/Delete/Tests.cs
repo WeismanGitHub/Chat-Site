@@ -3,18 +3,18 @@ using API.Database.Entities;
 using MongoDB.Entities;
 using MongoDB.Bson;
 
-namespace Tests.Friends.Requests.Delete;
+namespace Tests.API.Friends.Requests.Delete;
 
 [DefaultPriority(0)]
 public class Tests : TestClass<Fixture> {
-    public Tests(Fixture fixture, ITestOutputHelper output) : base(fixture, output) { }
+	public Tests(Fixture fixture, ITestOutputHelper output) : base(fixture, output) { }
 
-    [Fact, Priority(1)]
-    public async Task Valid_Request() {
-        var res = await Fixture.Client.DELETEAsync<Endpoint, Request>(new() {
-            AccountID = Fixture.AccountID,
+	[Fact, Priority(1)]
+	public async Task Valid_Request() {
+		var res = await Fixture.Client.DELETEAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.AccountID,
 			RequestID = Fixture.Request1ID
-        });
+		});
 
 		res.IsSuccessStatusCode.Should().BeTrue();
 	}
@@ -30,7 +30,7 @@ public class Tests : TestClass<Fixture> {
 	}
 
 	[Fact]
-    public async Task Nonexistant_Request() {
+	public async Task Nonexistant_Request() {
 		var res = await Fixture.Client.DELETEAsync<Endpoint, Request>(new() {
 			AccountID = Fixture.AccountID,
 			RequestID = ObjectId.GenerateNewId().ToString(),

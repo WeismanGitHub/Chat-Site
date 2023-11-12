@@ -3,24 +3,24 @@ using API.Database.Entities;
 using MongoDB.Entities;
 using MongoDB.Bson;
 
-namespace Tests.Friends.Requests.Accept;
+namespace Tests.API.Friends.Requests.Accept;
 
 [DefaultPriority(0)]
 public class Tests : TestClass<Fixture> {
-    public Tests(Fixture fixture, ITestOutputHelper output) : base(fixture, output) { }
+	public Tests(Fixture fixture, ITestOutputHelper output) : base(fixture, output) { }
 
-    [Fact, Priority(1)]
-    public async Task Valid_Friend_Request() {
-        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-            AccountID = Fixture.UserID1,
+	[Fact, Priority(1)]
+	public async Task Valid_Friend_Request() {
+		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.UserID1,
 			RequestID = Fixture.RequestID1,
-        });
+		});
 
 		var user1 = await DB.Find<User>().MatchID(Fixture.UserID1).ExecuteSingleAsync();
 		var user2 = await DB.Find<User>().MatchID(Fixture.UserID2).ExecuteSingleAsync();
 		var friendRequest = await DB.Find<FriendRequest>().MatchID(Fixture.RequestID1).ExecuteSingleAsync();
 
-        res.IsSuccessStatusCode.Should().BeTrue();
+		res.IsSuccessStatusCode.Should().BeTrue();
 
 		user1.Should().NotBeNull();
 		user2.Should().NotBeNull();
@@ -29,17 +29,17 @@ public class Tests : TestClass<Fixture> {
 		user1!.FriendIDs.Contains(Fixture.UserID2).Should().BeTrue();
 		user2!.FriendIDs.Contains(Fixture.UserID1).Should().BeTrue();
 		friendRequest!.Status.Should().Be(Status.Accepted);
-    }
+	}
 
-    [Fact, Priority(2)]
-    public async Task Request_Not_Pending() {
-        var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
-            AccountID = Fixture.UserID1,
+	[Fact, Priority(2)]
+	public async Task Request_Not_Pending() {
+		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+			AccountID = Fixture.UserID1,
 			RequestID = Fixture.RequestID1,
-        });
+		});
 
 		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
+	}
 
 	[Fact, Priority(2)]
 	public async Task Already_Friends() {

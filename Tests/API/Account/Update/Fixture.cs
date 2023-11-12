@@ -2,15 +2,16 @@
 using API.Database.Entities;
 using MongoDB.Entities;
 using MongoDB.Bson;
+using Tests.API;
 
-namespace Tests.Account.Update;
+namespace Tests.API.Account.Update;
 
 public class Fixture : TestFixture<Program> {
-    public Fixture(IMessageSink sink) : base(sink) { }
+	public Fixture(IMessageSink sink) : base(sink) { }
 
 	public string AccountID = ObjectId.GenerateNewId().ToString();
 
-    protected override async Task SetupAsync() {
+	protected override async Task SetupAsync() {
 		await DB.InsertAsync(new User() {
 			ID = AccountID,
 			DisplayName = ValidAccount.DisplayName,
@@ -25,6 +26,6 @@ public class Fixture : TestFixture<Program> {
 	}
 
 	protected override async Task TearDownAsync() {
-        await DB.DeleteAsync<User>(AccountID);
-    }
+		await DB.DeleteAsync<User>(AccountID);
+	}
 }

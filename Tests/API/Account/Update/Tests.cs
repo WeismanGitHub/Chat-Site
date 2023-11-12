@@ -1,16 +1,17 @@
 using API.Endpoints.Account.Update;
 using API.Database.Entities;
 using MongoDB.Entities;
+using Tests.API;
 
-namespace Tests.Account.Update;
+namespace Tests.API.Account.Update;
 
 [DefaultPriority(0)]
 public class Tests : TestClass<Fixture> {
-    public Tests(Fixture fixture, ITestOutputHelper output) : base(fixture, output) { }
+	public Tests(Fixture fixture, ITestOutputHelper output) : base(fixture, output) { }
 
 	[Fact, Priority(1)]
 	public async Task Valid_Update() {
-        var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
 				DisplayName = "New DisplayName",
@@ -18,17 +19,17 @@ public class Tests : TestClass<Fixture> {
 				Password = ValidAccount.Password + "new"
 			},
 			CurrentPassword = ValidAccount.Password
-        });
+		});
 
 		res.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
 		var acc = await DB.Find<User>().MatchID(Fixture.AccountID).ExecuteSingleAsync();
-        acc.Should().NotBeNull();
+		acc.Should().NotBeNull();
 
 		acc!.DisplayName.Should().Be("New DisplayName");
 		acc!.Email.Should().Be("new" + ValidAccount.Email);
 		BCrypt.Net.BCrypt.Verify(ValidAccount.Password + "new", acc!.PasswordHash).Should().BeTrue();
-    }
+	}
 
 	[Fact]
 	public async Task Invalid_CurrentPassword() {
@@ -47,7 +48,7 @@ public class Tests : TestClass<Fixture> {
 	public async Task No_Changes() {
 		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
 			AccountID = Fixture.AccountID,
-			NewData = new() {},
+			NewData = new() { },
 			CurrentPassword = ValidAccount.Password
 		});
 
@@ -155,7 +156,7 @@ public class Tests : TestClass<Fixture> {
 	[Fact]
 	public async Task Password_Missing_Digit() {
 		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
-			AccountID= Fixture.AccountID,
+			AccountID = Fixture.AccountID,
 			NewData = new() {
 				Password = "InvalidPassword"
 			},
@@ -174,7 +175,7 @@ public class Tests : TestClass<Fixture> {
 			},
 			CurrentPassword = ValidAccount.Password
 		});
-		
+
 		res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 	}
 

@@ -1,15 +1,16 @@
 ﻿using Signin = API.Endpoints.Account.Signin;
 using API.Database.Entities;
 using MongoDB.Entities;
+using Tests.API;
 
-namespace Tests.Friends.Requests.Get;
+namespace Tests.API.Friends.Get;
 
 public class Fixture : TestFixture<Program> {
-    public Fixture(IMessageSink sink) : base(sink) { }
-    public string AccountID { get; set; }
-	private List<User> _users {  get; set; }
+	public Fixture(IMessageSink sink) : base(sink) { }
+	public string AccountID { get; set; }
+	private List<User> _users { get; set; }
 
-    protected override async Task SetupAsync() {
+	protected override async Task SetupAsync() {
 		_users = FakeData.GenerateUsers(15);
 
 		var account = _users.First();
@@ -25,7 +26,7 @@ public class Fixture : TestFixture<Program> {
 		});
 	}
 
-    protected override async Task TearDownAsync() {
-        await DB.DeleteAsync<User>(_users.Select(u => u.ID));
-    }
+	protected override async Task TearDownAsync() {
+		await DB.DeleteAsync<User>(_users.Select(u => u.ID));
+	}
 }

@@ -15,7 +15,7 @@ internal static class FakeData {
 			.RuleFor(u => u.DisplayName, f => f.Name.FirstName())
 			.RuleFor(u => u.Email, f => f.Internet.Email())
 			.RuleFor(u => u.CreatedAt, f => DateTime.UtcNow)
-			.RuleFor(u => u.Conversations, f => null)
+			.RuleFor(u => u.ConversationIDs, f => new List<string>())
 			.RuleFor(u => u.FriendIDs, f => new List<string>())
 			.RuleFor(u => u.PasswordHash, f => BCrypt.Net.BCrypt.HashPassword(f.Internet.Password(length: 15, prefix: "Pw1")));
 

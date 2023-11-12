@@ -3,35 +3,33 @@
 public sealed class Endpoint : Endpoint<Request, List<User>> {
     public override void Configure() {
         Post("/");
-        Group<FriendGroup>();
+        Group<ConversationGroup>();
         Version(1);
         
         Summary(settings => {
-            settings.Summary = "Get logged in account's friends.";
+            settings.Summary = "Create a conversation.";
         });
     }
 
-    public override async Task<List<User>> HandleAsync(Request req, CancellationToken cancellationToken) {
+    public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
         var account = await DB.Find<User>()
             .Project(u => new() { FriendIDs = u.FriendIDs })
             .OneAsync(req.AccountID);
 
         if (account == null) {
             ThrowError("Could not find your account.", 404);
-        }
+        } else if (account.ConversationIDs.Count() >= 100) {
+			ThrowError("Cannot join more than 100 conversations.", 400);
+		}
 
-        if (account.FriendIDs.Count == 0) {
-            return new List<User>();
-        }
-
-        return await DB
-        .Find<User>()
-            .Match(u => account.FriendIDs.Contains(u.ID))
-            .Project(u => new() {
-                DisplayName = u.DisplayName,
-                ID = u.ID,
-                CreatedAt = u.CreatedAt
-            })
-            .ExecuteAsync();
+		//var convo = await DB.InsertAsync<Conversa>
+  //      await DB.Update<User>()
+  //          .M(u => account.FriendIDs.Contains(u.ID))
+  //          .Project(u => new() {
+  //              DisplayName = u.DisplayName,
+  //              ID = u.ID,
+  //              CreatedAt = u.CreatedAt
+  //          })
+  //          .ExecuteAsync();
     }
 }

@@ -3,7 +3,7 @@
 public static class Data {
     internal static async Task DeleteUser(User user) {
         var conversations = await DB.Find<Conversation>().ManyAsync(convo => 
-            user.Conversations.Any(c => c.ID == convo.ID)
+            user.ConversationIDs.Any(id => id == convo.ID)
         );
 
         var transaction = new Transaction();

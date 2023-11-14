@@ -1,6 +1,6 @@
 ﻿namespace API.Endpoints.Friends.Requests.Get;
 
-public sealed class Endpoint : Endpoint<Request> {
+public sealed class Endpoint : Endpoint<Request, List<FriendRequest>> {
     public override void Configure() {
         Get("/");
         Group<RequestGroup>();
@@ -11,8 +11,11 @@ public sealed class Endpoint : Endpoint<Request> {
         });
     }
 
-    public override async Task<List<FriendRequest>> HandleAsync(Request req, CancellationToken cancellationToken) {
-		var query = DB.PagedSearch<FriendRequest>().PageSize(10).PageNumber(1);
+    public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
+		var query = DB.PagedSearch<FriendRequest>()
+			.PageSize(10)
+			.PageNumber(1)
+			.Sort(s => s.CreatedAt, MongoDB.Entities.Order.Ascending);
 
         if (req.FriendReqType == FriendRequestType.Incoming) {
 			query.Match(fr => fr.RecipientID == req.AccountID);
@@ -20,7 +23,7 @@ public sealed class Endpoint : Endpoint<Request> {
 			query.Match(fr => fr.RequesterID == req.AccountID);
         }
 
-        var res = await query.ExecuteAsync();
-		return res.Results.ToList();
+        var res = (await query.ExecuteAsync()).Results.ToList();
+		await SendAsync(res);
     }
 }

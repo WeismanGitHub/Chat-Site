@@ -14,7 +14,7 @@ public sealed class Endpoint : Endpoint<Request, List<FriendRequest>> {
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
 		var query = DB.PagedSearch<FriendRequest>()
 			.PageSize(10)
-			.PageNumber(1)
+			.PageNumber(req.Page ?? 0)
 			.Sort(s => s.CreatedAt, MongoDB.Entities.Order.Ascending);
 
         if (req.FriendReqType == FriendRequestType.Incoming) {

@@ -8,8 +8,6 @@ namespace Tests.API.Friends.Requests.Get;
 public class Fixture : TestFixture<Program> {
 	public Fixture(IMessageSink sink) : base(sink) { }
 	public readonly string AccountID = ObjectId.GenerateNewId().ToString();
-	public readonly string Request1ID = ObjectId.GenerateNewId().ToString();
-	public readonly string Request2ID = ObjectId.GenerateNewId().ToString();
 
 	protected override async Task SetupAsync() {
 		await DB.InsertAsync(

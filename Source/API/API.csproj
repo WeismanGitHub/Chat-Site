@@ -31,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Endpoints\Conversations\Conversation\Get\" />
     <Folder Include="Endpoints\Conversations\Conversation\Leave\" />
     <Folder Include="Endpoints\Conversations\Conversation\Join\" />
     <Folder Include="Endpoints\Conversations\Get\" />

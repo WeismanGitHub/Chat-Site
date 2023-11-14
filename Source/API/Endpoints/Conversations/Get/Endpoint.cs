@@ -30,7 +30,6 @@ public sealed class Endpoint : Endpoint<Request, List<Conversation>> {
             .Project(u => new() {
 				ID = u.ID,
 				Name = u.Name,
-				CreatedAt = u.CreatedAt
             })
             .ExecuteAsync();
 

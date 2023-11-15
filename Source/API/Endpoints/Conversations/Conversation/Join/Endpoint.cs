@@ -2,7 +2,7 @@
 
 public sealed class Endpoint : Endpoint<Request> {
     public override void Configure() {
-		Post("/{ConversationID}");
+		Post("/{ConversationID}/join");
 		Group<ConversationGroup>();
         Version(1);
         

@@ -7,7 +7,7 @@ public sealed class Endpoint : Endpoint<Request, Response> {
         Version(1);
         
         Summary(settings => {
-            settings.Summary = "Get logged in account's conversations.";
+            settings.Summary = "Get the data for a conversation.";
         });
     }
 

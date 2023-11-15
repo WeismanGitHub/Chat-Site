@@ -13,3 +13,8 @@ public sealed class Request {
 	[QueryParam]
 	public int? Page { get; set; } = 0;
 }
+
+public sealed class Response {
+	public IReadOnlyList<FriendRequest> FriendRequests { get; set; }
+	public long TotalCount { get; set; }
+}

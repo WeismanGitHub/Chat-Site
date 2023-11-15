@@ -22,16 +22,20 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 			ThrowError("Cannot join more than 100 conversations.", 400);
 		}
 
+		var transaction = new Transaction();
+
 		var convoID = ObjectId.GenerateNewId().ToString();
-		await DB.InsertAsync(new Conversation() {
+		await transaction.InsertAsync(new Conversation() {
 			ID = convoID,
 			Name = req.ConversationName,
 			MemberIDs = new List<string>() { account.ID }
 		});
 
 		account.ConversationIDs.Add(convoID);
-		await account.SaveAsync();
-		
+		await transaction.SaveAsync(account);
+
+		await transaction.CommitAsync();
+
 		await SendAsync(new() {
 			ConversationID = convoID
 		});

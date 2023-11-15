@@ -1,6 +1,5 @@
 using API.Endpoints.Friends.Requests.Get;
 using API.Database.Entities;
-using MongoDB.Bson;
 
 namespace Tests.API.Friends.Requests.Get;
 
@@ -9,11 +8,15 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Default_Request() {
-		var res = await Fixture.Client.GETAsync<Endpoint, Request>(new() {
-			AccountID = Fixture.AccountID,
-		});
+		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, Response>(new());
 
-		res.IsSuccessStatusCode.Should().BeTrue();
+		//rsp.IsSuccessStatusCode.Should().BeTrue();
+		rsp.StatusCode.Should().Be(HttpStatusCode.OK);
+		res.FriendRequests.Count.Should().Be(10);
+
+		foreach (var friendReq in res.FriendRequests) {
+			friendReq.RecipientID.Should().Be(Fixture.AccountID);
+		}
 	}
 
 	[Fact]

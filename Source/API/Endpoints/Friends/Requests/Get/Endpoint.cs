@@ -1,6 +1,6 @@
 ﻿namespace API.Endpoints.Friends.Requests.Get;
 
-public sealed class Endpoint : Endpoint<Request, List<FriendRequest>> {
+public sealed class Endpoint : Endpoint<Request, IReadOnlyList<FriendRequest>> {
     public override void Configure() {
         Get("/");
         Group<RequestGroup>();
@@ -23,7 +23,7 @@ public sealed class Endpoint : Endpoint<Request, List<FriendRequest>> {
 			query.Match(fr => fr.RequesterID == req.AccountID);
         }
 
-        var res = (await query.ExecuteAsync()).Results.ToList();
+        var res = (await query.ExecuteAsync()).Results;
 		await SendAsync(res);
     }
 }

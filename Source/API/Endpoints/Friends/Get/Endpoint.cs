@@ -21,7 +21,7 @@ public sealed class Endpoint : Endpoint<Request, List<FriendResponse>> {
         }
 
         if (account.FriendIDs.Count == 0) {
-            await SendAsync(null);
+            await SendAsync(new());
         }
 
         var friends = await DB

@@ -63,8 +63,8 @@ public class Tests : TestClass<Fixture> {
 	public async Task Outgoing_Requests() {
 		var res = await Fixture.Client.GETAsync<Endpoint, Request>(new() {
 			AccountID = Fixture.AccountID,
-			FriendReqType = FriendRequestType.Outgoing
-		});
+			Type = FriendRequestType.Outgoing
+		}); ;
 
 		res.IsSuccessStatusCode.Should().BeTrue();
 	}
@@ -73,7 +73,7 @@ public class Tests : TestClass<Fixture> {
 	public async Task Incoming_Requests() {
 		var res = await Fixture.Client.GETAsync<Endpoint, Request>(new() {
 			AccountID = Fixture.AccountID,
-			FriendReqType = FriendRequestType.Incoming
+			Type = FriendRequestType.Incoming
 		});
 
 		res.IsSuccessStatusCode.Should().BeTrue();

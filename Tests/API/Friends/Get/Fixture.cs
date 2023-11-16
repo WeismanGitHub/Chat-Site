@@ -19,8 +19,6 @@ public class Fixture : TestFixture<Program> {
 		await DB.InsertAsync(_users);
 		await DB.InsertAsync(account);
 
-		await Task.Delay(5000);
-
 		await Client.POSTAsync<Signin.Endpoint, Signin.Request>(new Signin.Request() {
 			Email = ValidAccount.Email,
 			Password = ValidAccount.Password,

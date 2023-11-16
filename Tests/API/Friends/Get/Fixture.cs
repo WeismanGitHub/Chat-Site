@@ -12,12 +12,12 @@ public class Fixture : TestFixture<Program> {
 	protected override async Task SetupAsync() {
 		_users = FakeData.GenerateUsers(15);
 
-		var account = _users.First();
-		account.FriendIDs = _users.Skip(1).Select(u => u.ID).ToList();
+		var account = FakeData.GenerateUsers(1).First();
+		account.FriendIDs = _users.Select(u => u.ID).ToList();
 		AccountID = account.ID;
 
-		_users[0] = account;
 		await DB.InsertAsync(_users);
+		await DB.InsertAsync(account);
 
 		await Client.POSTAsync<Signin.Endpoint, Signin.Request>(new Signin.Request() {
 			Email = ValidAccount.Email,
@@ -27,5 +27,6 @@ public class Fixture : TestFixture<Program> {
 
 	protected override async Task TearDownAsync() {
 		await DB.DeleteAsync<User>(_users.Select(u => u.ID));
+		await DB.DeleteAsync<User>(AccountID);
 	}
 }

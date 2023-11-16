@@ -1,5 +1,4 @@
 using API.Endpoints.Friends.Requests.Get;
-using API.Database.Entities;
 
 namespace Tests.API.Friends.Requests.Get;
 
@@ -10,8 +9,7 @@ public class Tests : TestClass<Fixture> {
 	public async Task Default_Request() {
 		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, Response>(new());
 
-		//rsp.IsSuccessStatusCode.Should().BeTrue();
-		rsp.StatusCode.Should().Be(HttpStatusCode.OK);
+		rsp.IsSuccessStatusCode.Should().BeTrue();
 		res.FriendRequests.Count.Should().Be(10);
 
 		foreach (var friendReq in res.FriendRequests) {
@@ -20,62 +18,72 @@ public class Tests : TestClass<Fixture> {
 	}
 
 	[Fact]
-	public async Task First_Page_Specified() {
-		var res = await Fixture.Client.GETAsync<Endpoint, Request>(new() {
-			AccountID = Fixture.AccountID,
-			Page = 0
-		});
+	public async Task First_Page() {
+		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, Response>(new() {  Page = 1 });
 
-		res.IsSuccessStatusCode.Should().BeTrue();
+		rsp.IsSuccessStatusCode.Should().BeTrue();
+		res.FriendRequests.Count.Should().Be(10);
+
+		foreach (var friendReq in res.FriendRequests) {
+			friendReq.RecipientID.Should().Be(Fixture.AccountID);
+		}
 	}
 
 	[Fact]
 	public async Task Second_Page() {
-		var res = await Fixture.Client.GETAsync<Endpoint, Request>(new() {
-			AccountID = Fixture.AccountID,
-			Page = 1
-		});
+		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, Response>(new() { Page = 2 });
 
-		res.IsSuccessStatusCode.Should().BeTrue();
+		rsp.IsSuccessStatusCode.Should().BeTrue();
+		res.FriendRequests.Count.Should().Be(10);
+
+		foreach (var friendReq in res.FriendRequests) {
+			friendReq.RecipientID.Should().Be(Fixture.AccountID);
+		}
 	}
-	
+
 	[Fact]
 	public async Task Third_Page() {
-		var res = await Fixture.Client.GETAsync<Endpoint, Request>(new() {
-			AccountID = Fixture.AccountID,
-			Page = 2
-		});
+		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, Response>(new() { Page = 3 });
 
-		res.IsSuccessStatusCode.Should().BeTrue();
+		rsp.IsSuccessStatusCode.Should().BeTrue();
+		res.FriendRequests.Count.Should().Be(1);
+
+		res.FriendRequests.First().RecipientID.Should().Be(Fixture.AccountID);
 	}
 
 	[Fact]
 	public async Task Empty_Page() {
-		var res = await Fixture.Client.GETAsync<Endpoint, Request>(new() {
-			AccountID = Fixture.AccountID,
-			Page = 50
-		});
+		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, Response>(new() { Page = 50 });
 
-		res.IsSuccessStatusCode.Should().BeTrue();
+		rsp.IsSuccessStatusCode.Should().BeTrue();
+		res.FriendRequests.Count.Should().Be(0);
 	}
 
 	[Fact]
 	public async Task Outgoing_Requests() {
-		var res = await Fixture.Client.GETAsync<Endpoint, Request>(new() {
-			AccountID = Fixture.AccountID,
-			FriendReqType = FriendRequestType.Outgoing
-		});
+		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, Response>(
+			new() { Type = FriendRequestType.Outgoing }
+		);
 
-		res.IsSuccessStatusCode.Should().BeTrue();
+		rsp.IsSuccessStatusCode.Should().BeTrue();
+		res.FriendRequests.Count.Should().Be(10);
+
+		foreach (var friendReq in res.FriendRequests) {
+			friendReq.RequesterID.Should().Be(Fixture.AccountID);
+		}
 	}
 
 	[Fact]
 	public async Task Incoming_Requests() {
-		var res = await Fixture.Client.GETAsync<Endpoint, Request>(new() {
-			AccountID = Fixture.AccountID,
-			FriendReqType = FriendRequestType.Incoming
-		});
+		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, Response>(
+			new() { Type = FriendRequestType.Incoming }
+		);
 
-		res.IsSuccessStatusCode.Should().BeTrue();
+		rsp.IsSuccessStatusCode.Should().BeTrue();
+		res.FriendRequests.Count.Should().Be(10);
+
+		foreach (var friendReq in res.FriendRequests) {
+			friendReq.RecipientID.Should().Be(Fixture.AccountID);
+		}
 	}
 }

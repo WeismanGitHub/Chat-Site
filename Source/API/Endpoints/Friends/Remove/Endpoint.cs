@@ -1,6 +1,6 @@
 ﻿namespace API.Endpoints.Friends.Remove;
 
-public sealed class Endpoint : Endpoint<Request, List<User>> {
+public sealed class Endpoint : Endpoint<Request> {
     public override void Configure() {
         Post("/remove");
         Group<FriendGroup>();

@@ -9,24 +9,25 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Valid() {
-		var (res, rsp) = await Fixture.Client.GETAsync<Endpoint, Request, List<User>>(
-			new() { AccountID = Fixture.AccountID }
-		);
+		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, List<FriendResponse>>(new());
 
-		//res.IsSuccessStatusCode.Should().BeTrue();
-		res.StatusCode.Should().Be(HttpStatusCode.OK);
+		rsp.IsSuccessStatusCode.Should().BeTrue();
+		res.Should().NotBeNull();
+		res.Count.Should().Be(14);
 
 		var account = await DB.Find<User>().MatchID(Fixture.AccountID).ExecuteSingleAsync();
-		var friends = await DB
-			.Find<User>()
-				.Match(u => account!.FriendIDs.Contains(u.ID))
-				.Project(u => new() {
-					DisplayName = u.DisplayName,
-					ID = u.ID,
-					CreatedAt = u.CreatedAt
-				})
-				.ExecuteAsync();
+		var friendsDocuments = await DB
+			.Find<User, FriendResponse>()
+			.Match(u => account!.FriendIDs.Contains(u.ID))
+			.Project(u => new() {
+				ID = u.ID,
+				DisplayName = u.DisplayName,
+				CreatedAt = u.CreatedAt
+			})
+			.ExecuteAsync();
 
-		rsp.All(f => friends!.Contains(f)).Should().BeTrue();
+		foreach (var friend in res) {
+			friendsDocuments.Contains(friend).Should().BeTrue();
+		}
 	}
 }

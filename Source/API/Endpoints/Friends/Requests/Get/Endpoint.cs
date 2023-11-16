@@ -14,10 +14,10 @@ public sealed class Endpoint : Endpoint<Request, Response> {
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
 		var query = DB.PagedSearch<FriendRequest>()
 			.PageSize(10)
-			.PageNumber(req.Page ?? 0)
+			.PageNumber(req.Page ?? 1)
 			.Sort(s => s.CreatedAt, MongoDB.Entities.Order.Ascending);
 
-        if (req.FriendReqType == FriendRequestType.Incoming) {
+        if (req.Type == FriendRequestType.Incoming) {
 			query.Match(fr => fr.RecipientID == req.AccountID);
         } else {
 			query.Match(fr => fr.RequesterID == req.AccountID);

@@ -5,7 +5,7 @@ public sealed class Request {
     public string AccountID { get; set; }
 }
 
-public sealed class Friends {
+public sealed class FriendResponse {
 	public string DisplayName { get; set; }
 	public string ID { get; set; }
 	public DateTime CreatedAt { get; set; }

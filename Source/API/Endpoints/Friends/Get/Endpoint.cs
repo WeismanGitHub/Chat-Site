@@ -1,6 +1,6 @@
 ﻿ namespace API.Endpoints.Friends.Get;
 
-public sealed class Endpoint : Endpoint<Request, List<FriendResponse>> {
+public sealed class Endpoint : Endpoint<Request, List<FriendDTO>> {
     public override void Configure() {
         Get("/");
         Group<FriendGroup>();
@@ -25,9 +25,9 @@ public sealed class Endpoint : Endpoint<Request, List<FriendResponse>> {
         }
 
         var friends = await DB
-			.Find<User, FriendResponse>()
+			.Find<User, FriendDTO>()
             .Match(u => account.FriendIDs.Contains(u.ID))
-            .Project(u => new FriendResponse() {
+            .Project(u => new FriendDTO() {
                 ID = u.ID,
                 DisplayName = u.DisplayName,
                 CreatedAt = u.CreatedAt

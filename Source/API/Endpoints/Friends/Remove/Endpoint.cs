@@ -2,7 +2,7 @@
 
 public sealed class Endpoint : Endpoint<Request> {
     public override void Configure() {
-        Post("/remove");
+        Post("/{FriendID}/remove");
         Group<FriendGroup>();
         Version(1);
         
@@ -13,19 +13,21 @@ public sealed class Endpoint : Endpoint<Request> {
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
         var account = await DB.Find<User>().OneAsync(req.AccountID);
-        var friend = await DB.Find<User>().OneAsync(req.AccountID);
 
 		if (account == null) {
 			ThrowError("Could not find your account.", 404);
-		} else if (friend == null) {
-			ThrowError("Could not find friend.", 404);
+		} else if (!account.FriendIDs.Contains(req.FriendID)) {
+			ThrowError("You are not friends.", 400);
 		}
 
-		bool wereFriends = account.FriendIDs.Remove(friend.ID) && friend.FriendIDs.Remove(account.ID);
+        var friend = await DB.Find<User>().OneAsync(req.FriendID);
 
-		if (!wereFriends) {
-			ThrowError("You were not friends.", 400);
+		if (friend == null) {
+			ThrowError("Cannot find friend.", 404);
 		}
+
+		account.FriendIDs.Remove(friend.ID);
+		friend.FriendIDs.Remove(account.ID);
 
 		await account.SaveAsync();
 		await friend.SaveAsync();

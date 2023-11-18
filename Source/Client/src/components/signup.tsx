@@ -1,4 +1,4 @@
-import { Form, Button, Col, InputGroup } from 'react-bootstrap';
+import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap';
 import * as formik from 'formik';
 import * as yup from 'yup';
 
@@ -6,104 +6,108 @@ export default function Signup() {
     const { Formik } = formik;
 
     const schema = yup.object().shape({
-        dislayName: yup.string().required(),
-        email: yup.string().required().email(),
-        password: yup.string().required(),
+        displayName: yup.string().required().min(1).max(25),
+        email: yup.string().required().email("Must be a valid email."),
+        password: yup.string().required().min(10).max(70),
         confirmPassword: yup.string().required(),
     });
 
-    // function submit(data: typeof schema) {
-    //     console.log(data)
-    // }
+  return (<Formik
+    validationSchema={schema}
+    validate={(values) => {
+        const errors: { confirmPassword?: string, } = {};
 
-    return (
-        <Formik
-            validationSchema={schema}
-            onSubmit={console.log}
-            initialValues={{
-                displayName: 'Display Name',
-                email: 'example@email.com',
-                password: 'Password',
-                confirmPassword: 'Password',
-            }}
-        >
-            {({ handleSubmit, handleChange, values, touched, errors }) => (
-                <Form noValidate onSubmit={handleSubmit}>
-                    <Form.Group
-                        as={Col}
-                        md="4"
-                        controlId="validationFormikDisplayName"
-                    >
-                        <Form.Label>Display Name</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="DisplayName"
-                            placeholder={values.displayName}
-                            onChange={handleChange}
-                            isValid={touched.displayName && !errors.displayName}
-                        />
-                        <Form.Control.Feedback>
-                            Looks good!
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group
-                        as={Col}
-                        md="4"
-                        controlId="validationFormikEmail"
-                    >
-                        <Form.Label>Email</Form.Label>
+        if (values.password !== values.confirmPassword) {
+            errors.confirmPassword = "Passwords do not match."
+        }
+
+        return errors
+    }}
+    validateOnChange
+        onSubmit={(values) => {
+            console.log(values)
+        }}
+        initialValues={{
+            displayName: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+        }}
+    >
+        {({ handleSubmit, handleChange, values, errors }) => (
+            <Form noValidate onSubmit={handleSubmit}>
+                <Row className="mb-3">
+                    <Form.Group as={Col} controlId="DisplayNameID">
+                        <Form.Label>DisplayName</Form.Label>
                         <InputGroup hasValidation>
                             <Form.Control
                                 type="text"
-                                placeholder="Email"
+                                placeholder="DisplayName"
                                 aria-describedby="inputGroupPrepend"
-                                name="email"
+                                name="displayName"
+                                value={values.displayName}
                                 onChange={handleChange}
-                                isInvalid={!!errors.email}
+                                isInvalid={!!errors.displayName}
                             />
                             <Form.Control.Feedback type="invalid">
-                                {errors.email}
+                                {errors.displayName}
                             </Form.Control.Feedback>
                         </InputGroup>
                     </Form.Group>
-                        <Form.Group
-                            as={Col}
-                            md="3"
-                            controlId="validationFormik04"
-                        >
-                            <Form.Label>Password</Form.Label>
+                </Row>
+                <Row className="mb-3">
+                    <Form.Group as={Col} controlId="EmailID">
+                        <Form.Label>Email</Form.Label>
+                        <InputGroup hasValidation>
                             <Form.Control
-                                type="text"
-                                placeholder={values.password}
+                                type="email"
+                                placeholder="example@email.com"
+                                name="email"
+                                value={values.email}
+                                onChange={handleChange}
+                                isInvalid={!!errors.email}
+                            />
+                        </InputGroup>
+                        <Form.Control.Feedback type="invalid">
+                            {errors.email}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Row>
+                <Row className="mb-3">
+                    <Form.Group as={Col} controlId="PasswordID">
+                        <Form.Label>Password</Form.Label>
+                        <InputGroup hasValidation>
+                            <Form.Control
+                                type="password"
+                                aria-describedby="inputGroupPrepend"
                                 name="password"
+                                value={values.password}
                                 onChange={handleChange}
                                 isInvalid={!!errors.password}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {errors.password}
                             </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group
-                            as={Col}
-                            md="3"
-                            controlId="validationFormik05"
-                        >
-                            <Form.Label>Confirm Password</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder={values.confirmPassword}
-                                name="confirm password"
-                                onChange={handleChange}
-                                isInvalid={!!errors.confirmPassword}
-                            />
-
-                            <Form.Control.Feedback type="invalid">
-                                {errors.confirmPassword}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    <Button type="submit">Submit form</Button>
-                </Form>
-            )}
-        </Formik>
-    );
+                        </InputGroup>
+                    </Form.Group>
+                </Row>
+                <Row className="mb-3">
+                    <Form.Group as={Col} controlId="ConfirmPasswordID">
+                        <Form.Label>Confirm</Form.Label>
+                        <Form.Control
+                            type="password"
+                            name="confirmPassword"
+                            value={values.confirmPassword}
+                            onChange={handleChange}
+                            isInvalid={!!errors.confirmPassword}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            {errors.confirmPassword}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Row>
+                <Button type="submit">Sign Up</Button>
+            </Form>
+        )}
+    </Formik>);
 }

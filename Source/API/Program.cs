@@ -16,6 +16,9 @@ app
 	.UseDefaultExceptionHandler()
 	.UseAuthorization()
 	.UseDefaultFiles()
+	.UseWebSockets(new WebSocketOptions() {
+		KeepAliveInterval = TimeSpan.FromSeconds(5)
+	})
 	.UseStaticFiles()
 	.UseFastEndpoints(config => {
 		config.Endpoints.RoutePrefix = "API";

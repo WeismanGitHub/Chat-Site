@@ -1,5 +1,5 @@
 export default class Endpoints {
-    public readonly Signin = "/API/Account/Signin/v1"
-    public readonly Signup = "/API/Account/Signup/v1"
-    public readonly Account = "/API/Account/v1"
+    public static readonly Signin = "/API/Account/Signin/v1"
+    public static readonly Signup = "/API/Account/Signup/v1"
+    public static readonly Account = "/API/Account/v1"
 }

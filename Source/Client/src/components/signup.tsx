@@ -1,5 +1,8 @@
-import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap';
+import { Button, Col, Form, InputGroup, Row, Toast, ToastContainer } from 'react-bootstrap';
+import Endpoints from '../endpoints';
+import ky, { HTTPError } from 'ky';
 import * as formik from 'formik';
+import { useState } from 'react';
 import * as yup from 'yup';
 
 export default function Signup() {
@@ -12,102 +15,130 @@ export default function Signup() {
         confirmPassword: yup.string().required(),
     });
 
-  return (<Formik
-    validationSchema={schema}
-    validate={(values) => {
-        const errors: { confirmPassword?: string, } = {};
+    const [showError, setShowError] = useState(false);
+    const [error, setError] = useState<HTTPError>()
+    const toggleError = () => setShowError(!showError)
+    
+    return (<>
+        <ToastContainer position='top-end'>
+            <Toast
+                onClose={toggleError}
+                show={showError}
+                autohide={true}
+                
+                className="d-inline-block m-1"
+                bg={'danger'}
+            >
+                <Toast.Header>
+                    <strong className="me-auto">{error?.name || "Unable to read error name."}</strong>
+                </Toast.Header>
+                <Toast.Body>
+                    {error?.message || "Unable to read error message."}
+                </Toast.Body>
+            </Toast>
+        </ToastContainer>
 
-        if (values.password !== values.confirmPassword) {
-            errors.confirmPassword = "Passwords do not match."
-        }
+        <Formik
+            validationSchema={schema}
+            validate={(values) => {
+                const errors: { confirmPassword?: string, } = {};
 
-        return errors
-    }}
-    validateOnChange
-        onSubmit={(values) => {
-            console.log(values)
-        }}
-        initialValues={{
-            displayName: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-        }}
-    >
-        {({ handleSubmit, handleChange, values, errors }) => (
-            <Form noValidate onSubmit={handleSubmit}>
-                <Row className="mb-3">
-                    <Form.Group as={Col} controlId="DisplayNameID">
-                        <Form.Label>DisplayName</Form.Label>
-                        <InputGroup hasValidation>
-                            <Form.Control
-                                type="text"
-                                placeholder="DisplayName"
-                                aria-describedby="inputGroupPrepend"
-                                name="displayName"
-                                value={values.displayName}
-                                onChange={handleChange}
-                                isInvalid={!!errors.displayName}
-                            />
+                if (values.password !== values.confirmPassword) {
+                    errors.confirmPassword = "Passwords do not match."
+                }
+
+                return errors
+            }}
+            validateOnChange
+            onSubmit={async (values) => {
+                await ky.post(Endpoints.Signin, { json: values })
+                .catch((err: HTTPError) => {
+                    setShowError(true)
+                    setError(err)
+                })
+            }}
+            initialValues={{
+                displayName: '',
+                email: '',
+                password: '',
+                confirmPassword: '',
+            }}
+        >
+            {({ handleSubmit, handleChange, values, errors }) => (
+                <Form noValidate onSubmit={handleSubmit}>
+                    <Row className="mb-3">
+                        <Form.Group as={Col} controlId="DisplayNameID">
+                            <Form.Label>DisplayName</Form.Label>
+                            <InputGroup hasValidation>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="DisplayName"
+                                    aria-describedby="inputGroupPrepend"
+                                    name="displayName"
+                                    value={values.displayName}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.displayName}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.displayName}
+                                </Form.Control.Feedback>
+                            </InputGroup>
+                        </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group as={Col} controlId="EmailID">
+                            <Form.Label>Email</Form.Label>
+                            <InputGroup hasValidation>
+                                <Form.Control
+                                    type="email"
+                                    placeholder="example@email.com"
+                                    name="email"
+                                    value={values.email}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.email}
+                                />
+                            </InputGroup>
                             <Form.Control.Feedback type="invalid">
-                                {errors.displayName}
+                                {errors.email}
                             </Form.Control.Feedback>
-                        </InputGroup>
-                    </Form.Group>
-                </Row>
-                <Row className="mb-3">
-                    <Form.Group as={Col} controlId="EmailID">
-                        <Form.Label>Email</Form.Label>
-                        <InputGroup hasValidation>
-                            <Form.Control
-                                type="email"
-                                placeholder="example@email.com"
-                                name="email"
-                                value={values.email}
-                                onChange={handleChange}
-                                isInvalid={!!errors.email}
-                            />
-                        </InputGroup>
-                        <Form.Control.Feedback type="invalid">
-                            {errors.email}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                </Row>
-                <Row className="mb-3">
-                    <Form.Group as={Col} controlId="PasswordID">
-                        <Form.Label>Password</Form.Label>
-                        <InputGroup hasValidation>
+                        </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group as={Col} controlId="PasswordID">
+                            <Form.Label>Password</Form.Label>
+                            <InputGroup hasValidation>
+                                <Form.Control
+                                    type="password"
+                                    aria-describedby="inputGroupPrepend"
+                                    name="password"
+                                    value={values.password}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.password}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.password}
+                                </Form.Control.Feedback>
+                            </InputGroup>
+                        </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group as={Col} controlId="ConfirmPasswordID">
+                            <Form.Label>Confirm</Form.Label>
                             <Form.Control
                                 type="password"
-                                aria-describedby="inputGroupPrepend"
-                                name="password"
-                                value={values.password}
+                                name="confirmPassword"
+                                value={values.confirmPassword}
                                 onChange={handleChange}
-                                isInvalid={!!errors.password}
+                                isInvalid={!!errors.confirmPassword}
                             />
                             <Form.Control.Feedback type="invalid">
-                                {errors.password}
+                                {errors.confirmPassword}
                             </Form.Control.Feedback>
-                        </InputGroup>
-                    </Form.Group>
-                </Row>
-                <Row className="mb-3">
-                    <Form.Group as={Col} controlId="ConfirmPasswordID">
-                        <Form.Label>Confirm</Form.Label>
-                        <Form.Control
-                            type="password"
-                            name="confirmPassword"
-                            value={values.confirmPassword}
-                            onChange={handleChange}
-                            isInvalid={!!errors.confirmPassword}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {errors.confirmPassword}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                </Row>
-                <Button type="submit">Sign Up</Button>
-            </Form>
-        )}
-    </Formik>);
+                        </Form.Group>
+                    </Row>
+                    <Button type="submit">Sign Up</Button>
+                </Form>
+            )}
+        </Formik>
+    </>);
 }

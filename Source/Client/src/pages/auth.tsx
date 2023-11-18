@@ -10,7 +10,7 @@ export default function Auth() {
     return (
         <div className='container'>
             <div className='row vh-100 align-items-center justify-content-center'>
-                <div className='col-sm-8 col-md-6 col-lg-4 bg-white rounded p-4 shadow'>
+                <div className='col-sm-8 col-md-6 col-lg-4 bg-white rounded shadow'>
                     {showSignin ? <Signin /> : <Signup />}
                     <Button className='btn-secondary mt-1 bg-bg-secondary-subtle' onClick={() => setShowSignin(!showSignin)} >
                         Click here to {showSignin ? 'signup' : 'signin'}.

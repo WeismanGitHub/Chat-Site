@@ -1,5 +1,5 @@
 export default function Navbar() {
-    return <nav className="navbar navbar-expand navbar-dark bg-primary ps-2 pe-2 justify-content-center">
+    return <nav className="navbar navbar-expand navbar-dark bg-primary ps-2 pe-2 justify-content-center py-1">
         <a className="navbar-brand" href="/">
             <img src="/icon.png" width={50} height={50} alt="icon" className="me-2"/>
             Chat Site v2

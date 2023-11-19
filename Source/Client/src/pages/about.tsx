@@ -2,7 +2,7 @@
 export default function About() {
     return <div className="container">
         <div className='row vh-100 align-items-center justify-content-center'>
-            <div className="text-center bg-white rounded shadow card-body p-3">
+            <div className="text-center bg-white rounded shadow card-body p-3 bg-primary">
                 <h1 className="mb-2">Chat Site v2</h1>
                 <h4 className="mb-2">
                     <a href="https://github.com/WeismanGitHub/Chat-Site-v2" className="link-underline-primary">
@@ -15,7 +15,7 @@ export default function About() {
                     </a>
                 </h5>
             </div>
-            <div className="bg-white rounded shadow card-body p-3 text-center fs-5">
+            <div className="bg-white rounded shadow card-body p-3 text-center fs-5 bg-primary">
                 <p>
                     This website provides users with a platform for connecting, adding friends, and engaging in real-time one-on-one or group chats, among other features.
                 </p>

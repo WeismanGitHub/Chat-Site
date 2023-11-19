@@ -23,7 +23,8 @@ public static class ConfigureServices {
                     settings.Title = "Chat Site API v1";
                     settings.Version = "v1";
                 };
-            });
+            })
+			.AddSignalR();
 
         services.AddCors(options => {
             options.AddPolicy(name: "_myAllowSpecificOrigins", policy => {

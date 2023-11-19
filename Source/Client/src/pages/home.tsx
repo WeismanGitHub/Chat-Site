@@ -1,32 +1,33 @@
-import { useQuery } from '@tanstack/react-query';
-import ky from 'ky';
+// import { useQuery } from '@tanstack/react-query';
+// import ky from 'ky';
 
-type friend = {
-    ID: string;
-    DisplayName: string;
-    CreatedAt: string;
-};
+// type friend = {
+//     ID: string;
+//     DisplayName: string;
+//     CreatedAt: string;
+// };
 
 export default function Home() {
-    const { isLoading, error, data } = useQuery({
-        queryKey: ['data'],
-        queryFn: (): Promise<friend[]> => ky.get('/api/friends').json(),
-    });
+    return <div> hello world</div>
+    // const { isLoading, error, data } = useQuery({
+    //     queryKey: ['data'],
+    //     queryFn: (): Promise<friend[]> => ky.get('/api/friends').json(),
+    // });
 
-    if (error) {
-        throw error;
-    }
+    // if (error) {
+    //     throw error;
+    // }
 
-    return (
-        <div>
-            {(isLoading == true ? [] : data!).map((friend) => {
-                return (
-                    <>
-                        {friend.DisplayName}
-                        {friend.CreatedAt}
-                    </>
-                );
-            })}
-        </div>
-    );
+    // return (
+    //     <div>
+    //         {(isLoading == true ? [] : data!).map((friend) => {
+    //             return (
+    //                 <>
+    //                     {friend.DisplayName}
+    //                     {friend.CreatedAt}
+    //                 </>
+    //             );
+    //         })}
+    //     </div>
+    // );
 }

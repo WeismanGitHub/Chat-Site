@@ -11,14 +11,12 @@ var settings = section.Get<Settings>()!;
 var app = builder.Build();
 
 app.MapFallbackToFile("/index.html");
+
 app
 	.UseAuthentication()
 	.UseDefaultExceptionHandler()
 	.UseAuthorization()
 	.UseDefaultFiles()
-	.UseWebSockets(new WebSocketOptions() {
-		KeepAliveInterval = TimeSpan.FromSeconds(5)
-	})
 	.UseStaticFiles()
 	.UseFastEndpoints(config => {
 		config.Endpoints.RoutePrefix = "API";
@@ -26,21 +24,24 @@ app
 		config.Errors.ResponseBuilder = (failures, ctx, statusCode) => {
 			return new ValidationProblemDetails(
 				failures.GroupBy(f => f.PropertyName)
-				.ToDictionary(
-					keySelector: e => e.Key,
-					elementSelector: e => e.Select(m => m.ErrorMessage).ToArray())) {
-				Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-				Title = "One or more validation errors occurred.",
-				Status = statusCode,
-				Instance = ctx.Request.Path,
-				Extensions = { { "traceId", ctx.TraceIdentifier }
-					}
+				.ToDictionary(keySelector: e => e.Key, elementSelector: e => e.Select(m => m.ErrorMessage).ToArray())) {
+					Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+					Title = "One or more validation errors occurred.",
+					Status = statusCode,
+					Instance = ctx.Request.Path,
+					Extensions = { { "traceId", ctx.TraceIdentifier }
+				}
 			};
 		};
 	})
 	.UseHttpsRedirection()
 	.UseResponseCaching()
-	.UseSwaggerGen();
+	.UseSwaggerGen()
+	.UseRouting()
+	.UseEndpoints(endpoints => {
+		endpoints.MapHub<ChatHub>("/Chat");
+		//endpoints.MapFastEndpoints();
+	});
 
 await InitDatabase();
 app.Run();

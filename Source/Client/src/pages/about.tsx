@@ -1,14 +1,14 @@
 /* eslint-disable react/no-unescaped-entities */
 export default function About() {
-    return <div className="container">
+    return <div className="container w-50">
         <div className='row vh-100 align-items-center justify-content-center'>
             <div className="text-center bg-white rounded shadow card-body p-3 bg-primary">
                 <h1 className="mb-2">Chat Site v2</h1>
-                <h4 className="mb-2">
+                <h5 className="mb-2">
                     <a href="https://github.com/WeismanGitHub/Chat-Site-v2" className="link-underline-primary">
                         Chat Site v2 Github
                     </a>
-                </h4>
+                </h5>
                 <h5 className="mb-2">
                     <a href="https://github.com/WeismanGitHub/Chat-Website" className="link-underline-primary">
                         Chat Site v1 Github

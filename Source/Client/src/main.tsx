@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactDOM from 'react-dom/client';
 import router from './router';
 import React from 'react';
+import '../theme.css';
 
 const queryClient = new QueryClient();
 

@@ -1,6 +1,10 @@
 /* eslint-disable react/no-unescaped-entities */
+import Navbar from "../components/navbar";
+
 export default function About() {
-    return <div className="container w-50">
+    return <>
+    <Navbar />
+    <div className="container w-50">
         <div className='row vh-100 align-items-center justify-content-center'>
             <div className="text-center bg-white rounded shadow card-body p-3 bg-primary">
                 <h1 className="mb-2">Chat Site v2</h1>
@@ -28,4 +32,5 @@ export default function About() {
             </div>
         </div>
     </div>
+    </>
 }

@@ -1,4 +1,4 @@
-import Navbar from "../components/navbar"
+import Navbar from '../components/navbar';
 // import { useQuery } from '@tanstack/react-query';
 // import ky from 'ky';
 
@@ -9,7 +9,7 @@ import Navbar from "../components/navbar"
 // };
 
 export default function Home() {
-    return <Navbar />
+    return <Navbar />;
     // const { isLoading, error, data } = useQuery({
     //     queryKey: ['data'],
     //     queryFn: (): Promise<friend[]> => ky.get('/api/friends').json(),

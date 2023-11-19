@@ -43,7 +43,10 @@ export default function Signin() {
             validateOnChange
             onSubmit={async (values) => {
                 await ky.post(Endpoints.Signin, { json: values })
-                .then(() => navigate('/'))
+                .then(() => {
+                    localStorage.setItem("loggedIn", "true")
+                    navigate('/')
+                })
                 .catch((err: HTTPError) => {
                     setShowError(true)
                     setError(err)

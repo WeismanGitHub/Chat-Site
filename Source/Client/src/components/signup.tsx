@@ -84,7 +84,10 @@ export default function Signup() {
                         Password: values.password
                     }
                 })
-                .then(() => navigate('/'))
+                .then(() => {
+                    localStorage.setItem("loggedIn", "true")
+                    navigate('/')
+                })
                 .catch((err: HTTPError) => {
                     setShowError(true)
                     setError(err)

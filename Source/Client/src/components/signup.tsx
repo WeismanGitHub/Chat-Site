@@ -1,4 +1,5 @@
 import { Button, Col, Form, InputGroup, Row, Toast, ToastContainer } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import Endpoints from '../endpoints';
 import ky, { HTTPError } from 'ky';
 import * as formik from 'formik';
@@ -6,6 +7,7 @@ import { useState } from 'react';
 import * as yup from 'yup';
 
 export default function Signup() {
+    const navigate = useNavigate();
     const { Formik } = formik;
 
     const schema = yup.object().shape({
@@ -41,17 +43,48 @@ export default function Signup() {
         <Formik
             validationSchema={schema}
             validate={(values) => {
-                const errors: { confirmPassword?: string, } = {};
+                const errors: { password?: string, confirmPassword?: string } = {};
 
                 if (values.password !== values.confirmPassword) {
                     errors.confirmPassword = "Passwords do not match."
+                }
+
+                let hasUpperCase = false
+                let hasLowerCase = false
+                let hasDigit = false
+
+                values.password.split("").forEach(char => {
+                    if (char.toLocaleLowerCase() === char) {
+                        hasLowerCase = true
+                    }
+                    if (char.toLocaleUpperCase() === char) {
+                        hasUpperCase = true
+                    }
+                    if (!isNaN(Number(char))) {
+                        hasDigit = true
+                    }
+                })
+
+                if (!hasLowerCase) {
+                    errors.password = "Missing a lower case letter."
+                } else if (!hasUpperCase) {
+                    errors.password = "Missing an upper case letter."
+                } else if (!hasDigit) {
+                    errors.password = "Missing a digit."
                 }
 
                 return errors
             }}
             validateOnChange
             onSubmit={async (values) => {
-                await ky.post(Endpoints.Signin, { json: values })
+                await ky.post(Endpoints.Signup, {
+                    json: {
+                        DisplayName: values.displayName,
+                        Email: values.email,
+                        Password: values.password
+                    }
+                })
+                .then(() => navigate('/'))
                 .catch((err: HTTPError) => {
                     setShowError(true)
                     setError(err)

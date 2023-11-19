@@ -77,7 +77,7 @@ export default function Navbar() {
                                 className="nav-item nav-link active"
                                 href="/auth"
                             >
-                                Signin/Signup
+                                Signup/Signin
                             </a>
                         )}
                     </div>

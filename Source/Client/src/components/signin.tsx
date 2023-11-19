@@ -1,4 +1,5 @@
 import { Button, Col, Form, InputGroup, Row, Toast, ToastContainer } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import Endpoints from '../endpoints';
 import * as formik from 'formik';
 import { useState } from 'react';
@@ -6,6 +7,7 @@ import * as yup from 'yup';
 import ky, { HTTPError } from 'ky';
 
 export default function Signin() {
+    const navigate = useNavigate();
     const { Formik } = formik;
 
     const schema = yup.object().shape({
@@ -41,6 +43,7 @@ export default function Signin() {
             validateOnChange
             onSubmit={async (values) => {
                 await ky.post(Endpoints.Signin, { json: values })
+                .then(() => navigate('/'))
                 .catch((err: HTTPError) => {
                     setShowError(true)
                     setError(err)

@@ -11,12 +11,12 @@ export default function Home() {
         if (!loggedIn) {
             navigate('/auth');
         }
-    }, [])
-    
+    }, []);
+
     return (
         <div>
             <Navbar />
-            <div className='w-25 row vh-100 m-1 text-center'>
+            <div className="w-25 row vh-100 m-1 text-center">
                 <Friends />
             </div>
         </div>

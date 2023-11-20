@@ -1,7 +1,10 @@
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+
+import AddFriend from '../components/add-friend';
 import Friends from '../components/friends';
 import Navbar from '../components/navbar';
+import CreateConvo from '../components/create-convo';
 
 export default function Home() {
     const loggedIn = localStorage.getItem('loggedIn');
@@ -14,10 +17,17 @@ export default function Home() {
     }, []);
 
     return (
-        <div>
+        <div className="overflow-y-hidden vh-100 vw-100">
             <Navbar />
-            <div className="w-25 row vh-100 m-1 text-center">
-                <Friends />
+
+            <div className="w-25 col m-1 text-center h-100">
+                <div className="row">
+                    <AddFriend />
+                    <CreateConvo />
+                </div>
+                <div className='overflow-y-scroll h-100'>
+                    <Friends />
+                </div>
             </div>
         </div>
     );

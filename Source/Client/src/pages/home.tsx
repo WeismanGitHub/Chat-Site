@@ -25,7 +25,7 @@ export default function Home() {
                     <AddFriend />
                     <CreateConvo />
                 </div>
-                <div className='overflow-y-scroll h-100'>
+                <div className="overflow-y-scroll h-100">
                     <Friends />
                 </div>
             </div>

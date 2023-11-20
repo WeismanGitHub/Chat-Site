@@ -53,7 +53,7 @@ export default function Signin() {
                 validateOnChange
                 onSubmit={async (values) => {
                     await ky
-                        .post(Endpoints.Signin, { json: values })
+                        .post(Endpoints.Account.Signin(), { json: values })
                         .then(() => {
                             localStorage.setItem('loggedIn', 'true');
                             navigate('/');

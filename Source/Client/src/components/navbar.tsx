@@ -14,7 +14,7 @@ export default function Navbar() {
 
     async function logout() {
         await ky
-            .post(Endpoints.Signout)
+            .post(Endpoints.Account.Signout())
             .then(() => {
                 localStorage.removeItem('loggedIn');
                 navigate('/auth');

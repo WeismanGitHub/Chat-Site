@@ -91,7 +91,7 @@ export default function Signup() {
                 validateOnChange
                 onSubmit={async (values) => {
                     await ky
-                        .post(Endpoints.Signup, {
+                        .post(Endpoints.Account.Signup(), {
                             json: {
                                 DisplayName: values.displayName,
                                 Email: values.email,

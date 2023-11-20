@@ -5,9 +5,9 @@ import ky, { HTTPError } from 'ky';
 import { useState } from 'react';
 
 type friend = {
-    ID: string;
-    DisplayName: string;
-    CreatedAt: string;
+    id: string;
+    displayName: string;
+    createdAt: string;
 };
 
 export default function Friends() {
@@ -20,35 +20,63 @@ export default function Friends() {
     });
 
     if (error) {
-        setShowError(true)
+        setShowError(true);
     }
 
-    return <>
-        <ToastContainer position="top-end">
-            <Toast
-                onClose={toggleError}
-                show={showError}
-                autohide={true}
-                className="d-inline-block m-1"
-                bg={'danger'}
-            >
-                <Toast.Header>
-                    <strong className="me-auto">
-                        {error?.name || 'Unable to read error name.'}
-                    </strong>
-                </Toast.Header>
-                <Toast.Body>
-                    {error?.message || 'Unable to read error message.'}
-                </Toast.Body>
-            </Toast>
-        </ToastContainer>
+    return (
+        <div className="">
+            <ToastContainer position="top-end">
+                <Toast
+                    onClose={toggleError}
+                    show={showError}
+                    autohide={true}
+                    className="d-inline-block m-1"
+                    bg={'danger'}
+                >
+                    <Toast.Header>
+                        <strong className="me-auto">
+                            {error?.name || 'Unable to read error name.'}
+                        </strong>
+                    </Toast.Header>
+                    <Toast.Body>
+                        {error?.message || 'Unable to read error message.'}
+                    </Toast.Body>
+                </Toast>
+            </ToastContainer>
 
-        <ul>
-            {data && data!.map(friend => {
-                return <li key={friend.ID}>
-                    {friend.DisplayName}
-                </li>
-            })}
-        </ul>
-    </>
+            <ul className="list-group fs-5">
+                {data &&
+                    data!
+                        .concat(data)
+                        .concat(data)
+                        .concat(data)
+                        .concat(data)
+                        .concat(data)
+                        .concat(data)
+                        .concat(data)
+                        .concat(data)
+                        .map((friend) => {
+                            return (
+                                <li
+                                    className="list-group-item bg-dark-subtle text-primary border-secondary"
+                                    key={friend.id}
+                                >
+                                    {friend.displayName}
+                                    <div className="fs-6">
+                                        Created -{' '}
+                                        {new Date(
+                                            friend.createdAt
+                                        ).toLocaleDateString('en-US', {
+                                            weekday: 'long',
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                        })}
+                                    </div>
+                                </li>
+                            );
+                        })}
+            </ul>
+        </div>
+    );
 }

@@ -36,12 +36,12 @@ app
 	})
 	.UseHttpsRedirection()
 	.UseResponseCaching()
-	.UseSwaggerGen()
-	.UseRouting()
-	.UseEndpoints(endpoints => {
-		endpoints.MapHub<ChatHub>("/Chat");
-		//endpoints.MapFastEndpoints();
-	});
+	.UseSwaggerGen();
+	// .UseRouting()
+	// .UseEndpoints(endpoints => {
+	// 	endpoints.MapHub<ChatHub>("/Chat");
+	// 	//endpoints.MapFastEndpoints();
+	// })
 
 await InitDatabase();
 app.Run();

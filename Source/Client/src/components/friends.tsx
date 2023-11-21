@@ -13,7 +13,8 @@ type friend = {
 export default function Friends() {
     let { error, data } = useQuery<friend[], HTTPError>({
         queryKey: ['data'],
-        queryFn: (): Promise<friend[]> => ky.get(Endpoints.Friends.Default()).json(),
+        queryFn: (): Promise<friend[]> =>
+            ky.get(Endpoints.Friends.Default()).json(),
     });
 
     const toggleError = () => setShowError(!showError);
@@ -28,12 +29,12 @@ export default function Friends() {
 
     async function removeFriend() {
         try {
-            await ky.post(Endpoints.Friends.Remove(selectedFriend!.id))
-            data = data!.filter((friend) => friend.id === selectedFriend?.id)
-            setFriend(null)
-        } catch(err: unknown) {
+            await ky.post(Endpoints.Friends.Remove(selectedFriend!.id));
+            data = data!.filter((friend) => friend.id === selectedFriend?.id);
+            setFriend(null);
+        } catch (err: unknown) {
             if (err instanceof HTTPError) {
-                error = err
+                error = err;
                 setShowError(true);
             }
         }
@@ -73,28 +74,25 @@ export default function Friends() {
                     </Modal.Header>
 
                     <Modal.Body>
-                        {selectedFriend?.displayName || "Could not get friend's name."}
+                        {selectedFriend?.displayName ||
+                            "Could not get friend's name."}
                         <div className="fs-6">
                             Created -{' '}
                             {!selectedFriend
                                 ? 'Unkown'
-                                : new Date(selectedFriend.createdAt).toLocaleDateString(
-                                      'en-US',
-                                      {
-                                          weekday: 'long',
-                                          year: 'numeric',
-                                          month: 'long',
-                                          day: 'numeric',
-                                      }
-                                  )}
+                                : new Date(
+                                      selectedFriend.createdAt
+                                  ).toLocaleDateString('en-US', {
+                                      weekday: 'long',
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric',
+                                  })}
                         </div>
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button
-                            variant="danger"
-                            onClick={removeFriend}
-                        >
+                        <Button variant="danger" onClick={removeFriend}>
                             Remove
                         </Button>
                     </Modal.Footer>

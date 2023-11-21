@@ -1,34 +1,32 @@
 class Account {
     public static Account() {
-        return '/API/Account/v1'
+        return '/API/Account/v1';
     }
-    
+
     public static Signin() {
-        return '/API/Account/Signin/v1'
+        return '/API/Account/Signin/v1';
     }
-    
+
     public static Signup() {
-        return '/API/Account/Signup/v1'
+        return '/API/Account/Signup/v1';
     }
 
     public static Signout() {
-        return '/API/Account/Signout/v1'
+        return '/API/Account/Signout/v1';
     }
 }
 
 class Friends {
     public static Default() {
-        return '/API/Friends/v1'
+        return '/API/Friends/v1';
     }
 
     public static Remove(friendID: string) {
-        return `/API/Friends/${friendID}/remove/v1`
+        return `/API/Friends/${friendID}/remove/v1`;
     }
 }
 
-class Conversations {
-
-}
+class Conversations {}
 
 export default class Endpoints {
     public static readonly Account = Account;

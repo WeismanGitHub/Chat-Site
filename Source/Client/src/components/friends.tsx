@@ -14,7 +14,7 @@ export default function Friends() {
     let { error, data } = useQuery<friend[], HTTPError>({
         queryKey: ['data'],
         queryFn: (): Promise<friend[]> =>
-            ky.get(Endpoints.Friends.Default()).json(),
+            ky.get(Endpoints.Friends.Route()).json(),
     });
 
     const toggleError = () => setShowError(!showError);
@@ -102,14 +102,14 @@ export default function Friends() {
             <ul className="list-group fs-5">
                 {data &&
                     data!
-                        .concat(data)
-                        .concat(data)
-                        .concat(data)
-                        .concat(data)
-                        .concat(data)
-                        .concat(data)
-                        .concat(data)
-                        .concat(data)
+                        // .concat(data)
+                        // .concat(data)
+                        // .concat(data)
+                        // .concat(data)
+                        // .concat(data)
+                        // .concat(data)
+                        // .concat(data)
+                        // .concat(data)
                         .map((friend) => {
                             return (
                                 <li

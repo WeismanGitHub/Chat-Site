@@ -1,5 +1,5 @@
 class Account {
-    public static Account() {
+    public static Route() {
         return '/API/Account/v1';
     }
 
@@ -17,7 +17,7 @@ class Account {
 }
 
 class Friends {
-    public static Default() {
+    public static Route() {
         return '/API/Friends/v1';
     }
 

@@ -26,7 +26,13 @@ export default function About() {
                             </a>
                         </h5>
                         <br />
-                        <a href="/swagger" className="btn btn-primary btn-lg" role="button" >View API With Swagger</a>
+                        <a
+                            href="/swagger"
+                            className="btn btn-primary btn-lg"
+                            role="button"
+                        >
+                            View API With Swagger
+                        </a>
                     </div>
                     <div className="bg-white rounded shadow card-body p-3 text-center fs-5 bg-primary">
                         <p>

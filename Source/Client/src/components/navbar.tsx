@@ -61,6 +61,11 @@ export default function Navbar() {
                     <a className="nav-item nav-link active" href="/">
                         Home
                     </a>
+                    {loggedIn && (
+                        <a className="nav-item nav-link active" href="/account">
+                            Account
+                        </a>
+                    )}
                     <a className="nav-item nav-link active" href="/about">
                         About
                     </a>

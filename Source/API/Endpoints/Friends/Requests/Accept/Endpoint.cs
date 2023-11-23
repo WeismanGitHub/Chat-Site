@@ -14,7 +14,7 @@ public class Endpoint : Endpoint<Request> {
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-        var friendRequest = await DB.Find<FriendRequest>().MatchID(req.RequestID).ExecuteSingleAsync();
+        var friendRequest = await DB.Find<FriendRequest>().MatchID(req.RequestID).ExecuteSingleAsync(cancellationToken);
 
         if (friendRequest == null) {
             ThrowError("FriendRequest does not exist.", 404);
@@ -25,8 +25,8 @@ public class Endpoint : Endpoint<Request> {
 		}
 
         // These should be whatever the equivalent of Promise.all() is in C#.
-        var recipient = await DB.Find<User>().MatchID(friendRequest.RecipientID).ExecuteSingleAsync();
-        var requester = await DB.Find<User>().MatchID(friendRequest.RequesterID).ExecuteSingleAsync();
+        var recipient = await DB.Find<User>().MatchID(friendRequest.RecipientID).ExecuteSingleAsync(cancellationToken);
+        var requester = await DB.Find<User>().MatchID(friendRequest.RequesterID).ExecuteSingleAsync(cancellationToken);
 
         if (requester == null) {
             ThrowError("Could not find requester.", 404);
@@ -47,9 +47,9 @@ public class Endpoint : Endpoint<Request> {
         recipient.FriendIDs.Add(requester.ID);
 
         var transaction = DB.Transaction();
-        await requester.SaveAsync(transaction.Session);
-        await recipient.SaveAsync(transaction.Session);
-        await friendRequest.SaveAsync(transaction.Session);
-        await transaction.CommitAsync();
+        await requester.SaveAsync(transaction.Session, cancellationToken);
+        await recipient.SaveAsync(transaction.Session, cancellationToken);
+        await friendRequest.SaveAsync(transaction.Session, cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
     }
 }

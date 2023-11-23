@@ -14,7 +14,7 @@ public class Endpoint : Endpoint<Request> {
 	}
 
 	public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-		var friendRequest = await DB.Find<FriendRequest>().MatchID(req.RequestID).ExecuteSingleAsync();
+		var friendRequest = await DB.Find<FriendRequest>().MatchID(req.RequestID).ExecuteSingleAsync(cancellationToken);
 
 		if (friendRequest == null) {
 			ThrowError("FriendRequest does not exist.", 404);
@@ -25,6 +25,6 @@ public class Endpoint : Endpoint<Request> {
 		}
 
 		friendRequest.Status = Status.Declined;
-		await friendRequest.SaveAsync();
+		await friendRequest.SaveAsync(null, cancellationToken);
 	}
 }

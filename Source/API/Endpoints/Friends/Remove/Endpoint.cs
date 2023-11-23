@@ -12,7 +12,7 @@ public sealed class Endpoint : Endpoint<Request> {
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-        var account = await DB.Find<User>().OneAsync(req.AccountID);
+        var account = await DB.Find<User>().OneAsync(req.AccountID, cancellationToken);
 
 		if (account == null) {
 			ThrowError("Could not find your account.", 404);
@@ -20,7 +20,7 @@ public sealed class Endpoint : Endpoint<Request> {
 			ThrowError("You are not friends.", 400);
 		}
 
-        var friend = await DB.Find<User>().OneAsync(req.FriendID);
+        var friend = await DB.Find<User>().OneAsync(req.FriendID, cancellationToken);
 
 		if (friend == null) {
 			ThrowError("Cannot find friend.", 404);
@@ -29,7 +29,7 @@ public sealed class Endpoint : Endpoint<Request> {
 		account.FriendIDs.Remove(friend.ID);
 		friend.FriendIDs.Remove(account.ID);
 
-		await account.SaveAsync();
-		await friend.SaveAsync();
+		await account.SaveAsync(null, cancellationToken);
+		await friend.SaveAsync(null, cancellationToken);
     }
 }

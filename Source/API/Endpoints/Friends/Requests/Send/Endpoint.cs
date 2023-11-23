@@ -14,7 +14,7 @@ public sealed class Endpoint : Endpoint<Request> {
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
         var recipient = await DB.Find<User>()
             .MatchID(req.RecipientID)
-            .ExecuteSingleAsync();
+            .ExecuteSingleAsync(cancellationToken);
 
         if (recipient == null) {
             ThrowError("Could not find user.", 404);
@@ -28,6 +28,6 @@ public sealed class Endpoint : Endpoint<Request> {
             RequesterID = req.AccountID,
         };
 
-        await DB.InsertAsync(friendReq);
+        await DB.InsertAsync(friendReq, null, cancellationToken);
     }
 }

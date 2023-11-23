@@ -23,7 +23,7 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 			query.Match(fr => fr.RequesterID == req.AccountID);
         }
 
-        var (results, totalCount, _) = await query.ExecuteAsync();
+        var (results, totalCount, _) = await query.ExecuteAsync(cancellationToken);
 
 		if (results == null) {
 			ThrowError("Could not find results.", 404);

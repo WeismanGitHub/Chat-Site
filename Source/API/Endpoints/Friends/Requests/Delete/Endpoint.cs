@@ -22,6 +22,6 @@ public class Endpoint : Endpoint<Request> {
             ThrowError("You can only delete pending requests.", 405);
         }
 
-        await friendRequest.DeleteAsync();
+        await friendRequest.DeleteAsync(null, cancellationToken);
     }
 }

@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
+import CreateConvo from '../components/create-convo';
 import AddFriend from '../components/add-friend';
 import Friends from '../components/friends';
 import Navbar from '../components/navbar';
-import CreateConvo from '../components/create-convo';
 
 export default function Home() {
     const loggedIn = localStorage.getItem('loggedIn');

@@ -83,7 +83,7 @@ export default function Account() {
                             {data?.totalConversations ?? 'Unknown'}
                         </h5>
                         <br />
-                        <Row className='justify-content-center'>
+                        <Row className="justify-content-center">
                             <a
                                 onClick={() => setShowModal(true)}
                                 className="btn btn-warning btn-lg w-25 m-2"
@@ -92,7 +92,7 @@ export default function Account() {
                                 Update
                             </a>
                             <a
-                                onClick={() => console.log("delete")}
+                                onClick={() => console.log('delete')}
                                 className="btn btn-danger btn-lg w-25 m-2"
                                 role="button"
                             >

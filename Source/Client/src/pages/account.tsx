@@ -33,7 +33,8 @@ export default function Account() {
             ky.get(Endpoints.Account.Route()).json(),
     });
 
-    const [showModal, setShowModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const toggleError = () => setShowError(!showError);
     const [showError, setShowError] = useState(false);
@@ -85,14 +86,14 @@ export default function Account() {
                         <br />
                         <Row className="justify-content-center">
                             <a
-                                onClick={() => setShowModal(true)}
+                                onClick={() => setShowUpdateModal(true)}
                                 className="btn btn-warning btn-lg w-25 m-2"
                                 role="button"
                             >
                                 Update
                             </a>
                             <a
-                                onClick={() => console.log('delete')}
+                                onClick={() => setShowDeleteModal(true)}
                                 className="btn btn-danger btn-lg w-25 m-2"
                                 role="button"
                             >
@@ -101,6 +102,7 @@ export default function Account() {
                         </Row>
                     </div>
                 </div>
+
                 <ToastContainer position="top-end">
                     <Toast
                         onClose={toggleError}
@@ -120,14 +122,12 @@ export default function Account() {
                     </Toast>
                 </ToastContainer>
 
-                <Modal show={showModal}>
+                <Modal show={showUpdateModal}>
                     <Modal.Dialog>
                         <Modal.Header
                             closeButton
-                            onClick={() => setShowModal(!showModal)}
-                        >
-                            <Modal.Title>Update Account</Modal.Title>
-                        </Modal.Header>
+                            onClick={() => setShowUpdateModal(!showUpdateModal)}
+                        ></Modal.Header>
 
                         <Modal.Body>
                             <Formik
@@ -314,6 +314,29 @@ export default function Account() {
                                 )}
                             </Formik>
                         </Modal.Body>
+                    </Modal.Dialog>
+                </Modal>
+
+                <Modal show={showDeleteModal}>
+                    <Modal.Dialog>
+                        <Modal.Header
+                            closeButton
+                            onClick={() => setShowDeleteModal(false)}
+                        ></Modal.Header>
+
+                        <Modal.Body>
+                            Are you sure you want to delete your account?
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button
+                                variant="danger"
+                                onClick={() => {
+                                    console.log('delete');
+                                }}
+                            >
+                                Delete
+                            </Button>
+                        </Modal.Footer>
                     </Modal.Dialog>
                 </Modal>
             </div>

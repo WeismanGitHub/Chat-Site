@@ -17,7 +17,6 @@ export default function Friends() {
             ky.get(Endpoints.Friends.Route()).json(),
     });
 
-    const toggleError = () => setShowError(!showError);
     const [showError, setShowError] = useState(false);
 
     if (error) {
@@ -44,7 +43,7 @@ export default function Friends() {
         <div className="text-center">
             <ToastContainer position="top-end">
                 <Toast
-                    onClose={toggleError}
+                    onClose={() => setShowError(!showError)}
                     show={showError}
                     autohide={true}
                     className="d-inline-block m-1"
@@ -66,7 +65,7 @@ export default function Friends() {
                     <Modal.Header
                         closeButton
                         onClick={() => {
-                            setShowModal(!showModal);
+                            setShowModal(false);
                             setFriend(null);
                         }}
                     >
@@ -101,40 +100,31 @@ export default function Friends() {
 
             <ul className="list-group fs-5">
                 {data &&
-                    data!
-                        // .concat(data)
-                        // .concat(data)
-                        // .concat(data)
-                        // .concat(data)
-                        // .concat(data)
-                        // .concat(data)
-                        // .concat(data)
-                        // .concat(data)
-                        .map((friend) => {
-                            return (
-                                <li
-                                    className="list-group-item bg-dark-subtle text-primary border-secondary"
-                                    key={friend.id}
-                                    onClick={() => {
-                                        setFriend(friend);
-                                        setShowModal(true);
-                                    }}
-                                >
-                                    {friend.displayName}
-                                    <div className="fs-6">
-                                        Created -{' '}
-                                        {new Date(
-                                            friend.createdAt
-                                        ).toLocaleDateString('en-US', {
-                                            weekday: 'long',
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
-                                        })}
-                                    </div>
-                                </li>
-                            );
-                        })}
+                    data.map((friend) => {
+                        return (
+                            <li
+                                className="list-group-item bg-dark-subtle text-primary border-secondary"
+                                key={friend.id}
+                                onClick={() => {
+                                    setFriend(friend);
+                                    setShowModal(true);
+                                }}
+                            >
+                                {friend.displayName}
+                                <div className="fs-6">
+                                    Created -{' '}
+                                    {new Date(
+                                        friend.createdAt
+                                    ).toLocaleDateString('en-US', {
+                                        weekday: 'long',
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                    })}
+                                </div>
+                            </li>
+                        );
+                    })}
             </ul>
         </div>
     );

@@ -1,3 +1,9 @@
+import { useNavigate } from 'react-router-dom';
+import Endpoints from '../endpoints';
+import * as formik from 'formik';
+import { useState } from 'react';
+import * as yup from 'yup';
+import ky, { HTTPError } from 'ky';
 import {
     Button,
     Col,
@@ -7,12 +13,11 @@ import {
     Toast,
     ToastContainer,
 } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import Endpoints from '../endpoints';
-import * as formik from 'formik';
-import { useState } from 'react';
-import * as yup from 'yup';
-import ky, { HTTPError } from 'ky';
+
+type SigninError = {
+    email?: string;
+    password?: string;
+};
 
 export default function Signin() {
     const navigate = useNavigate();
@@ -31,7 +36,7 @@ export default function Signin() {
     });
 
     const [showError, setShowError] = useState(false);
-    const [error, setError] = useState<HTTPError>();
+    const [error, setError] = useState<APIErrorRes<SigninError> | null>(null);
     const toggleError = () => setShowError(!showError);
 
     return (
@@ -46,11 +51,18 @@ export default function Signin() {
                 >
                     <Toast.Header>
                         <strong className="me-auto">
-                            {error?.name || 'Unable to read error name.'}
+                            {error?.message || 'Unable to read error name.'}
                         </strong>
                     </Toast.Header>
                     <Toast.Body>
-                        {error?.message || 'Unable to read error message.'}
+                        {error?.errors &&
+                            Object.values(error?.errors).map((err) => {
+                                return (
+                                    <div key={err.toString()}>
+                                        {err.toString()}
+                                    </div>
+                                );
+                            })}
                     </Toast.Body>
                 </Toast>
             </ToastContainer>
@@ -65,9 +77,11 @@ export default function Signin() {
                             localStorage.setItem('loggedIn', 'true');
                             navigate('/');
                         })
-                        .catch((err: HTTPError) => {
+                        .catch(async (err: HTTPError) => {
+                            const res: APIErrorRes<SigninError> =
+                                await err.response.json();
+                            setError(res);
                             setShowError(true);
-                            setError(err);
                         });
                 }}
                 initialValues={{

@@ -56,12 +56,47 @@ export default function Account() {
             .max(70, 'Cannot be more than 70 characters.'),
     });
 
-    const updateAccountData = yup.object().shape({
+    const updateAccountSchema = yup.object().shape({
         newData: newDataSchema,
         currentPassword: yup
             .string()
             .required('Current Password is a required field.'),
     });
+
+    async function updateAccount(values: {
+        displayName: string;
+        email: string;
+        password: string;
+        currentPassword: string;
+    }): Promise<void> {
+        const update: {
+            displayName: string | null;
+            email: string | null;
+            password: string | null;
+        } = {
+            displayName: null,
+            email: null,
+            password: null,
+        };
+
+        try {
+            await ky.patch(Endpoints.Account.Route(), {
+                json: {
+                    newData: update,
+                    currentPassword: values.currentPassword,
+                },
+            });
+
+            data!.displayName = update.displayName ?? data!.displayName;
+            data!.email = update.email ?? data!.email;
+        } catch (err) {
+            if (err instanceof HTTPError) {
+                error = err;
+            }
+
+            setShowError(true);
+        }
+    }
 
     return (
         <>
@@ -145,7 +180,7 @@ export default function Account() {
                         <Modal.Body>
                             <div className="w-100">
                                 <Formik
-                                    validationSchema={updateAccountData}
+                                    validationSchema={updateAccountSchema}
                                     validate={(values: {
                                         displayName: string;
                                         email: string;
@@ -228,17 +263,7 @@ export default function Account() {
                                         return errors;
                                     }}
                                     validateOnChange
-                                    onSubmit={async (values) => {
-                                        console.log(values);
-                                        // await ky
-                                        //     .patch(Endpoints.Account.Route(), {
-                                        //         json: values,
-                                        //     })
-                                        //     .catch((err: HTTPError) => {
-                                        //         error = err;
-                                        //         setShowError(true);
-                                        //     });
-                                    }}
+                                    onSubmit={updateAccount}
                                     initialValues={{
                                         displayName: '',
                                         email: '',

@@ -17,7 +17,7 @@ import {
     InputGroup,
 } from 'react-bootstrap';
 
-type accountData = {
+type AccountData = {
     id: string;
     displayName: string;
     email: string;
@@ -26,12 +26,21 @@ type accountData = {
     createdAt: string;
 };
 
+type UpdateError = {
+    newData: {
+        email?: string;
+        displayName?: string;
+        password?: string;
+    };
+    ""?: string
+    confirmPassword?: string;
+};
+
 export default function Account() {
     redirectIfNotLoggedIn();
-    // eslint-disable-next-line prefer-const
-    let { error, data } = useQuery<accountData, HTTPError>({
+    const { data } = useQuery<AccountData, HTTPError>({
         queryKey: ['data'],
-        queryFn: (): Promise<accountData> =>
+        queryFn: (): Promise<AccountData> =>
             ky.get(Endpoints.Account.Route()).json(),
     });
 
@@ -39,10 +48,8 @@ export default function Account() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const [showError, setShowError] = useState(false);
-
-    if (error) {
-        setShowError(true);
-    }
+    const [toastError, setToastError] =
+        useState<APIErrorRes<UpdateError> | null>(null);
 
     const newDataSchema = yup.object().shape({
         displayName: yup
@@ -63,6 +70,70 @@ export default function Account() {
             .required('Current Password is a required field.'),
     });
 
+    async function validateAccount(values: {
+        displayName: string;
+        email: string;
+        password: string;
+        currentPassword: string;
+    }) {
+        const errors: {
+            displayName?: string;
+            email?: string;
+            password?: string;
+            currentPassword?: string;
+        } = {};
+
+        if (values.email && values.email === data?.email) {
+            errors.email = 'Email cannot be the same.';
+        } else if (
+            values.password &&
+            values.currentPassword &&
+            values.password === values.currentPassword
+        ) {
+            errors.password = 'Passwords cannot be the same.';
+        }
+
+        let hasUpperCase = false;
+        let hasLowerCase = false;
+        let hasDigit = false;
+
+        if (values.password.length > 0) {
+            values.password.split('').forEach((char) => {
+                if (char.toLocaleLowerCase() === char) {
+                    hasLowerCase = true;
+                }
+                
+                if (char.toLocaleUpperCase() === char) {
+                    hasUpperCase = true;
+                }
+
+                if (!isNaN(Number(char))) {
+                    hasDigit = true;
+                }
+            });
+
+            if (!hasLowerCase) {
+                errors.password = 'Missing a lower case letter.';
+            } else if (!hasUpperCase) {
+                errors.password = 'Missing an upper case letter.';
+            } else if (!hasDigit) {
+                errors.password = 'Missing a digit.';
+            }
+        }
+
+        if (
+            values.displayName.length === 0 &&
+            values.email.length === 0 &&
+            values.password.length === 0
+        ) {
+            errors.displayName = 'Must update something.';
+            errors.email = 'Must update something.';
+            errors.password = 'Must update something.';
+        }
+
+        return errors;
+    }
+
     async function updateAccount(values: {
         displayName: string;
         email: string;
@@ -79,6 +150,18 @@ export default function Account() {
             password: null,
         };
 
+        if (values.displayName) {
+            update.displayName = values.displayName;
+        }
+
+        if (values.email) {
+            update.email = values.email;
+        }
+
+        if (values.password) {
+            update.password = values.password;
+        }
+
         try {
             await ky.patch(Endpoints.Account.Route(), {
                 json: {
@@ -89,9 +172,12 @@ export default function Account() {
 
             data!.displayName = update.displayName ?? data!.displayName;
             data!.email = update.email ?? data!.email;
+
+            setShowUpdateModal(false);
         } catch (err) {
             if (err instanceof HTTPError) {
-                error = err;
+                const res: APIErrorRes<UpdateError> = await err.response.json();
+                setToastError(res);
             }
 
             setShowError(true);
@@ -161,11 +247,16 @@ export default function Account() {
                     >
                         <Toast.Header>
                             <strong className="me-auto">
-                                {error?.name || 'Unable to read error name.'}
+                                {toastError?.message ||
+                                    'Unable to read error name.'}
                             </strong>
                         </Toast.Header>
                         <Toast.Body>
-                            {error?.message || 'Unable to read error message.'}
+                            {toastError?.errors && Object.values(toastError?.errors).map(err => {
+                                return <div key={err.toString()}>
+                                    {err.toString()}
+                                </div>
+                            })}
                         </Toast.Body>
                     </Toast>
                 </ToastContainer>
@@ -181,87 +272,7 @@ export default function Account() {
                             <div className="w-100">
                                 <Formik
                                     validationSchema={updateAccountSchema}
-                                    validate={(values: {
-                                        displayName: string;
-                                        email: string;
-                                        password: string;
-                                        currentPassword: string;
-                                    }) => {
-                                        const errors: {
-                                            displayName?: string;
-                                            email?: string;
-                                            password?: string;
-                                            currentPassword?: string;
-                                        } = {};
-
-                                        if (
-                                            values.email &&
-                                            values.email === data?.email
-                                        ) {
-                                            errors.email =
-                                                'Email cannot be the same.';
-                                        } else if (
-                                            values.password &&
-                                            values.currentPassword &&
-                                            values.password ===
-                                                values.currentPassword
-                                        ) {
-                                            errors.password =
-                                                'Passwords cannot be the same.';
-                                        }
-
-                                        let hasUpperCase = false;
-                                        let hasLowerCase = false;
-                                        let hasDigit = false;
-
-                                        if (values.password.length > 0) {
-                                            values.password
-                                                .split('')
-                                                .forEach((char) => {
-                                                    if (
-                                                        char.toLocaleLowerCase() ===
-                                                        char
-                                                    ) {
-                                                        hasLowerCase = true;
-                                                    }
-                                                    if (
-                                                        char.toLocaleUpperCase() ===
-                                                        char
-                                                    ) {
-                                                        hasUpperCase = true;
-                                                    }
-                                                    if (!isNaN(Number(char))) {
-                                                        hasDigit = true;
-                                                    }
-                                                });
-
-                                            if (!hasLowerCase) {
-                                                errors.password =
-                                                    'Missing a lower case letter.';
-                                            } else if (!hasUpperCase) {
-                                                errors.password =
-                                                    'Missing an upper case letter.';
-                                            } else if (!hasDigit) {
-                                                errors.password =
-                                                    'Missing a digit.';
-                                            }
-                                        }
-
-                                        if (
-                                            values.displayName.length === 0 &&
-                                            values.email.length === 0 &&
-                                            values.password.length === 0
-                                        ) {
-                                            errors.displayName =
-                                                'Must update something.';
-                                            errors.email =
-                                                'Must update something.';
-                                            errors.password =
-                                                'Must update something.';
-                                        }
-
-                                        return errors;
-                                    }}
+                                    validate={validateAccount}
                                     validateOnChange
                                     onSubmit={updateAccount}
                                     initialValues={{

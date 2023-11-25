@@ -1,5 +1,4 @@
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { redirectIfNotLoggedIn } from '../helpers';
 
 import CreateConvo from '../components/create-convo';
 import AddFriend from '../components/add-friend';
@@ -7,15 +6,8 @@ import Friends from '../components/friends';
 import Navbar from '../components/navbar';
 
 export default function Home() {
-    const loggedIn = localStorage.getItem('loggedIn');
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (!loggedIn) {
-            navigate('/auth');
-        }
-    }, []);
-
+    redirectIfNotLoggedIn()
+    
     return (
         <div className="overflow-y-hidden vh-100 vw-100">
             <Navbar />

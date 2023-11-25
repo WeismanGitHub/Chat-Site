@@ -4,12 +4,17 @@ import Endpoints from '../endpoints';
 import ky, { HTTPError } from 'ky';
 import { useState } from 'react';
 
+type LogoutError = {
+    email?: string;
+    password?: string;
+};
+
 export default function Navbar() {
     const loggedIn = Boolean(localStorage.getItem('loggedIn'));
     const navigate = useNavigate();
 
     const [showError, setShowError] = useState(false);
-    const [error, setError] = useState<HTTPError>();
+    const [error, setError] = useState<APIErrorRes<LogoutError> | null>(null);
     const toggleError = () => setShowError(!showError);
 
     async function logout() {
@@ -19,9 +24,10 @@ export default function Navbar() {
                 localStorage.removeItem('loggedIn');
                 navigate('/auth');
             })
-            .catch((err: HTTPError) => {
+            .catch(async (err: HTTPError) => {
+                const res: APIErrorRes<LogoutError> = await err.response.json();
+                setError(res);
                 setShowError(true);
-                setError(err);
             });
     }
 
@@ -37,11 +43,18 @@ export default function Navbar() {
                 >
                     <Toast.Header>
                         <strong className="me-auto">
-                            {error?.name || 'Unable to read error name.'}
+                            {error?.message || 'Unable to read error name.'}
                         </strong>
                     </Toast.Header>
                     <Toast.Body>
-                        {error?.message || 'Unable to read error message.'}
+                        {error?.errors &&
+                            Object.values(error?.errors).map((err) => {
+                                return (
+                                    <div key={err.toString()}>
+                                        {err.toString()}
+                                    </div>
+                                );
+                            })}
                     </Toast.Body>
                 </Toast>
             </ToastContainer>

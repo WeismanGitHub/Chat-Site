@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
-function redirectIfNotLoggedIn() { // I know this is kinda unclean.
+function redirectIfNotLoggedIn() {
+    // I know this is kinda unclean.
     const loggedIn = localStorage.getItem('loggedIn');
     const navigate = useNavigate();
 
@@ -12,6 +13,4 @@ function redirectIfNotLoggedIn() { // I know this is kinda unclean.
     }, []);
 }
 
-export {
-    redirectIfNotLoggedIn
-}
+export { redirectIfNotLoggedIn };

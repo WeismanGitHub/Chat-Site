@@ -19,10 +19,23 @@ export default function Signup() {
     const { Formik } = formik;
 
     const schema = yup.object().shape({
-        displayName: yup.string().required().min(1).max(25),
-        email: yup.string().required().email('Must be a valid email.'),
-        password: yup.string().required().min(10).max(70),
-        confirmPassword: yup.string().required(),
+        displayName: yup
+            .string()
+            .required('DisplayName is a required field.')
+            .min(1, 'Must be at least 1 character.')
+            .max(25, 'Cannot be more than 25 characters.'),
+        email: yup
+            .string()
+            .required('Email is a required field.')
+            .email('Must be a valid email.'),
+        password: yup
+            .string()
+            .required('Password is a required field.')
+            .min(10, 'Must be at least 10 characters.')
+            .max(70, 'Cannot be more than 70 characters.'),
+        confirmPassword: yup
+            .string()
+            .required('Confirm Password is a required field.'),
     });
 
     const [showError, setShowError] = useState(false);
@@ -141,16 +154,17 @@ export default function Signup() {
                                 <InputGroup hasValidation>
                                     <Form.Control
                                         type="email"
+                                        aria-describedby="inputGroupPrepend"
                                         placeholder="example@email.com"
                                         name="email"
                                         value={values.email}
                                         onChange={handleChange}
                                         isInvalid={!!errors.email}
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.email}
+                                    </Form.Control.Feedback>
                                 </InputGroup>
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.email}
-                                </Form.Control.Feedback>
                             </Form.Group>
                         </Row>
                         <Row className="mb-3">

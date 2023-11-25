@@ -19,8 +19,15 @@ export default function Signin() {
     const { Formik } = formik;
 
     const schema = yup.object().shape({
-        email: yup.string().required().email('Must be a valid email.'),
-        password: yup.string().required().min(10).max(70),
+        email: yup
+            .string()
+            .required('Email is a required field.')
+            .email('Must be a valid email.'),
+        password: yup
+            .string()
+            .required('Password is a required field.')
+            .min(10, 'Must be at least 10 characters.')
+            .max(70, 'Cannot be more than 70 characters.'),
     });
 
     const [showError, setShowError] = useState(false);
@@ -76,16 +83,17 @@ export default function Signin() {
                                 <InputGroup hasValidation>
                                     <Form.Control
                                         type="email"
+                                        aria-describedby="inputGroupPrepend"
                                         placeholder="example@email.com"
                                         name="email"
                                         value={values.email}
                                         onChange={handleChange}
                                         isInvalid={!!errors.email}
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.email}
+                                    </Form.Control.Feedback>
                                 </InputGroup>
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.email}
-                                </Form.Control.Feedback>
                             </Form.Group>
                         </Row>
                         <Row className="mb-3">

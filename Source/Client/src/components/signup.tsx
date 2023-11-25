@@ -1,3 +1,9 @@
+import { useNavigate } from 'react-router-dom';
+import Endpoints from '../endpoints';
+import ky, { HTTPError } from 'ky';
+import * as formik from 'formik';
+import { useState } from 'react';
+import * as yup from 'yup';
 import {
     Button,
     Col,
@@ -7,12 +13,12 @@ import {
     Toast,
     ToastContainer,
 } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import Endpoints from '../endpoints';
-import ky, { HTTPError } from 'ky';
-import * as formik from 'formik';
-import { useState } from 'react';
-import * as yup from 'yup';
+
+type SignupError = {
+    email?: string;
+    password?: string;
+    displayName?: string
+};
 
 export default function Signup() {
     const navigate = useNavigate();
@@ -39,7 +45,7 @@ export default function Signup() {
     });
 
     const [showError, setShowError] = useState(false);
-    const [error, setError] = useState<HTTPError>();
+    const [error, setError] = useState<APIErrorRes<SignupError> | null>(null);
     const toggleError = () => setShowError(!showError);
 
     return (
@@ -54,11 +60,15 @@ export default function Signup() {
                 >
                     <Toast.Header>
                         <strong className="me-auto">
-                            {error?.name || 'Unable to read error name.'}
+                            {error?.message || 'Unable to read error name.'}
                         </strong>
                     </Toast.Header>
                     <Toast.Body>
-                        {error?.message || 'Unable to read error message.'}
+                    {error?.errors && Object.values(error?.errors).map(err => {
+                        return <div key={err.toString()}>
+                            {err.toString()}
+                        </div>
+                    })}
                     </Toast.Body>
                 </Toast>
             </ToastContainer>
@@ -115,9 +125,11 @@ export default function Signup() {
                             localStorage.setItem('loggedIn', 'true');
                             navigate('/');
                         })
-                        .catch((err: HTTPError) => {
+                        .catch(async (err: HTTPError) => {
+                            const res: APIErrorRes<SignupError> =
+                                await err.response.json();
+                            setError(res);
                             setShowError(true);
-                            setError(err);
                         });
                 }}
                 initialValues={{

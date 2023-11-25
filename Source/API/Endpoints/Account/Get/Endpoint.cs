@@ -1,6 +1,6 @@
 ﻿namespace API.Endpoints.Account.Get;
 
-sealed class Endpoint : Endpoint<Request, Response> {
+public sealed class Endpoint : Endpoint<Request, Response> {
     public override void Configure() {
         Get("/");
         Group<AccountGroup>();

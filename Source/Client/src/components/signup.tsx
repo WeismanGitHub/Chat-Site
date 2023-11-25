@@ -17,7 +17,7 @@ import {
 type SignupError = {
     email?: string;
     password?: string;
-    displayName?: string
+    displayName?: string;
 };
 
 export default function Signup() {
@@ -64,11 +64,14 @@ export default function Signup() {
                         </strong>
                     </Toast.Header>
                     <Toast.Body>
-                    {error?.errors && Object.values(error?.errors).map(err => {
-                        return <div key={err.toString()}>
-                            {err.toString()}
-                        </div>
-                    })}
+                        {error?.errors &&
+                            Object.values(error?.errors).map((err) => {
+                                return (
+                                    <div key={err.toString()}>
+                                        {err.toString()}
+                                    </div>
+                                );
+                            })}
                     </Toast.Body>
                 </Toast>
             </ToastContainer>

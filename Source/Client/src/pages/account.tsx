@@ -32,7 +32,7 @@ type UpdateError = {
         displayName?: string;
         password?: string;
     };
-    ""?: string
+    ''?: string;
     confirmPassword?: string;
 };
 
@@ -102,7 +102,7 @@ export default function Account() {
                 if (char.toLocaleLowerCase() === char) {
                     hasLowerCase = true;
                 }
-                
+
                 if (char.toLocaleUpperCase() === char) {
                     hasUpperCase = true;
                 }
@@ -252,11 +252,14 @@ export default function Account() {
                             </strong>
                         </Toast.Header>
                         <Toast.Body>
-                            {toastError?.errors && Object.values(toastError?.errors).map(err => {
-                                return <div key={err.toString()}>
-                                    {err.toString()}
-                                </div>
-                            })}
+                            {toastError?.errors &&
+                                Object.values(toastError?.errors).map((err) => {
+                                    return (
+                                        <div key={err.toString()}>
+                                            {err.toString()}
+                                        </div>
+                                    );
+                                })}
                         </Toast.Body>
                     </Toast>
                 </ToastContainer>

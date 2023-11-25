@@ -11,7 +11,10 @@ public static class ConfigureServices {
         var section = config.GetSection("Settings");
         var settings = section.Get<Settings>()!;
 
-        builder.Services
+		//builder.Services.AddAuthentication();
+		builder.Services.AddSignalR();
+
+		builder.Services
             .Configure<Settings>(section)
             .AddFastEndpoints()
             .AddCookieAuth(validFor: TimeSpan.FromMinutes(settings.Auth.TokenValidityMinutes))
@@ -23,8 +26,7 @@ public static class ConfigureServices {
                     settings.Title = "Chat Site API v1";
                     settings.Version = "v1";
                 };
-            })
-			.AddSignalR();
+            });
 
         services.AddCors(options => {
             options.AddPolicy(name: "_myAllowSpecificOrigins", policy => {

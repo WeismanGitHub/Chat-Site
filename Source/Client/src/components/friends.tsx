@@ -99,8 +99,7 @@ export default function Friends() {
             </Modal>
 
             <ul className="list-group fs-5">
-                {data &&
-                    data.map((friend) => {
+                {data?.map((friend) => {
                         return (
                             <li
                                 className="list-group-item bg-dark-subtle text-primary border-secondary"

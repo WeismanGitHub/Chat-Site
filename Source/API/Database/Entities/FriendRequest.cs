@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
-
 namespace API.Database.Entities;
 public enum Status {
     Accepted,

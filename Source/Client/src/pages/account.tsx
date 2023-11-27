@@ -1,5 +1,6 @@
 import { redirectIfNotLoggedIn } from '../helpers';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/navbar';
 import Endpoints from '../endpoints';
 import ky, { HTTPError } from 'ky';
@@ -38,6 +39,9 @@ type UpdateError = {
 
 export default function Account() {
     redirectIfNotLoggedIn();
+
+    const navigate = useNavigate()
+
     const { data } = useQuery<AccountData, HTTPError>({
         queryKey: ['data'],
         queryFn: (): Promise<AccountData> =>
@@ -49,7 +53,7 @@ export default function Account() {
 
     const [showError, setShowError] = useState(false);
     const [toastError, setToastError] =
-        useState<APIErrorRes<UpdateError> | null>(null);
+        useState<APIErrorRes<UpdateError | Record<string, never>> | null>(null);
 
     const newDataSchema = yup.object().shape({
         displayName: yup
@@ -430,8 +434,20 @@ export default function Account() {
                         <Modal.Footer>
                             <Button
                                 variant="danger"
-                                onClick={() => {
-                                    console.log('delete');
+                                onClick={async () => {
+                                    try {
+                                        await ky.delete(Endpoints.Account.Route());
+                            
+                                        setShowUpdateModal(false);
+                                        navigate('/auth')
+                                    } catch (err) {
+                                        if (err instanceof HTTPError) {
+                                            const res: APIErrorRes<Record<string, never>> = await err.response.json();
+                                            setToastError(res);
+                                        }
+                            
+                                        setShowError(true);
+                                    }
                                 }}
                             >
                                 Delete

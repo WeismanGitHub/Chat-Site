@@ -12,9 +12,7 @@ public sealed class Endpoint : Endpoint<Request, Response> {
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-        var account = await DB.Find<User>()
-            .Project(u => new() { FriendIDs = u.FriendIDs })
-            .OneAsync(req.AccountID);
+        var account = await DB.Find<User>().OneAsync(req.AccountID);
 
         if (account == null) {
             ThrowError("Could not find your account.", 404);
@@ -27,7 +25,7 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 		await DB.InsertAsync(new Conversation() {
 			ID = convoID,
 			Name = req.ConversationName,
-			MemberIDs = new List<string>() { account.ID }
+			MemberIDs = new List<string>() { req.AccountID }
 		});
 
 		account.ConversationIDs.Add(convoID);

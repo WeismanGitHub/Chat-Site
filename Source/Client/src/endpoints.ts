@@ -26,7 +26,11 @@ class Friends {
     }
 }
 
-class Conversations {}
+class Conversations {
+    public static Route() {
+        return '/API/Conversations/v1';
+    }
+}
 
 export default class Endpoints {
     public static readonly Account = Account;

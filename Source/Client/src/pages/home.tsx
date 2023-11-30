@@ -1,5 +1,6 @@
 import { redirectIfNotLoggedIn } from '../helpers';
 
+import Conversations from '../components/conversations';
 import CreateConvo from '../components/create-convo';
 import AddFriend from '../components/add-friend';
 import Friends from '../components/friends';
@@ -19,6 +20,9 @@ export default function Home() {
                 </div>
                 <div className="overflow-y-scroll h-100">
                     <Friends />
+                </div>
+                <div className="overflow-y-scroll h-100">
+                    <Conversations />
                 </div>
             </div>
         </div>

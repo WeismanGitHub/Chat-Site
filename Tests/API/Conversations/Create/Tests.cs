@@ -11,7 +11,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Successful_Request() {
-		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, Response>(new() {
+		var (rsp, res) = await Fixture.Client.POSTAsync<Endpoint, Request, Response>(new() {
 			ConversationName = "test"
 		});
 
@@ -42,7 +42,7 @@ public class Tests : TestClass<Fixture> {
 			.Modify(u => u.ConversationIDs, convoIDs)
 			.ExecuteAsync();
 
-		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, Response>(new() {
+		var (rsp, res) = await Fixture.Client.POSTAsync<Endpoint, Request, Response>(new() {
 			ConversationName = "test"
 		});
 

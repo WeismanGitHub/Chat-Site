@@ -9,7 +9,7 @@ public class Tests : TestClass<Fixture> {
 	public Tests(Fixture fixture, ITestOutputHelper output) : base(fixture, output) { }
 
 	[Fact, Priority(1)]
-	public async Task Default_Request() {
+	public async Task Successful_Request() {
 		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, Response>(new() {
 			ConversationName = "test"
 		});

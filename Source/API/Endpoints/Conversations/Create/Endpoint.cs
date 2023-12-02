@@ -29,7 +29,7 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 		});
 
 		account.ConversationIDs.Add(convoID);
-		account.SaveAsync();
+		await account.SaveAsync();
 
 		await SendAsync(new() {
 			ConversationID = convoID

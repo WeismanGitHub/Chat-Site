@@ -1,6 +1,6 @@
 ﻿namespace API.Endpoints.Conversations.Get;
 
-public sealed class Endpoint : Endpoint<Request, List<Conversation>> {
+public sealed class Endpoint : Endpoint<Request, List<ResConvo>> {
     public override void Configure() {
         Get("/");
         Group<ConversationGroup>();
@@ -21,15 +21,16 @@ public sealed class Endpoint : Endpoint<Request, List<Conversation>> {
         }
 
         if (account.ConversationIDs.Count == 0) {
-            await SendAsync(new List<Conversation>());
+            await SendAsync(new List<ResConvo>());
         }
 
         var conversations = await DB
-        .Find<Conversation>()
+			.Find<Conversation, ResConvo>()
             .Match(c => account.ConversationIDs.Contains(c.ID))
             .Project(u => new() {
 				ID = u.ID,
 				Name = u.Name,
+				CreatedAt = DateTime.UtcNow,
             })
             .ExecuteAsync();
 

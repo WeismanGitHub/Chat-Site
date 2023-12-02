@@ -26,7 +26,6 @@
       <Folder Include="API\Conversations\Conversation\Get\" />
       <Folder Include="API\Conversations\Conversation\Join\" />
       <Folder Include="API\Conversations\Conversation\Leave\" />
-      <Folder Include="API\Conversations\Get\" />
     </ItemGroup>
 
 </Project>

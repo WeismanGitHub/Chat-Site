@@ -57,4 +57,13 @@ public class Tests : TestClass<Fixture> {
 			convoIDs.Contains(id).Should().BeTrue();
 		}
 	}
+
+	[Fact]
+	public async Task Name_Too_Long() {
+		var (rsp, _) = await Fixture.Client.POSTAsync<Endpoint, Request, Response>(new() {
+			ConversationName = new string('*', Conversation.MaxNameLength + 1)
+		});
+
+		rsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
 }

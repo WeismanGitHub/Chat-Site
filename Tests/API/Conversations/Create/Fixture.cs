@@ -8,6 +8,7 @@ namespace Tests.API.Conversations.Create;
 public class Fixture : TestFixture<Program> {
 	public Fixture(IMessageSink sink) : base(sink) { }
 	public readonly string AccountID = ObjectId.GenerateNewId().ToString();
+	public string ConvoID { get; set; }
 
 	protected override async Task SetupAsync() {
 		await DB.InsertAsync(new User() {
@@ -24,9 +25,7 @@ public class Fixture : TestFixture<Program> {
 	}
 
 	protected override async Task TearDownAsync() {
-		var account = await DB.Find<User>().MatchID(AccountID).ExecuteSingleAsync();
-
-		await DB.DeleteAsync<Conversation>(account!.ConversationIDs.First());
-		await account.DeleteAsync();
+		await DB.DeleteAsync<Conversation>(ConvoID);
+		await DB.DeleteAsync<User>(AccountID);
 	}
 }

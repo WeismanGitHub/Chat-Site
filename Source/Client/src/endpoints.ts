@@ -44,7 +44,7 @@ class Friends {
 }
 
 class Conversations {
-    public static get(): Promise<Conversation[]> {
+    public static get(): Promise<ConversationsData> {
         return ky.get('/API/Conversations/v1').json();
     }
 
@@ -52,7 +52,7 @@ class Conversations {
         return ky.post(`/API/Conversations/${conversationID}/leave/v1`);
     }
 
-    public static getOne(conversationID: string) {
+    public static getOne(conversationID: string): Promise<SingleConvoData> {
         return ky.get(`/API/Conversations/${conversationID}/v1`).json();
     }
 }

@@ -5,6 +5,8 @@ public sealed class Endpoint : Endpoint<Request> {
         Post("/{FriendID}/remove");
         Group<FriendGroup>();
         Version(1);
+
+        Description(builder => builder.Accepts<Request>());
         
         Summary(settings => {
             settings.Summary = "Remove a friend.";

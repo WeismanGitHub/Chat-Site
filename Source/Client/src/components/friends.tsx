@@ -1,20 +1,13 @@
 import { ToastContainer, Toast, Modal, Button } from 'react-bootstrap';
 import { useQuery } from '@tanstack/react-query';
 import Endpoints from '../endpoints';
-import ky, { HTTPError } from 'ky';
 import { useState } from 'react';
-
-type friend = {
-    id: string;
-    displayName: string;
-    createdAt: string;
-};
+import { HTTPError } from 'ky';
 
 export default function Friends() {
     let { error, data } = useQuery<friend[], HTTPError>({
         queryKey: ['data'],
-        queryFn: (): Promise<friend[]> =>
-            ky.get(Endpoints.Friends.Route()).json(),
+        queryFn: () => Endpoints.Friends.get(),
     });
 
     const [showError, setShowError] = useState(false);
@@ -28,7 +21,7 @@ export default function Friends() {
 
     async function removeFriend() {
         try {
-            await ky.post(Endpoints.Friends.Remove(selectedFriend!.id));
+            await Endpoints.Friends.remove(selectedFriend!.id);
             data = data!.filter((friend) => friend.id === selectedFriend?.id);
             setFriend(null);
         } catch (err: unknown) {
@@ -50,13 +43,9 @@ export default function Friends() {
                     bg={'danger'}
                 >
                     <Toast.Header>
-                        <strong className="me-auto">
-                            {error?.name || 'Unable to read error name.'}
-                        </strong>
+                        <strong className="me-auto">{error?.name || 'Unable to read error name.'}</strong>
                     </Toast.Header>
-                    <Toast.Body>
-                        {error?.message || 'Unable to read error message.'}
-                    </Toast.Body>
+                    <Toast.Body>{error?.message || 'Unable to read error message.'}</Toast.Body>
                 </Toast>
             </ToastContainer>
 
@@ -73,15 +62,12 @@ export default function Friends() {
                     </Modal.Header>
 
                     <Modal.Body>
-                        {selectedFriend?.displayName ||
-                            "Could not get friend's name."}
+                        {selectedFriend?.displayName || "Could not get friend's name."}
                         <div className="fs-6">
                             Created -{' '}
                             {!selectedFriend
                                 ? 'Unkown'
-                                : new Date(
-                                      selectedFriend.createdAt
-                                  ).toLocaleDateString('en-US', {
+                                : new Date(selectedFriend.createdAt).toLocaleDateString('en-US', {
                                       weekday: 'long',
                                       year: 'numeric',
                                       month: 'long',
@@ -100,30 +86,28 @@ export default function Friends() {
 
             <ul className="list-group fs-5">
                 {data?.map((friend) => {
-                        return (
-                            <li
-                                className="list-group-item bg-dark-subtle text-primary border-secondary"
-                                key={friend.id}
-                                onClick={() => {
-                                    setFriend(friend);
-                                    setShowModal(true);
-                                }}
-                            >
-                                {friend.displayName}
-                                <div className="fs-6">
-                                    Created -{' '}
-                                    {new Date(
-                                        friend.createdAt
-                                    ).toLocaleDateString('en-US', {
-                                        weekday: 'long',
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                    })}
-                                </div>
-                            </li>
-                        );
-                    })}
+                    return (
+                        <li
+                            className="list-group-item bg-dark-subtle text-primary border-secondary"
+                            key={friend.id}
+                            onClick={() => {
+                                setFriend(friend);
+                                setShowModal(true);
+                            }}
+                        >
+                            {friend.displayName}
+                            <div className="fs-6">
+                                Created -{' '}
+                                {new Date(friend.createdAt).toLocaleDateString('en-US', {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                })}
+                            </div>
+                        </li>
+                    );
+                })}
             </ul>
         </div>
     );

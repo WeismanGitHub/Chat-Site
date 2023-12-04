@@ -1,18 +1,10 @@
+import { Button, Col, Form, InputGroup, Row, Toast, ToastContainer } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Endpoints from '../endpoints';
 import * as formik from 'formik';
 import { useState } from 'react';
+import { HTTPError } from 'ky';
 import * as yup from 'yup';
-import ky, { HTTPError } from 'ky';
-import {
-    Button,
-    Col,
-    Form,
-    InputGroup,
-    Row,
-    Toast,
-    ToastContainer,
-} from 'react-bootstrap';
 
 type SigninError = {
     email?: string;
@@ -24,10 +16,7 @@ export default function Signin() {
     const { Formik } = formik;
 
     const schema = yup.object().shape({
-        email: yup
-            .string()
-            .required('Email is a required field.')
-            .email('Must be a valid email.'),
+        email: yup.string().required('Email is a required field.').email('Must be a valid email.'),
         password: yup
             .string()
             .required('Password is a required field.')
@@ -50,18 +39,12 @@ export default function Signin() {
                     bg={'danger'}
                 >
                     <Toast.Header>
-                        <strong className="me-auto">
-                            {error?.message || 'Unable to read error name.'}
-                        </strong>
+                        <strong className="me-auto">{error?.message || 'Unable to read error name.'}</strong>
                     </Toast.Header>
                     <Toast.Body>
                         {error?.errors &&
                             Object.values(error?.errors).map((err) => {
-                                return (
-                                    <div key={err.toString()}>
-                                        {err.toString()}
-                                    </div>
-                                );
+                                return <div key={err.toString()}>{err.toString()}</div>;
                             })}
                     </Toast.Body>
                 </Toast>
@@ -71,15 +54,13 @@ export default function Signin() {
                 validationSchema={schema}
                 validateOnChange
                 onSubmit={async (values) => {
-                    await ky
-                        .post(Endpoints.Account.Signin(), { json: values })
+                    await Endpoints.Account.signin(values)
                         .then(() => {
                             localStorage.setItem('loggedIn', 'true');
                             navigate('/');
                         })
                         .catch(async (err: HTTPError) => {
-                            const res: APIErrorRes<SigninError> =
-                                await err.response.json();
+                            const res: APIErrorRes<SigninError> = await err.response.json();
                             setError(res);
                             setShowError(true);
                         });

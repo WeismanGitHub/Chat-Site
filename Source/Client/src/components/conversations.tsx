@@ -1,11 +1,11 @@
 import { ToastContainer, Toast, Modal, Button } from 'react-bootstrap';
 import { useQuery } from '@tanstack/react-query';
 import Endpoints from '../endpoints';
-import { HTTPError } from 'ky';
 import { useState } from 'react';
+import { HTTPError } from 'ky';
 
 export default function Conversations() {
-    let { error, data } = useQuery<conversation[], HTTPError>({
+    let { error, data } = useQuery<Conversation[], HTTPError>({
         queryKey: ['data'],
         queryFn: () => Endpoints.Conversations.get(),
     });
@@ -17,7 +17,7 @@ export default function Conversations() {
     }
 
     const [showModal, setShowModal] = useState(false);
-    const [selectedConvo, setConvo] = useState<conversation | null>(null);
+    const [selectedConvo, setConvo] = useState<Conversation | null>(null);
 
     async function leaveConvo() {
         try {

@@ -1,18 +1,10 @@
+import { Button, Col, Form, InputGroup, Row, Toast, ToastContainer } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Endpoints from '../endpoints';
-import ky, { HTTPError } from 'ky';
 import * as formik from 'formik';
 import { useState } from 'react';
+import { HTTPError } from 'ky';
 import * as yup from 'yup';
-import {
-    Button,
-    Col,
-    Form,
-    InputGroup,
-    Row,
-    Toast,
-    ToastContainer,
-} from 'react-bootstrap';
 
 type SignupError = {
     email?: string;
@@ -30,18 +22,13 @@ export default function Signup() {
             .required('DisplayName is a required field.')
             .min(1, 'Must be at least 1 character.')
             .max(25, 'Cannot be more than 25 characters.'),
-        email: yup
-            .string()
-            .required('Email is a required field.')
-            .email('Must be a valid email.'),
+        email: yup.string().required('Email is a required field.').email('Must be a valid email.'),
         password: yup
             .string()
             .required('Password is a required field.')
             .min(10, 'Must be at least 10 characters.')
             .max(70, 'Cannot be more than 70 characters.'),
-        confirmPassword: yup
-            .string()
-            .required('Confirm Password is a required field.'),
+        confirmPassword: yup.string().required('Confirm Password is a required field.'),
     });
 
     const [showError, setShowError] = useState(false);
@@ -59,18 +46,12 @@ export default function Signup() {
                     bg={'danger'}
                 >
                     <Toast.Header>
-                        <strong className="me-auto">
-                            {error?.message || 'Unable to read error name.'}
-                        </strong>
+                        <strong className="me-auto">{error?.message || 'Unable to read error name.'}</strong>
                     </Toast.Header>
                     <Toast.Body>
                         {error?.errors &&
                             Object.values(error?.errors).map((err) => {
-                                return (
-                                    <div key={err.toString()}>
-                                        {err.toString()}
-                                    </div>
-                                );
+                                return <div key={err.toString()}>{err.toString()}</div>;
                             })}
                     </Toast.Body>
                 </Toast>
@@ -116,21 +97,17 @@ export default function Signup() {
                 }}
                 validateOnChange
                 onSubmit={async (values) => {
-                    await ky
-                        .post(Endpoints.Account.Signup(), {
-                            json: {
-                                DisplayName: values.displayName,
-                                Email: values.email,
-                                Password: values.password,
-                            },
-                        })
+                    await Endpoints.Account.signup({
+                        displayName: values.displayName,
+                        email: values.email,
+                        password: values.password,
+                    })
                         .then(() => {
                             localStorage.setItem('loggedIn', 'true');
                             navigate('/');
                         })
                         .catch(async (err: HTTPError) => {
-                            const res: APIErrorRes<SignupError> =
-                                await err.response.json();
+                            const res: APIErrorRes<SignupError> = await err.response.json();
                             setError(res);
                             setShowError(true);
                         });

@@ -1,8 +1,8 @@
 import { ToastContainer, Toast } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Endpoints from '../endpoints';
-import ky, { HTTPError } from 'ky';
 import { useState } from 'react';
+import { HTTPError } from 'ky';
 
 type LogoutError = {
     email?: string;
@@ -18,8 +18,7 @@ export default function Navbar() {
     const toggleError = () => setShowError(!showError);
 
     async function logout() {
-        await ky
-            .post(Endpoints.Account.Signout())
+        await Endpoints.Account.signout()
             .then(() => {
                 localStorage.removeItem('loggedIn');
                 navigate('/auth');
@@ -42,31 +41,19 @@ export default function Navbar() {
                     bg={'danger'}
                 >
                     <Toast.Header>
-                        <strong className="me-auto">
-                            {error?.message || 'Unable to read error name.'}
-                        </strong>
+                        <strong className="me-auto">{error?.message || 'Unable to read error name.'}</strong>
                     </Toast.Header>
                     <Toast.Body>
                         {error?.errors &&
                             Object.values(error?.errors).map((err) => {
-                                return (
-                                    <div key={err.toString()}>
-                                        {err.toString()}
-                                    </div>
-                                );
+                                return <div key={err.toString()}>{err.toString()}</div>;
                             })}
                     </Toast.Body>
                 </Toast>
             </ToastContainer>
             <nav className="navbar navbar-expand navbar-dark bg-primary ps-2 pe-2 justify-content-center py-1">
                 <a className="navbar-brand" href="/">
-                    <img
-                        src="/icon.png"
-                        width={50}
-                        height={50}
-                        alt="icon"
-                        className="me-2"
-                    />
+                    <img src="/icon.png" width={50} height={50} alt="icon" className="me-2" />
                     Chat Site v2
                 </a>
 
@@ -84,17 +71,11 @@ export default function Navbar() {
                     </a>
                     <div className="ms-10">
                         {loggedIn ? (
-                            <button
-                                className="nav-item nav-link active"
-                                onClick={() => logout()}
-                            >
+                            <button className="nav-item nav-link active" onClick={() => logout()}>
                                 Logout
                             </button>
                         ) : (
-                            <a
-                                className="nav-item nav-link active"
-                                href="/auth"
-                            >
+                            <a className="nav-item nav-link active" href="/auth">
                                 Signup/Signin
                             </a>
                         )}

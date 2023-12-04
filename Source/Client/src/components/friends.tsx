@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { HTTPError } from 'ky';
 
 export default function Friends() {
-    let { error, data } = useQuery<friend[], HTTPError>({
+    let { error, data } = useQuery<Friend[], HTTPError>({
         queryKey: ['data'],
         queryFn: () => Endpoints.Friends.get(),
     });
@@ -17,7 +17,7 @@ export default function Friends() {
     }
 
     const [showModal, setShowModal] = useState(false);
-    const [selectedFriend, setFriend] = useState<friend | null>(null);
+    const [selectedFriend, setFriend] = useState<Friend | null>(null);
 
     async function removeFriend() {
         try {

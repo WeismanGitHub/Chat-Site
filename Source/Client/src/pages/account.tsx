@@ -1,31 +1,13 @@
+import { ToastContainer, Toast, Button, Modal, Form, Row, Col, InputGroup } from 'react-bootstrap';
 import { redirectIfNotLoggedIn } from '../helpers';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/navbar';
 import Endpoints from '../endpoints';
-import ky, { HTTPError } from 'ky';
 import { useState } from 'react';
 import { Formik } from 'formik';
+import { HTTPError } from 'ky';
 import * as yup from 'yup';
-import {
-    ToastContainer,
-    Toast,
-    Button,
-    Modal,
-    Form,
-    Row,
-    Col,
-    InputGroup,
-} from 'react-bootstrap';
-
-type AccountData = {
-    id: string;
-    displayName: string;
-    email: string;
-    totalConversations: number;
-    totalFriends: number;
-    createdAt: string;
-};
 
 type UpdateError = {
     newData: {
@@ -40,20 +22,20 @@ type UpdateError = {
 export default function Account() {
     redirectIfNotLoggedIn();
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const { data } = useQuery<AccountData, HTTPError>({
         queryKey: ['data'],
-        queryFn: (): Promise<AccountData> =>
-            ky.get(Endpoints.Account.Route()).json(),
+        queryFn: () => Endpoints.Account.get(),
     });
 
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const [showError, setShowError] = useState(false);
-    const [toastError, setToastError] =
-        useState<APIErrorRes<UpdateError | Record<string, never>> | null>(null);
+    const [toastError, setToastError] = useState<APIErrorRes<UpdateError | Record<string, never>> | null>(
+        null
+    );
 
     const newDataSchema = yup.object().shape({
         displayName: yup
@@ -69,9 +51,7 @@ export default function Account() {
 
     const updateAccountSchema = yup.object().shape({
         newData: newDataSchema,
-        currentPassword: yup
-            .string()
-            .required('Current Password is a required field.'),
+        currentPassword: yup.string().required('Current Password is a required field.'),
     });
 
     async function validateAccount(values: {
@@ -89,11 +69,7 @@ export default function Account() {
 
         if (values.email && values.email === data?.email) {
             errors.email = 'Email cannot be the same.';
-        } else if (
-            values.password &&
-            values.currentPassword &&
-            values.password === values.currentPassword
-        ) {
+        } else if (values.password && values.currentPassword && values.password === values.currentPassword) {
             errors.password = 'Passwords cannot be the same.';
         }
 
@@ -125,11 +101,7 @@ export default function Account() {
             }
         }
 
-        if (
-            values.displayName.length === 0 &&
-            values.email.length === 0 &&
-            values.password.length === 0
-        ) {
+        if (values.displayName.length === 0 && values.email.length === 0 && values.password.length === 0) {
             errors.displayName = 'Must update something.';
             errors.email = 'Must update something.';
             errors.password = 'Must update something.';
@@ -167,11 +139,9 @@ export default function Account() {
         }
 
         try {
-            await ky.patch(Endpoints.Account.Route(), {
-                json: {
-                    newData: update,
-                    currentPassword: values.currentPassword,
-                },
+            await Endpoints.Account.update({
+                newData: update,
+                currentPassword: values.currentPassword,
             });
 
             data!.displayName = update.displayName ?? data!.displayName;
@@ -195,32 +165,22 @@ export default function Account() {
                 <br />
                 <div className="row">
                     <div className="text-center bg-white rounded shadow card-body p-3 bg-primary">
-                        <h1 className="mb-2">
-                            {data?.displayName || 'Unkown'}
-                        </h1>
+                        <h1 className="mb-2">{data?.displayName || 'Unkown'}</h1>
                         <h5 className="mb-2">{data?.email}</h5>
                         <h5 className="mb-2">
                             Created:{' '}
                             {data?.createdAt
-                                ? new Date(data.createdAt).toLocaleDateString(
-                                      'en-US',
-                                      {
-                                          weekday: 'long',
-                                          year: 'numeric',
-                                          month: 'long',
-                                          day: 'numeric',
-                                      }
-                                  )
+                                ? new Date(data.createdAt).toLocaleDateString('en-US', {
+                                      weekday: 'long',
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric',
+                                  })
                                 : 'Unkown'}
                         </h5>
                         <br />
-                        <h5 className="mb-2">
-                            Total Friends: {data?.totalFriends ?? 'Unknown'}
-                        </h5>
-                        <h5 className="mb-2">
-                            Total Convos:{' '}
-                            {data?.totalConversations ?? 'Unknown'}
-                        </h5>
+                        <h5 className="mb-2">Total Friends: {data?.totalFriends ?? 'Unknown'}</h5>
+                        <h5 className="mb-2">Total Convos: {data?.totalConversations ?? 'Unknown'}</h5>
                         <br />
                         <Row className="justify-content-center">
                             <a
@@ -251,18 +211,13 @@ export default function Account() {
                     >
                         <Toast.Header>
                             <strong className="me-auto">
-                                {toastError?.message ||
-                                    'Unable to read error name.'}
+                                {toastError?.message || 'Unable to read error name.'}
                             </strong>
                         </Toast.Header>
                         <Toast.Body>
                             {toastError?.errors &&
                                 Object.values(toastError?.errors).map((err) => {
-                                    return (
-                                        <div key={err.toString()}>
-                                            {err.toString()}
-                                        </div>
-                                    );
+                                    return <div key={err.toString()}>{err.toString()}</div>;
                                 })}
                         </Toast.Body>
                     </Toast>
@@ -289,34 +244,17 @@ export default function Account() {
                                         currentPassword: '',
                                     }}
                                 >
-                                    {({
-                                        handleSubmit,
-                                        handleChange,
-                                        values,
-                                        errors,
-                                    }) => (
-                                        <Form
-                                            noValidate
-                                            onSubmit={handleSubmit}
-                                        >
+                                    {({ handleSubmit, handleChange, values, errors }) => (
+                                        <Form noValidate onSubmit={handleSubmit}>
                                             <Row className="mb-3">
-                                                <Form.Group
-                                                    as={Col}
-                                                    controlId="currentPasswordID"
-                                                >
-                                                    <Form.Label>
-                                                        Current Password
-                                                    </Form.Label>
+                                                <Form.Group as={Col} controlId="currentPasswordID">
+                                                    <Form.Label>Current Password</Form.Label>
                                                     <Form.Control
                                                         type="password"
                                                         name="currentPassword"
-                                                        value={
-                                                            values.currentPassword
-                                                        }
+                                                        value={values.currentPassword}
                                                         onChange={handleChange}
-                                                        isInvalid={
-                                                            !!errors.currentPassword
-                                                        }
+                                                        isInvalid={!!errors.currentPassword}
                                                     />
                                                     <Form.Control.Feedback type="invalid">
                                                         {errors.currentPassword}
@@ -324,28 +262,17 @@ export default function Account() {
                                                 </Form.Group>
                                             </Row>
                                             <Row className="mb-3">
-                                                <Form.Group
-                                                    as={Col}
-                                                    controlId="DisplayNameID"
-                                                >
-                                                    <Form.Label>
-                                                        New DisplayName
-                                                    </Form.Label>
+                                                <Form.Group as={Col} controlId="DisplayNameID">
+                                                    <Form.Label>New DisplayName</Form.Label>
                                                     <InputGroup hasValidation>
                                                         <Form.Control
                                                             type="text"
                                                             placeholder="DisplayName"
                                                             aria-describedby="inputGroupPrepend"
                                                             name="displayName"
-                                                            value={
-                                                                values.displayName
-                                                            }
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            isInvalid={
-                                                                !!errors.displayName
-                                                            }
+                                                            value={values.displayName}
+                                                            onChange={handleChange}
+                                                            isInvalid={!!errors.displayName}
                                                         />
                                                         <Form.Control.Feedback type="invalid">
                                                             {errors.displayName}
@@ -354,13 +281,8 @@ export default function Account() {
                                                 </Form.Group>
                                             </Row>
                                             <Row className="mb-3">
-                                                <Form.Group
-                                                    as={Col}
-                                                    controlId="EmailID"
-                                                >
-                                                    <Form.Label>
-                                                        Email
-                                                    </Form.Label>
+                                                <Form.Group as={Col} controlId="EmailID">
+                                                    <Form.Label>Email</Form.Label>
                                                     <InputGroup hasValidation>
                                                         <Form.Control
                                                             type="email"
@@ -368,12 +290,8 @@ export default function Account() {
                                                             placeholder="example@email.com"
                                                             name="email"
                                                             value={values.email}
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            isInvalid={
-                                                                !!errors.email
-                                                            }
+                                                            onChange={handleChange}
+                                                            isInvalid={!!errors.email}
                                                         />
                                                         <Form.Control.Feedback type="invalid">
                                                             {errors.email}
@@ -382,27 +300,16 @@ export default function Account() {
                                                 </Form.Group>
                                             </Row>
                                             <Row className="mb-3">
-                                                <Form.Group
-                                                    as={Col}
-                                                    controlId="PasswordID"
-                                                >
-                                                    <Form.Label>
-                                                        New Password
-                                                    </Form.Label>
+                                                <Form.Group as={Col} controlId="PasswordID">
+                                                    <Form.Label>New Password</Form.Label>
                                                     <InputGroup hasValidation>
                                                         <Form.Control
                                                             type="password"
                                                             aria-describedby="inputGroupPrepend"
                                                             name="password"
-                                                            value={
-                                                                values.password
-                                                            }
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            isInvalid={
-                                                                !!errors.password
-                                                            }
+                                                            value={values.password}
+                                                            onChange={handleChange}
+                                                            isInvalid={!!errors.password}
                                                         />
                                                         <Form.Control.Feedback type="invalid">
                                                             {errors.password}
@@ -410,9 +317,7 @@ export default function Account() {
                                                     </InputGroup>
                                                 </Form.Group>
                                             </Row>
-                                            <Button type="submit">
-                                                Update
-                                            </Button>
+                                            <Button type="submit">Update</Button>
                                         </Form>
                                     )}
                                 </Formik>
@@ -423,29 +328,25 @@ export default function Account() {
 
                 <Modal show={showDeleteModal}>
                     <Modal.Dialog>
-                        <Modal.Header
-                            closeButton
-                            onClick={() => setShowDeleteModal(false)}
-                        ></Modal.Header>
+                        <Modal.Header closeButton onClick={() => setShowDeleteModal(false)}></Modal.Header>
 
-                        <Modal.Body>
-                            Are you sure you want to delete your account?
-                        </Modal.Body>
+                        <Modal.Body>Are you sure you want to delete your account?</Modal.Body>
                         <Modal.Footer>
                             <Button
                                 variant="danger"
                                 onClick={async () => {
                                     try {
-                                        await ky.delete(Endpoints.Account.Route());
-                            
+                                        await Endpoints.Account.delete();
+
                                         setShowUpdateModal(false);
-                                        navigate('/auth')
+                                        navigate('/auth');
                                     } catch (err) {
                                         if (err instanceof HTTPError) {
-                                            const res: APIErrorRes<Record<string, never>> = await err.response.json();
+                                            const res: APIErrorRes<Record<string, never>> =
+                                                await err.response.json();
                                             setToastError(res);
                                         }
-                            
+
                                         setShowError(true);
                                     }
                                 }}

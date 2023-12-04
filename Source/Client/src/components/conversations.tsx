@@ -1,20 +1,13 @@
 import { ToastContainer, Toast, Modal, Button } from 'react-bootstrap';
 import { useQuery } from '@tanstack/react-query';
 import Endpoints from '../endpoints';
-import ky, { HTTPError } from 'ky';
+import { HTTPError } from 'ky';
 import { useState } from 'react';
-
-type conversation = {
-    id: string;
-    name: string;
-    createdAt: string;
-};
 
 export default function Conversations() {
     let { error, data } = useQuery<conversation[], HTTPError>({
         queryKey: ['data'],
-        queryFn: (): Promise<conversation[]> =>
-            ky.get(Endpoints.Conversations.Route()).json(),
+        queryFn: () => Endpoints.Conversations.get(),
     });
 
     const [showError, setShowError] = useState(false);
@@ -28,7 +21,7 @@ export default function Conversations() {
 
     async function leaveConvo() {
         try {
-            await ky.post(Endpoints.Conversations.Leave(selectedConvo!.id));
+            await Endpoints.Conversations.leave(selectedConvo!.id);
             data = data!.filter((convo) => convo.id === selectedConvo?.id);
             setConvo(null);
         } catch (err: unknown) {
@@ -50,13 +43,9 @@ export default function Conversations() {
                     bg={'danger'}
                 >
                     <Toast.Header>
-                        <strong className="me-auto">
-                            {error?.name || 'Unable to read error name.'}
-                        </strong>
+                        <strong className="me-auto">{error?.name || 'Unable to read error name.'}</strong>
                     </Toast.Header>
-                    <Toast.Body>
-                        {error?.message || 'Unable to read error message.'}
-                    </Toast.Body>
+                    <Toast.Body>{error?.message || 'Unable to read error message.'}</Toast.Body>
                 </Toast>
             </ToastContainer>
 
@@ -73,15 +62,12 @@ export default function Conversations() {
                     </Modal.Header>
 
                     <Modal.Body>
-                        {selectedConvo?.name ||
-                            "Could not get friend's name."}
+                        {selectedConvo?.name || "Could not get friend's name."}
                         <div className="fs-6">
                             Created -{' '}
                             {!selectedConvo
                                 ? 'Unkown'
-                                : new Date(
-                                      selectedConvo.createdAt
-                                  ).toLocaleDateString('en-US', {
+                                : new Date(selectedConvo.createdAt).toLocaleDateString('en-US', {
                                       weekday: 'long',
                                       year: 'numeric',
                                       month: 'long',
@@ -100,30 +86,28 @@ export default function Conversations() {
 
             <ul className="list-group fs-5">
                 {data?.map((convo) => {
-                        return (
-                            <li
-                                className="list-group-item bg-dark-subtle text-primary border-secondary"
-                                key={convo.id}
-                                onClick={() => {
-                                    setConvo(convo);
-                                    setShowModal(true);
-                                }}
-                            >
-                                {convo.name}
-                                <div className="fs-6">
-                                    Created -{' '}
-                                    {new Date(
-                                        convo.createdAt
-                                    ).toLocaleDateString('en-US', {
-                                        weekday: 'long',
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                    })}
-                                </div>
-                            </li>
-                        );
-                    })}
+                    return (
+                        <li
+                            className="list-group-item bg-dark-subtle text-primary border-secondary"
+                            key={convo.id}
+                            onClick={() => {
+                                setConvo(convo);
+                                setShowModal(true);
+                            }}
+                        >
+                            {convo.name}
+                            <div className="fs-6">
+                                Created -{' '}
+                                {new Date(convo.createdAt).toLocaleDateString('en-US', {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                })}
+                            </div>
+                        </li>
+                    );
+                })}
             </ul>
         </div>
     );

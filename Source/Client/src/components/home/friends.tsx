@@ -24,6 +24,7 @@ export default function Friends() {
             await Endpoints.Friends.remove(selectedFriend!.id);
             data = data!.filter((friend) => friend.id === selectedFriend?.id);
             setFriend(null);
+            setShowModal(false);
         } catch (err: unknown) {
             if (err instanceof HTTPError) {
                 error = err;

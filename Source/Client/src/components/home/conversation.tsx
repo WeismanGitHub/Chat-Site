@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import Endpoints from '../endpoints';
+import Endpoints from '../../endpoints';
 import { HTTPError } from 'ky';
 
 export default function conversation({ conversationID }: { conversationID: string }) {

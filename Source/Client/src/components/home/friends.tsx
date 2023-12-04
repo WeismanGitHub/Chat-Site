@@ -1,13 +1,13 @@
 import { ToastContainer, Toast, Modal, Button } from 'react-bootstrap';
 import { useQuery } from '@tanstack/react-query';
-import Endpoints from '../endpoints';
+import Endpoints from '../../endpoints';
 import { useState } from 'react';
 import { HTTPError } from 'ky';
 
-export default function Conversations() {
-    let { error, data } = useQuery<ConversationsData, HTTPError>({
+export default function Friends() {
+    let { error, data } = useQuery<Friend[], HTTPError>({
         queryKey: ['data'],
-        queryFn: () => Endpoints.Conversations.get(),
+        queryFn: () => Endpoints.Friends.get(),
     });
 
     const [showError, setShowError] = useState(false);
@@ -17,17 +17,13 @@ export default function Conversations() {
     }
 
     const [showModal, setShowModal] = useState(false);
-    const [selectedConvo, setConvo] = useState<{
-        id: string;
-        name: string;
-        createdAt: string;
-    } | null>(null);
+    const [selectedFriend, setFriend] = useState<Friend | null>(null);
 
-    async function leaveConvo() {
+    async function removeFriend() {
         try {
-            await Endpoints.Conversations.leave(selectedConvo!.id);
-            data = data!.filter((convo) => convo.id === selectedConvo?.id);
-            setConvo(null);
+            await Endpoints.Friends.remove(selectedFriend!.id);
+            data = data!.filter((friend) => friend.id === selectedFriend?.id);
+            setFriend(null);
         } catch (err: unknown) {
             if (err instanceof HTTPError) {
                 error = err;
@@ -59,19 +55,19 @@ export default function Conversations() {
                         closeButton
                         onClick={() => {
                             setShowModal(false);
-                            setConvo(null);
+                            setFriend(null);
                         }}
                     >
-                        <Modal.Title>Conversation</Modal.Title>
+                        <Modal.Title>Friend</Modal.Title>
                     </Modal.Header>
 
                     <Modal.Body>
-                        {selectedConvo?.name || "Could not get friend's name."}
+                        {selectedFriend?.displayName || "Could not get friend's name."}
                         <div className="fs-6">
                             Created -{' '}
-                            {!selectedConvo
+                            {!selectedFriend
                                 ? 'Unkown'
-                                : new Date(selectedConvo.createdAt).toLocaleDateString('en-US', {
+                                : new Date(selectedFriend.createdAt).toLocaleDateString('en-US', {
                                       weekday: 'long',
                                       year: 'numeric',
                                       month: 'long',
@@ -81,7 +77,7 @@ export default function Conversations() {
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button variant="danger" onClick={leaveConvo}>
+                        <Button variant="danger" onClick={removeFriend}>
                             Remove
                         </Button>
                     </Modal.Footer>
@@ -89,20 +85,21 @@ export default function Conversations() {
             </Modal>
 
             <ul className="list-group fs-5">
-                {data?.map((convo) => {
+                {data?.map((friend) => {
                     return (
                         <li
                             className="list-group-item bg-dark-subtle text-primary border-secondary"
-                            key={convo.id}
+                            key={friend.id}
+                            style={{ cursor: 'pointer' }}
                             onClick={() => {
-                                setConvo(convo);
+                                setFriend(friend);
                                 setShowModal(true);
                             }}
                         >
-                            {convo.name}
+                            {friend.displayName}
                             <div className="fs-6">
                                 Created -{' '}
-                                {new Date(convo.createdAt).toLocaleDateString('en-US', {
+                                {new Date(friend.createdAt).toLocaleDateString('en-US', {
                                     weekday: 'long',
                                     year: 'numeric',
                                     month: 'long',

@@ -1,8 +1,8 @@
 import { Button } from 'react-bootstrap';
 import { useState } from 'react';
 
-import Signin from '../components/signin';
-import Signup from '../components/signup';
+import Signin from '../components/auth/signin';
+import Signup from '../components/auth/signup';
 import Navbar from '../components/navbar';
 
 export default function Auth() {

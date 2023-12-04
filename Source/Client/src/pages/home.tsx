@@ -1,10 +1,10 @@
 import { redirectIfNotLoggedIn } from '../helpers';
 
-import Conversations from '../components/conversations';
-import CreateConvo from '../components/create-convo';
-import AddFriend from '../components/add-friend';
-import JoinConvo from '../components/join-convo';
-import Friends from '../components/friends';
+import Conversations from '../components/home/conversations';
+import CreateConvo from '../components/home/create-convo';
+import AddFriend from '../components/home/add-friend';
+import JoinConvo from '../components/home/join-convo';
+import Friends from '../components/home/friends';
 import Navbar from '../components/navbar';
 
 export default function Home() {

@@ -1,6 +1,6 @@
 import { Button, Col, Form, InputGroup, Row, Toast, ToastContainer } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import Endpoints from '../endpoints';
+import Endpoints from '../../endpoints';
 import * as formik from 'formik';
 import { useState } from 'react';
 import { HTTPError } from 'ky';

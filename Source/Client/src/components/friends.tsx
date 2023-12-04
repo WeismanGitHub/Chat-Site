@@ -90,6 +90,7 @@ export default function Friends() {
                         <li
                             className="list-group-item bg-dark-subtle text-primary border-secondary"
                             key={friend.id}
+                            style={{ cursor: 'pointer' }}
                             onClick={() => {
                                 setFriend(friend);
                                 setShowModal(true);

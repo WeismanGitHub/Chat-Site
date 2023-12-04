@@ -1,34 +1,44 @@
+import ky from 'ky';
+
 class Account {
-    public static Route() {
-        return '/API/Account/v1';
+    public static get(): Promise<accountData> {
+        return ky.get('/API/Account/v1').json();
     }
 
-    public static Signin() {
-        return '/API/Account/Signin/v1';
+    public static signin() {
+        return ky.post('/API/Account/Signin/v1').json();
     }
 
-    public static Signup() {
-        return '/API/Account/Signup/v1';
+    public static signup() {
+        return ky.post('/API/Account/Signup/v1').json();
     }
 
-    public static Signout() {
-        return '/API/Account/Signout/v1';
+    public static signout() {
+        return ky.post('/API/Account/Signout/v1').json();
     }
 }
 
 class Friends {
-    public static Route() {
-        return '/API/Friends/v1';
+    public static get(): Promise<friend[]> {
+        return ky.get('/API/Friends/v1').json();
     }
 
-    public static Remove(friendID: string) {
-        return `/API/Friends/${friendID}/remove/v1`;
+    public static remove(friendID: string) {
+        return ky.post(`/API/Friends/${friendID}/remove/v1`);
     }
 }
 
 class Conversations {
-    public static Route() {
-        return '/API/Conversations/v1';
+    public static get(): Promise<conversation[]> {
+        return ky.get('/API/Conversations/v1').json();
+    }
+
+    public static leave(conversationID: string) {
+        return ky.post(`/API/Conversations/${conversationID}/leave/v1`);
+    }
+
+    public static getOne(conversationID: string) {
+        return ky.get(`/API/Conversations/${conversationID}/v1`).json();
     }
 }
 

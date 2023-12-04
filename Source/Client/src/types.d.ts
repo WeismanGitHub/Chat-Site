@@ -10,11 +10,11 @@ type Friend = {
     createdAt: string;
 };
 
-type Conversation = {
+type ConversationsData = {
     id: string;
     name: string;
     createdAt: string;
-};
+}[];
 
 type AccountData = {
     id: string;
@@ -23,4 +23,8 @@ type AccountData = {
     totalConversations: number;
     totalFriends: number;
     createdAt: string;
+};
+
+type SingleConvoData = {
+    members: { ID: string }[];
 };

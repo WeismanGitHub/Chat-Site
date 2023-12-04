@@ -1,7 +1,6 @@
 using API.Endpoints.Conversations.Get;
 using API.Database.Entities;
 using MongoDB.Entities;
-using MongoDB.Bson;
 
 namespace Tests.API.Conversations.Get;
 
@@ -10,7 +9,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Valid_Request() {
-		var (rsp, res) = await Fixture.Client.POSTAsync<Endpoint, Request, List<ResConvo>>(new());
+		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, List<ResConvo>>(new());
 
 		rsp.IsSuccessStatusCode.Should().BeTrue();
 		res.Should().NotBeNull();
@@ -25,9 +24,15 @@ public class Tests : TestClass<Fixture> {
 		foreach (var convo in convos) {
 			convo.MemberIDs.Contains(Fixture.AccountID).Should().BeTrue();
 		}
+
+		await DB.Update<User>().MatchID(Fixture.AccountID).Modify(u => u.ConversationIDs, new() { }).ExecuteAsync();
 	}
 
 	[Fact]
 	public async Task No_Convos() {
+		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, List<ResConvo>>(new());
+
+		rsp.IsSuccessStatusCode.Should().BeTrue();
+		res.Count.Should().Be(0);
 	}
 }

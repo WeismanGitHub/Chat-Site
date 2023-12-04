@@ -1,16 +1,31 @@
 import ky from 'ky';
 
 class Account {
-    public static get(): Promise<accountData> {
+    public static get(): Promise<AccountData> {
         return ky.get('/API/Account/v1').json();
     }
 
-    public static signin() {
-        return ky.post('/API/Account/Signin/v1').json();
+    public static signin(data: { email: string; password: string }) {
+        return ky.post('/API/Account/Signin/v1', { json: data }).json();
     }
 
-    public static signup() {
-        return ky.post('/API/Account/Signup/v1').json();
+    public static signup(data: { displayName: string; email: string; password: string }) {
+        return ky.post('/API/Account/Signup/v1', { json: data }).json();
+    }
+
+    public static update(data: {
+        currentPassword: string;
+        newData: {
+            displayName: string | null;
+            email: string | null;
+            password: string | null;
+        };
+    }) {
+        return ky.patch('API/Account/v1', { json: data }).json();
+    }
+
+    public static delete() {
+        return ky.delete('/API/Accoun/v1').json();
     }
 
     public static signout() {
@@ -19,7 +34,7 @@ class Account {
 }
 
 class Friends {
-    public static get(): Promise<friend[]> {
+    public static get(): Promise<Friend[]> {
         return ky.get('/API/Friends/v1').json();
     }
 
@@ -29,7 +44,7 @@ class Friends {
 }
 
 class Conversations {
-    public static get(): Promise<conversation[]> {
+    public static get(): Promise<Conversation[]> {
         return ky.get('/API/Conversations/v1').json();
     }
 

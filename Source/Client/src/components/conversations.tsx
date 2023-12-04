@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { HTTPError } from 'ky';
 
 export default function Conversations() {
-    let { error, data } = useQuery<Conversation[], HTTPError>({
+    let { error, data } = useQuery<ConversationsData, HTTPError>({
         queryKey: ['data'],
         queryFn: () => Endpoints.Conversations.get(),
     });
@@ -17,7 +17,11 @@ export default function Conversations() {
     }
 
     const [showModal, setShowModal] = useState(false);
-    const [selectedConvo, setConvo] = useState<Conversation | null>(null);
+    const [selectedConvo, setConvo] = useState<{
+        id: string;
+        name: string;
+        createdAt: string;
+    } | null>(null);
 
     async function leaveConvo() {
         try {

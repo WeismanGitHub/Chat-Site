@@ -28,3 +28,13 @@ type AccountData = {
 type SingleConvoData = {
     members: { ID: string }[];
 };
+
+type FriendReqStatus = 'Accepted' | 'Declined' | 'Pending';
+
+type FriendRequest = {
+    requesterID: string;
+    recipientID: string;
+    message?: string;
+    status: FriendReqStatus;
+    createdAt: string;
+};

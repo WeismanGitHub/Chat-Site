@@ -1,20 +1,28 @@
 import { ToastContainer, Toast, Modal, Button } from 'react-bootstrap';
 import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import Endpoints from '../../endpoints';
-import { useState } from 'react';
 import { HTTPError } from 'ky';
 
 export default function Conversations() {
+    // eslint-disable-next-line prefer-const
     let { error, data } = useQuery<ConversationsData, HTTPError>({
         queryKey: ['data'],
         queryFn: () => Endpoints.Conversations.get(),
     });
 
+    const [toastError, setToastError] = useState<APIErrorRes<object> | null>(null);
     const [showError, setShowError] = useState(false);
 
-    if (error) {
-        setShowError(true);
-    }
+    useEffect(() => {
+        if (error) {
+            error.response.json().then((res) => {
+                console.error(res);
+                setToastError(res);
+                setShowError(true);
+            });
+        }
+    }, [error]);
 
     const [showModal, setShowModal] = useState(false);
     const [selectedConvo, setConvo] = useState<{
@@ -30,8 +38,9 @@ export default function Conversations() {
             setConvo(null);
         } catch (err: unknown) {
             if (err instanceof HTTPError) {
-                error = err;
+                setToastError(await err.response.json());
                 setShowError(true);
+                console.log(toastError);
             }
         }
     }
@@ -47,9 +56,16 @@ export default function Conversations() {
                     bg={'danger'}
                 >
                     <Toast.Header>
-                        <strong className="me-auto">{error?.name || 'Unable to read error name.'}</strong>
+                        <strong className="me-auto">
+                            {toastError?.message || 'Unable to read error name.'}
+                        </strong>
                     </Toast.Header>
-                    <Toast.Body>{error?.message || 'Unable to read error message.'}</Toast.Body>
+                    <Toast.Body>
+                        {toastError?.errors &&
+                            Object.values(toastError?.errors).map((err) => {
+                                return <div key={err}>{err}</div>;
+                            })}
+                    </Toast.Body>
                 </Toast>
             </ToastContainer>
 

@@ -1,5 +1,6 @@
 import { redirectIfNotLoggedIn } from '../helpers';
 
+import IncomingRequests from '../components/home/incoming-requests';
 import Conversations from '../components/home/conversations';
 import CreateConvo from '../components/home/create-convo';
 import AddFriend from '../components/home/add-friend';
@@ -14,14 +15,21 @@ export default function Home() {
         <div className="overflow-y-hidden vh-100 vw-100">
             <Navbar />
 
-            <div className="w-25 col m-1 text-center h-100">
-                <div className="row justify-content-evenly">
-                    <div className="p-1">
-                        <AddFriend /> <CreateConvo /> <JoinConvo />
+            <div className="col text-center h-100 m-1" style={{ width: '20%' }}>
+                <div className="row justify-content-evenly mb-1">
+                    <div>
+                        <AddFriend /> <IncomingRequests />
                     </div>
                 </div>
                 <div className="overflow-y-scroll h-100">
                     <Friends />
+                </div>
+            </div>
+            <div className="col text-center h-100" style={{ width: '20%' }}>
+                <div className="row justify-content-evenly m-1">
+                    <div>
+                        <CreateConvo /> <JoinConvo />
+                    </div>
                 </div>
                 <div className="overflow-y-scroll h-100">
                     <Conversations />

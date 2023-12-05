@@ -40,8 +40,8 @@ class Requests {
     }: {
         type?: 'Incoming' | 'Outgoing';
         page?: number;
-    }): Promise<{ friendRequests: FriendRequest[], totalCount: number }> {
-        return ky // implement FriendReqDTO
+    }): Promise<{ friendRequests: FriendRequest[]; totalCount: number }> {
+        return ky
             .get('/API/Friends/Requests/v1', {
                 searchParams: {
                     type,

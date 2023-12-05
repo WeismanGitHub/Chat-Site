@@ -14,11 +14,6 @@ public sealed class Request {
 	public int? Page { get; set; } = 1;
 }
 
-public sealed class Response {
-	public IReadOnlyList<FriendRequest> FriendRequests { get; set; }
-	public long TotalCount { get; set; }
-}
-
 internal sealed class Validator : Validator<Request> {
 	public Validator() {
 		RuleFor(req => req.Page)

@@ -25,7 +25,7 @@ class Account {
     }
 
     public static delete() {
-        return ky.delete('/API/Accoun/v1').json();
+        return ky.delete('/API/Account/v1').json();
     }
 
     public static signout() {
@@ -33,7 +33,28 @@ class Account {
     }
 }
 
+class Requests {
+    public static get({
+        type = 'Incoming',
+        page = 0,
+    }: {
+        type?: 'Incoming' | 'Outgoing';
+        page?: number;
+    }): Promise<{ friendRequests: FriendRequest[], totalCount: number }> {
+        return ky // implement FriendReqDTO
+            .get('/API/Friends/Requests/v1', {
+                searchParams: {
+                    type,
+                    page,
+                },
+            })
+            .json();
+    }
+}
+
 class Friends {
+    public static Requests = Requests;
+
     public static get(): Promise<Friend[]> {
         return ky.get('/API/Friends/v1').json();
     }

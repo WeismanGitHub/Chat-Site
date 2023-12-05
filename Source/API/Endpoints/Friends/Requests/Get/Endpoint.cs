@@ -1,6 +1,6 @@
 ﻿namespace API.Endpoints.Friends.Requests.Get;
 
-public sealed class Endpoint : Endpoint<Request, IReadOnlyList<FriendRequest>> {
+public sealed class Endpoint : Endpoint<Request, Response> {
     public override void Configure() {
         Get("/");
         Group<RequestGroup>();
@@ -23,12 +23,15 @@ public sealed class Endpoint : Endpoint<Request, IReadOnlyList<FriendRequest>> {
 			query.Match(fr => fr.RequesterID == req.AccountID);
         }
 
-        var results = (await query.ExecuteAsync(cancellationToken)).Results;
+        var (results, totalCount, _) = await query.ExecuteAsync(cancellationToken);
 
 		if (results == null) {
 			ThrowError("Could not find results.", 404);
 		}
 
-		await SendAsync(results);
+		await SendAsync(new Response() {
+			FriendRequests = results,
+			TotalCount = totalCount,
+		});
     }
 }

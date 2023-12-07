@@ -15,24 +15,23 @@ export default function CreateConvo({
     const schema = yup.object().shape({
         conversationName: yup
             .string()
-            .required('ConversatioName is a required field.')
+            .required('conversationName is a required field.')
             .min(1, 'Must be at least 1 characters.')
             .max(50, 'Cannot be more than 25 characters.'),
     });
 
-    async function createConvo(values: { conversatioName: string }) {
+    async function createConvo(values: { conversationName: string }) {
         try {
-            const res = await Endpoints.Conversations.create(values.conversatioName);
+            const res = await Endpoints.Conversations.create(values.conversationName);
 
             setConversations([
                 ...conversations,
                 {
                     id: res.conversationID,
-                    name: values.conversatioName,
+                    name: values.conversationName,
                     createdAt: String(new Date()),
                 },
             ]);
-
             setShowModal(false);
         } catch (err: unknown) {
             if (err instanceof HTTPError) {
@@ -84,7 +83,7 @@ export default function CreateConvo({
                                 validationSchema={schema}
                                 validateOnChange
                                 onSubmit={createConvo}
-                                initialValues={{ conversatioName: '' }}
+                                initialValues={{ conversationName: '' }}
                             >
                                 {({ handleSubmit, handleChange, values, errors }) => (
                                     <Form noValidate onSubmit={handleSubmit}>
@@ -94,12 +93,12 @@ export default function CreateConvo({
                                                 <Form.Control
                                                     type="text"
                                                     name="conversationName"
-                                                    value={values.conversatioName}
+                                                    value={values.conversationName}
                                                     onChange={handleChange}
-                                                    isInvalid={!!errors.conversatioName}
+                                                    isInvalid={!!errors.conversationName}
                                                 />
                                                 <Form.Control.Feedback type="invalid">
-                                                    {errors.conversatioName}
+                                                    {errors.conversationName}
                                                 </Form.Control.Feedback>
                                             </Form.Group>
                                         </Row>

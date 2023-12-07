@@ -30,7 +30,7 @@ export default function Home() {
                     <div className="col text-center h-100 m-1">
                         <div className="row justify-content-evenly mb-1">
                             <div>
-                                <CreateConvo setConversations={setConversations} />{' '}
+                                <CreateConvo setConversations={setConversations} conversations={conversations}/>{' '}
                                 <JoinConvo setConversations={setConversations} />
                             </div>
                         </div>

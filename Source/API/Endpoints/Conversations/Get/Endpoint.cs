@@ -21,7 +21,7 @@ public sealed class Endpoint : Endpoint<Request, List<ResConvo>> {
         }
 
         if (account.ConversationIDs.Count == 0) {
-            await SendAsync(new List<ResConvo>());
+            await SendAsync(null);
         }
 
         var conversations = await DB

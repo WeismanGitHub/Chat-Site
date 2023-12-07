@@ -77,6 +77,10 @@ class Conversations {
     public static getOne(conversationID: string): Promise<SingleConvoData> {
         return ky.get(`/API/Conversations/${conversationID}/v1`, { retry: 0 }).json();
     }
+
+    public static create(conversationName: string): Promise<{ conversationID: string }> {
+        return ky.post('/API/Conversations/v1', { json: { conversationName } }).json();
+    }
 }
 
 export default class Endpoints {

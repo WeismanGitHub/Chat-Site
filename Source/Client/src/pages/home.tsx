@@ -14,8 +14,7 @@ export default function Home() {
     const [convoID, setConvoID] = useState<string | null>(null);
     const [conversations, setConversations] = useState<ConversationsData>([]);
     const [toggle, setToggle] = useState(true);
-
-    console.log(convoID);
+    convoID
 
     return (
         <div className="overflow-y-hidden vh-100 vw-100">
@@ -30,7 +29,10 @@ export default function Home() {
                     <div className="col text-center h-100 m-1">
                         <div className="row justify-content-evenly mb-1">
                             <div>
-                                <CreateConvo setConversations={setConversations} conversations={conversations}/>{' '}
+                                <CreateConvo
+                                    setConversations={setConversations}
+                                    conversations={conversations}
+                                />{' '}
                                 <JoinConvo setConversations={setConversations} />
                             </div>
                         </div>
@@ -40,6 +42,13 @@ export default function Home() {
                                 setConvoID={setConvoID}
                                 setConversations={setConversations}
                             />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
                         </div>
                     </div>
                 ) : (
@@ -51,6 +60,13 @@ export default function Home() {
                         </div>
                         <div className="overflow-y-scroll h-100">
                             <Friends />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
                         </div>
                     </div>
                 )}

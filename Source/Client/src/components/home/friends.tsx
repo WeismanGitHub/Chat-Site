@@ -102,30 +102,32 @@ export default function Friends() {
             </Modal>
 
             <ul className="list-group fs-5">
-                {data?.map((friend) => {
-                    return (
-                        <li
-                            className="list-group-item bg-dark-subtle text-primary border-secondary"
-                            key={friend.id}
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => {
-                                setFriend(friend);
-                                setShowModal(true);
-                            }}
-                        >
-                            {friend.displayName}
-                            <div className="fs-6">
-                                Created -{' '}
-                                {new Date(friend.createdAt).toLocaleDateString('en-US', {
-                                    weekday: 'long',
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                })}
-                            </div>
-                        </li>
-                    );
-                })}
+                {data?.length
+                    ? data.map((friend) => {
+                          return (
+                              <li
+                                  className="list-group-item bg-dark-subtle text-primary border-secondary"
+                                  key={friend.id}
+                                  style={{ cursor: 'pointer' }}
+                                  onClick={() => {
+                                      setFriend(friend);
+                                      setShowModal(true);
+                                  }}
+                              >
+                                  {friend.displayName}
+                                  <div className="fs-6">
+                                      Created -{' '}
+                                      {new Date(friend.createdAt).toLocaleDateString('en-US', {
+                                          weekday: 'long',
+                                          year: 'numeric',
+                                          month: 'long',
+                                          day: 'numeric',
+                                      })}
+                                  </div>
+                              </li>
+                          );
+                      })
+                    : 'No Friends'}
             </ul>
         </div>
     );

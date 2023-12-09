@@ -5,12 +5,16 @@ import { HTTPError } from 'ky';
 
 type GetOneError = object;
 
-export default function conversation({
+export default function Conversation({
     conversationID,
     setConversations,
+    conversations,
+    setConvoID,
 }: {
+    setConvoID: Dispatch<SetStateAction<string | null>>;
     conversationID: string;
     setConversations: Dispatch<SetStateAction<ConversationsData>>;
+    conversations: ConversationsData;
 }) {
     const { error, data } = useQuery<SingleConvoData, HTTPError>({
         queryKey: ['data'],
@@ -20,24 +24,23 @@ export default function conversation({
     const [toastError, setToastError] = useState<APIErrorRes<GetOneError> | null>(null);
     const [showError, setShowError] = useState(false);
 
-    data;
     showError;
     toastError;
-    setConversations;
+    conversations;
 
-    // async function leaveConvo() {
-    //     try {
-    //         await Endpoints.Conversations.leave(selectedConvo!.id);
-    //         data = data!.filter((convo) => convo.id === selectedConvo?.id);
-    //         setConvo(null);
-    //     } catch (err: unknown) {
-    //         if (err instanceof HTTPError) {
-    //             setToastError(await err.response.json());
-    //             setShowError(true);
-    //             console.log(toastError);
-    //         }
-    //     }
-    // }
+    async function leaveConvo() {
+        try {
+            await Endpoints.Conversations.leave(conversationID);
+            setConversations(conversations.filter((convo) => convo.id !== conversationID));
+            setConvoID(null);
+        } catch (err: unknown) {
+            if (err instanceof HTTPError) {
+                setToastError(await err.response.json());
+                setShowError(true);
+                console.log(toastError);
+            }
+        }
+    }
 
     useEffect(() => {
         if (error) {
@@ -49,5 +52,12 @@ export default function conversation({
         }
     }, [error]);
 
-    return <>{data?.members}</>;
+    return (
+        <>
+            {data?.name}
+            <div className="btn btn-outline-primary w-50 m-1" onClick={leaveConvo}>
+                Leave
+            </div>
+        </>
+    );
 }

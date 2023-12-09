@@ -28,11 +28,11 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 			ThrowError("Could not find conversation.", 404);
 		}
 
-		var members = await DB.Find<User>()
+		var members = await DB.Find<User, Member>()
 			.Match(u => conversation.MemberIDs.Contains(u.ID))
 			.Project(u => new() {
 				ID = u.ID,
-				DisplayName = u.DisplayName,
+				Name = u.DisplayName,
 			})
 			.ExecuteAsync();
 

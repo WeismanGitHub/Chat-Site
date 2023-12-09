@@ -7,9 +7,14 @@ public sealed class Request {
 
 }
 
+public sealed class Member {
+	public string ID { get; set; }
+	public string Name { get; set; }
+}
+
 public sealed class Response {
 	public string ID { get; set; }
 	public string Name { get; set; }
 	public DateTime CreatedAt { get; set; }
-	public List<User> Members { get; set; }
+	public List<Member> Members { get; set; }
 }

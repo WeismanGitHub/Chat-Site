@@ -15,9 +15,6 @@ export default function Home() {
     const [convoID, setConvoID] = useState<string | null>(null);
     const [conversations, setConversations] = useState<ConversationsData>([]);
     const [toggle, setToggle] = useState(true);
-    Friends
-    Conversations
-    setConvoID
 
     return (
         <div className="vh-100 vw-100 overflow-x-hidden overflow-y-hidden">
@@ -47,7 +44,7 @@ export default function Home() {
                         </div>
                     )}
                     <div className="overflow-y-scroll h-25 min-vh-100 pb-5">
-                        <div className='mb-3'>
+                        <div className="mb-3">
                             {toggle ? (
                                 <Conversations
                                     conversations={conversations}
@@ -67,6 +64,7 @@ export default function Home() {
                 <div className="col-8">
                     {convoID ? (
                         <Conversation
+                            setConvoID={setConvoID}
                             conversationID={convoID}
                             setConversations={setConversations}
                             conversations={conversations}

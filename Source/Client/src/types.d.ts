@@ -26,6 +26,9 @@ type AccountData = {
 };
 
 type SingleConvoData = {
+    id: string
+    name: string
+    createdAt: string
     members: { ID: string }[];
 };
 

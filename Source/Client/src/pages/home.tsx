@@ -1,12 +1,13 @@
 import { redirectIfNotLoggedIn } from '../helpers';
+import { useState } from 'react';
 
 import Conversations from '../components/home/conversations';
+import Conversation from '../components/home/conversation';
 import CreateConvo from '../components/home/create-convo';
 import AddFriend from '../components/home/add-friend';
 import JoinConvo from '../components/home/join-convo';
 import Friends from '../components/home/friends';
 import Navbar from '../components/navbar';
-import { useState } from 'react';
 
 export default function Home() {
     redirectIfNotLoggedIn();
@@ -14,19 +15,21 @@ export default function Home() {
     const [convoID, setConvoID] = useState<string | null>(null);
     const [conversations, setConversations] = useState<ConversationsData>([]);
     const [toggle, setToggle] = useState(true);
-    convoID
+    Friends
+    Conversations
+    setConvoID
 
     return (
-        <div className="overflow-y-hidden vh-100 vw-100">
+        <div className="vh-100 vw-100 overflow-x-hidden overflow-y-hidden">
             <Navbar />
-            <div className="row vh-100 " style={{ width: '20%' }}>
-                <div className="w-100 text-center">
-                    <div className="btn btn-outline-primary w-50 m-1" onClick={() => setToggle(!toggle)}>
-                        Show {toggle ? 'Friends' : 'Convos'}
+            <div className="row text-center">
+                <div className="col-3 text-center d-flex flex-column">
+                    <div className="w-100">
+                        <div className="btn btn-outline-primary w-50 m-1" onClick={() => setToggle(!toggle)}>
+                            Show {toggle ? 'Friends' : 'Convos'}
+                        </div>
                     </div>
-                </div>
-                {toggle ? (
-                    <div className="col text-center h-100 m-1">
+                    {toggle ? (
                         <div className="row justify-content-evenly mb-1">
                             <div>
                                 <CreateConvo
@@ -36,40 +39,42 @@ export default function Home() {
                                 <JoinConvo setConversations={setConversations} />
                             </div>
                         </div>
-                        <div className="overflow-y-scroll h-100">
-                            <Conversations
-                                conversations={conversations}
-                                setConvoID={setConvoID}
-                                setConversations={setConversations}
-                            />
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                        </div>
-                    </div>
-                ) : (
-                    <div className="col text-center h-100 m-1">
+                    ) : (
                         <div className="row justify-content-evenly mb-1">
                             <div>
                                 <AddFriend />
                             </div>
                         </div>
-                        <div className="overflow-y-scroll h-100">
-                            <Friends />
-                            <br />
-                            <br />
-                            <br />
+                    )}
+                    <div className="overflow-y-scroll h-25 min-vh-100 pb-5">
+                        <div className='mb-3'>
+                            {toggle ? (
+                                <Conversations
+                                    conversations={conversations}
+                                    setConvoID={setConvoID}
+                                    setConversations={setConversations}
+                                />
+                            ) : (
+                                <Friends />
+                            )}
                             <br />
                             <br />
                             <br />
                             <br />
                         </div>
                     </div>
-                )}
+                </div>
+                <div className="col-8">
+                    {convoID ? (
+                        <Conversation
+                            conversationID={convoID}
+                            setConversations={setConversations}
+                            conversations={conversations}
+                        />
+                    ) : (
+                        <div>No Convo Opened</div>
+                    )}
+                </div>
             </div>
         </div>
     );

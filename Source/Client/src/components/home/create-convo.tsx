@@ -1,17 +1,11 @@
 import { ToastContainer, Toast, Modal, Button, Row, Form, Col } from 'react-bootstrap';
-import { Dispatch, SetStateAction, useState } from 'react';
 import Endpoints from '../../endpoints';
+import { useState } from 'react';
 import { Formik } from 'formik';
 import { HTTPError } from 'ky';
 import * as yup from 'yup';
 
-export default function CreateConvo({
-    setConversations,
-    conversations,
-}: {
-    setConversations: Dispatch<SetStateAction<ConversationsData>>;
-    conversations: ConversationsData;
-}) {
+export default function CreateConvo() {
     const schema = yup.object().shape({
         conversationName: yup
             .string()
@@ -22,16 +16,8 @@ export default function CreateConvo({
 
     async function createConvo(values: { conversationName: string }) {
         try {
-            const res = await Endpoints.Conversations.create(values.conversationName);
-
-            setConversations([
-                ...conversations,
-                {
-                    id: res.conversationID,
-                    name: values.conversationName,
-                    createdAt: String(new Date()),
-                },
-            ]);
+            await Endpoints.Conversations.create(values.conversationName);
+            window.location.reload();
             setShowModal(false);
         } catch (err: unknown) {
             if (err instanceof HTTPError) {

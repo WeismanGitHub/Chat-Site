@@ -49,7 +49,15 @@ export default function Home() {
                     </div>
                 </div>
                 <div className="col-8">
-                    {convoID ? <Conversation conversationID={convoID} /> : <div>No Convo Opened</div>}
+                    {convoID ? (
+                        <Conversation conversationID={convoID} />
+                    ) : (
+                        <div className="fs-2">
+                            <br />
+                            <br />
+                            No Convo Opened
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

@@ -2,7 +2,7 @@ import { redirectIfNotLoggedIn } from '../helpers';
 import { useState } from 'react';
 
 import Conversations from '../components/home/conversations';
-import Conversation from '../components/home/conversation';
+import Conversation from '../components/home/conversation/conversation';
 import CreateConvo from '../components/home/create-convo';
 import AddFriend from '../components/home/add-friend';
 import JoinConvo from '../components/home/join-convo';
@@ -13,7 +13,6 @@ export default function Home() {
     redirectIfNotLoggedIn();
 
     const [convoID, setConvoID] = useState<string | null>(null);
-    const [conversations, setConversations] = useState<ConversationsData>([]);
     const [toggle, setToggle] = useState(true);
 
     return (
@@ -29,11 +28,7 @@ export default function Home() {
                     {toggle ? (
                         <div className="row justify-content-evenly mb-1">
                             <div>
-                                <CreateConvo
-                                    setConversations={setConversations}
-                                    conversations={conversations}
-                                />{' '}
-                                <JoinConvo setConversations={setConversations} />
+                                <CreateConvo /> <JoinConvo />
                             </div>
                         </div>
                     ) : (
@@ -45,15 +40,7 @@ export default function Home() {
                     )}
                     <div className="overflow-y-scroll h-25 min-vh-100 pb-5">
                         <div className="mb-3">
-                            {toggle ? (
-                                <Conversations
-                                    conversations={conversations}
-                                    setConvoID={setConvoID}
-                                    setConversations={setConversations}
-                                />
-                            ) : (
-                                <Friends />
-                            )}
+                            {toggle ? <Conversations setConvoID={setConvoID} /> : <Friends />}
                             <br />
                             <br />
                             <br />
@@ -62,16 +49,7 @@ export default function Home() {
                     </div>
                 </div>
                 <div className="col-8">
-                    {convoID ? (
-                        <Conversation
-                            setConvoID={setConvoID}
-                            conversationID={convoID}
-                            setConversations={setConversations}
-                            conversations={conversations}
-                        />
-                    ) : (
-                        <div>No Convo Opened</div>
-                    )}
+                    {convoID ? <Conversation conversationID={convoID} /> : <div>No Convo Opened</div>}
                 </div>
             </div>
         </div>

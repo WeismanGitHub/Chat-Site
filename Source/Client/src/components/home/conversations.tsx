@@ -6,21 +6,19 @@ import { HTTPError } from 'ky';
 
 export default function Conversations({
     setConvoID,
-    setConversations,
-    conversations,
 }: {
     setConvoID: Dispatch<SetStateAction<string | null>>;
-    setConversations: Dispatch<SetStateAction<ConversationsData>>;
-    conversations: ConversationsData;
 }) {
-    const { error, data } = useQuery<ConversationsData, HTTPError>({
+    const res = useQuery<ConversationsData, HTTPError>({
         queryKey: ['data'],
         queryFn: () => Endpoints.Conversations.get(),
     });
 
+    const conversations = res.data;
+    const error = res.error;
+
     const [toastError, setToastError] = useState<APIErrorRes<object> | null>(null);
     const [showError, setShowError] = useState(false);
-    setConversations(data ?? []);
 
     useEffect(() => {
         if (error) {
@@ -57,8 +55,8 @@ export default function Conversations({
             </ToastContainer>
 
             <ul className="list-group fs-5">
-                {conversations.length
-                    ? conversations.map((convo) => {
+                {conversations
+                    ? conversations?.map((convo) => {
                           return (
                               <li
                                   className="list-group-item bg-dark-subtle text-primary border-secondary"

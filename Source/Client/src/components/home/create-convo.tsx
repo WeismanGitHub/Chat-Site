@@ -11,7 +11,7 @@ export default function CreateConvo() {
             .string()
             .required('conversationName is a required field.')
             .min(1, 'Must be at least 1 characters.')
-            .max(50, 'Cannot be more than 25 characters.'),
+            .max(25, 'Cannot be more than 25 characters.'),
     });
 
     async function createConvo(values: { conversationName: string }) {

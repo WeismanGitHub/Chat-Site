@@ -5,7 +5,9 @@ public sealed class Endpoint : Endpoint<Request> {
 		Post("/{ConversationID}/join");
 		Group<ConversationGroup>();
         Version(1);
-        
+
+		Description(builder => builder.Accepts<Request>());
+
         Summary(settings => {
             settings.Summary = "Join a conversation.";
         });

@@ -1,6 +1,6 @@
 import { ToastContainer, Toast } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
-import Endpoints from '../../../endpoints';
+import Endpoints from '../../endpoints';
 
 type GetOneError = object;
 

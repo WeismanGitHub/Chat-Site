@@ -2,7 +2,7 @@ import { redirectIfNotLoggedIn } from '../helpers';
 import { useState } from 'react';
 
 import Conversations from '../components/home/conversations';
-import Conversation from '../components/home/conversation/conversation';
+import Conversation from '../components/home/conversation';
 import CreateConvo from '../components/home/create-convo';
 import AddFriend from '../components/home/add-friend';
 import JoinConvo from '../components/home/join-convo';

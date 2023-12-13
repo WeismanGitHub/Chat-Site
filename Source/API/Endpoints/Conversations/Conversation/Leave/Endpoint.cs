@@ -16,17 +16,14 @@ public sealed class Endpoint : Endpoint<Request> {
 	public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
 		var transaction = new Transaction();
 
-		var convoUpdateRes = await transaction
-			.UpdateAndGet<Conversation>()
+		var convoUpdateRes = await transaction.UpdateAndGet<Conversation>()
 			.MatchID(req.ConversationID)
-			.Match(c => c.MemberIDs.Contains(req.AccountID))
-			.Modify("{ $pull: { 'MemberIDs': { " + req.AccountID + " } } }")
+			.Modify(convo => convo.Pull(c => c.MemberIDs, req.AccountID))
 			.ExecuteAsync();
-		
-		var userUpdateRes = await transaction
-			.Update<User>()
+
+		var userUpdateRes = await transaction.Update<User>()
 			.MatchID(req.AccountID)
-			.Modify("{ $pull: { 'ConversationIDs': { " + req.AccountID + " } } }")
+			.Modify(user => user.Pull(u => u.ConversationIDs, req.ConversationID))
 			.ExecuteAsync();
 
 		if (convoUpdateRes.MemberIDs.Count == 0) {
@@ -35,8 +32,7 @@ public sealed class Endpoint : Endpoint<Request> {
 
 		await transaction.CommitAsync();
 
-
-		if (convoUpdateRes == null || userUpdateRes == null) {
+		if (convoUpdateRes == null || userUpdateRes.ModifiedCount != 1) {
 			ThrowError("Something went wrong.", 500);
 		} else if (userUpdateRes.MatchedCount == 0) {
 			ThrowError("Could not find your account.", 404);

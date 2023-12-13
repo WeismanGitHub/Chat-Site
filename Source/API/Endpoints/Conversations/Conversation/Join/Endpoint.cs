@@ -31,7 +31,7 @@ public sealed class Endpoint : Endpoint<Request> {
 
 		await transaction.Update<User>()
 			.MatchID(req.AccountID)
-			.Modify("{ $push: { 'ConversationIDs': { " + req.ConversationID + " } } }")
+			.Modify(user => user.Push(u => u.ConversationIDs, req.ConversationID))
 			.ExecuteAsync();
 
 		await transaction.CommitAsync();

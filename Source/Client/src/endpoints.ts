@@ -81,6 +81,10 @@ class Conversations {
     public static create(conversationName: string): Promise<{ conversationID: string }> {
         return ky.post('/API/Conversations/v1', { json: { conversationName } }).json();
     }
+
+    public static join(conversationID: string): Promise<void> {
+        return ky.post(`/API/Conversations/${conversationID}/join/v1`, { json: { conversationID } }).json();
+    }
 }
 
 export default class Endpoints {

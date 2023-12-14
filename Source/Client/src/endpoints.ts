@@ -51,6 +51,15 @@ class Requests {
             })
             .json();
     }
+
+    public static send(values: { recipientID: string; message?: string }) {
+        return ky
+            .post('/API/Friends/Requests/v1', {
+                retry: 0,
+                json: values,
+            })
+            .json();
+    }
 }
 
 class Friends {

@@ -27,13 +27,13 @@ public sealed class Endpoint : Endpoint<Request> {
 		var transaction = new Transaction();
 
 		conversation.MemberIDs.Add(req.AccountID);
-		await transaction.SaveAsync(conversation);
+		await conversation.SaveAsync(transaction.Session);
 
 		await transaction.Update<User>()
 			.MatchID(req.AccountID)
 			.Modify(user => user.Push(u => u.ConversationIDs, req.ConversationID))
 			.ExecuteAsync();
 
-		await transaction.CommitAsync();
-    }
+		 await transaction.CommitAsync();
+	}
 }

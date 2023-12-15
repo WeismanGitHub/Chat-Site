@@ -9,6 +9,7 @@ public class Fixture : TestFixture<Program> {
 	public Fixture(IMessageSink sink) : base(sink) { }
 	public readonly string AccountID = ObjectId.GenerateNewId().ToString();
 	public readonly string ConvoID = ObjectId.GenerateNewId().ToString();
+	public string FullConvoID = ObjectId.GenerateNewId().ToString();
 
 	protected override async Task SetupAsync() {
 		await DB.InsertAsync(new User() {
@@ -22,6 +23,14 @@ public class Fixture : TestFixture<Program> {
 			new Conversation() {
 				ID = ConvoID,
 				Name = "Convo 1",
+			}
+		});
+
+		await DB.InsertAsync(new List<Conversation>() {
+			new Conversation() {
+				ID = FullConvoID,
+				Name = "Convo 2",
+				MemberIDs = Enumerable.Repeat(ObjectId.GenerateNewId().ToString(), 100).ToList()
 			}
 		});
 

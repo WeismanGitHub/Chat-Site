@@ -34,4 +34,24 @@ public class Tests : TestClass<Fixture> {
 
 		rsp.StatusCode.Should().Be(HttpStatusCode.NotFound);
 	}
+
+	[Fact, Priority(1)]
+	public async Task Convo_Is_Full() {
+		var rsp = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+			ConversationID = Fixture.FullConvoID
+		});
+
+		rsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+		var convo = await DB
+			.Find<Conversation>()
+			.MatchID(Fixture.FullConvoID)
+			.ExecuteSingleAsync();
+
+		convo!.MemberIDs.Count.Should().Be(100);
+		convo!.MemberIDs.Contains(Fixture.FullConvoID).Should().BeFalse();
+
+		var account = await DB.Find<User>().MatchID(Fixture.AccountID).ExecuteFirstAsync();
+		account!.ConversationIDs.Contains(convo.ID).Should().BeFalse();
+	}
 }

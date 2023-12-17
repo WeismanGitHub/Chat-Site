@@ -1,13 +1,12 @@
 import { ToastContainer, Toast } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import Endpoints from '../../endpoints';
-
-type GetOneError = object;
+import Member from './member';
 
 export default function Conversation({ conversationID }: { conversationID: string }) {
     const [conversation, setConversation] = useState<SingleConvoData | null>(null);
 
-    const [toastError, setToastError] = useState<APIErrorRes<GetOneError> | null>(null);
+    const [toastError, setToastError] = useState<APIErrorRes<object> | null>(null);
     const [showError, setShowError] = useState(false);
 
     useEffect(() => {
@@ -57,7 +56,7 @@ export default function Conversation({ conversationID }: { conversationID: strin
                 </Toast>
             </ToastContainer>
 
-            <div className="fs-2">
+            <div className="fs-2 justify-content-center">
                 {conversation?.name}
                 <div
                     className="btn btn-outline-primary m-1 ms-5 fs-6 p-0"
@@ -76,28 +75,40 @@ export default function Conversation({ conversationID }: { conversationID: strin
                     Copy ID
                 </div>
             </div>
-            <div className="overflow-y-scroll h-25 min-vh-100 pb-5">
-                <ul className="list-group fs-5 float-end col-3">
+            <div className="overflow-y-scroll h-25 vh-100 pb-5 col-3 float-end">
+                <ul className="list-group fs-5">
                     {conversation &&
-                       conversation.members.map((member) => {
-                            return (
-                                <li
-                                    className="list-group-item bg-dark-subtle text-primary border-secondary"
-                                    key={member.id}
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={() => {
-                                        console.log(member);
-                                    }}
-                                >
-                                    {member.name ?? 'Unknown'}
-                                </li>
-                            );
+                        conversation.members.map((member) => {
+                            return <Member id={member.id} name={member.name} key={member.id} />;
                         })}
                     <br />
                     <br />
                     <br />
                     <br />
                 </ul>
+            </div>
+
+            <div className="col float-start">
+                msg
+                <br />
+                msg
+                <br />
+                msg
+                <br />
+                msg
+                <br />
+                msg
+                <br />
+                msg
+                <br />
+                msg
+                <br />
+                msg
+                <br />
+                msg
+                <br />
+                msg
+                <br />
             </div>
         </>
     );

@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import { HTTPError } from 'ky';
 import * as yup from 'yup';
 
-export default function Member({ id, name }: { id: string, name: string }) {
+export default function Member({ id, name }: { id: string; name: string }) {
     const schema = yup.object().shape({
         message: yup
             .string()
@@ -13,7 +13,7 @@ export default function Member({ id, name }: { id: string, name: string }) {
             .max(250, 'Cannot be more than 250 characters.'),
     });
 
-    async function sendRequest(values: {message: string}) {
+    async function sendRequest(values: { message: string }) {
         try {
             await Endpoints.Friends.Requests.send({
                 recipientID: id,
@@ -84,7 +84,9 @@ export default function Member({ id, name }: { id: string, name: string }) {
 
             <Modal show={showModal}>
                 <Modal.Dialog>
-                    <Modal.Header closeButton onClick={() => setShowModal(false)}>Send Friend Request?</Modal.Header>
+                    <Modal.Header closeButton onClick={() => setShowModal(false)}>
+                        Send Friend Request?
+                    </Modal.Header>
                     <Modal.Body>
                         <div className="w-100">
                             <Formik

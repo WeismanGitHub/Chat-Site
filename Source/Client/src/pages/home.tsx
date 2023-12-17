@@ -48,7 +48,7 @@ export default function Home() {
                         </div>
                     </div>
                 </div>
-                <div className="col-8">
+                <div className="col-9">
                     {convoID ? (
                         <Conversation conversationID={convoID} />
                     ) : (

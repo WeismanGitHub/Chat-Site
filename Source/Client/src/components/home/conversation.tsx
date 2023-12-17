@@ -76,10 +76,10 @@ export default function Conversation({ conversationID }: { conversationID: strin
                     Copy ID
                 </div>
             </div>
-            <div className="float-end col-3 text-center d-flex flex-column">
-                <ul className="list-group fs-5 row overflow-y-scroll min-vh-100 pb-5">
+            <div className="overflow-y-scroll h-25 min-vh-100 pb-5">
+                <ul className="list-group fs-5 float-end col-3">
                     {conversation &&
-                        conversation.members.map((member) => {
+                       conversation.members.map((member) => {
                             return (
                                 <li
                                     className="list-group-item bg-dark-subtle text-primary border-secondary"
@@ -93,6 +93,10 @@ export default function Conversation({ conversationID }: { conversationID: strin
                                 </li>
                             );
                         })}
+                    <br />
+                    <br />
+                    <br />
+                    <br />
                 </ul>
             </div>
         </>

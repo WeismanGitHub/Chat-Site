@@ -25,7 +25,7 @@ export default function AddFriend() {
                 message: values.message.length !== 0 ? values.message : undefined,
             });
             setShowModal(false);
-            setShowSuccess(true)
+            setShowSuccess(true);
         } catch (err: unknown) {
             if (err instanceof HTTPError) {
                 setToastError(await err.response.json());

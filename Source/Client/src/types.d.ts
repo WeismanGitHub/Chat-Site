@@ -29,7 +29,7 @@ type SingleConvoData = {
     id: string;
     name: string;
     createdAt: string;
-    members: { id: string, name: string }[];
+    members: { id: string; name: string }[];
 };
 
 type FriendReqStatus = 'Accepted' | 'Declined' | 'Pending';

@@ -57,9 +57,43 @@ export default function Conversation({ conversationID }: { conversationID: strin
                 </Toast>
             </ToastContainer>
 
-            {conversation?.name}
-            <div className="btn btn-outline-primary w-50 m-1" onClick={leaveConvo}>
-                Leave
+            <div className="fs-2">
+                {conversation?.name}
+                <div
+                    className="btn btn-outline-primary m-1 ms-5 fs-6 p-0"
+                    onClick={leaveConvo}
+                    style={{ width: '10%' }}
+                >
+                    Leave
+                </div>
+                <div
+                    className="btn btn-outline-primary m-1 fs-6 p-0"
+                    onClick={() => {
+                        navigator.clipboard.writeText(conversationID);
+                    }}
+                    style={{ width: '10%' }}
+                >
+                    Copy ID
+                </div>
+            </div>
+            <div className="float-end col-3 text-center d-flex flex-column">
+                <ul className="list-group fs-5 row overflow-y-scroll min-vh-100 pb-5">
+                    {conversation &&
+                        conversation.members.map((member) => {
+                            return (
+                                <li
+                                    className="list-group-item bg-dark-subtle text-primary border-secondary"
+                                    key={member.id}
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => {
+                                        console.log(member);
+                                    }}
+                                >
+                                    {member.name ?? 'Unknown'}
+                                </li>
+                            );
+                        })}
+                </ul>
             </div>
         </>
     );

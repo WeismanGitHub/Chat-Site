@@ -197,6 +197,16 @@ export default function Account() {
                             >
                                 Delete
                             </a>
+                            <a
+                                className="btn btn-info btn-lg w-25 m-2"
+                                role="button"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(data!.id);
+                                }}
+                                style={{ width: '10%' }}
+                            >
+                                Copy ID
+                            </a>
                         </Row>
                     </div>
                 </div>

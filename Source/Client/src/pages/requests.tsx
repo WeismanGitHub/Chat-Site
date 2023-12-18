@@ -75,7 +75,14 @@ export default function Requests() {
                             >
                                 {req.message}
                                 <br />
-                                {type === 'Outgoing' ? <div className="btn btn-danger">Delete</div> : <div></div>}
+                                {type === 'Outgoing' ? (
+                                    <div className="btn btn-danger">Delete</div>
+                                ) : (
+                                    <div>
+                                        <div className="btn btn-success">Accept</div>
+                                        <div className="btn btn-danger">Decline</div>
+                                    </div>
+                                )}
                             </li>
                         );
                     })}

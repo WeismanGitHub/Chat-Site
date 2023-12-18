@@ -2,6 +2,7 @@ import { ToastContainer, Toast } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import Endpoints from '../../endpoints';
 import Member from './member';
+import Chat from './chat';
 
 export default function Conversation({ conversationID }: { conversationID: string }) {
     const [conversation, setConversation] = useState<SingleConvoData | null>(null);
@@ -89,26 +90,7 @@ export default function Conversation({ conversationID }: { conversationID: strin
             </div>
 
             <div className="col float-start">
-                msg
-                <br />
-                msg
-                <br />
-                msg
-                <br />
-                msg
-                <br />
-                msg
-                <br />
-                msg
-                <br />
-                msg
-                <br />
-                msg
-                <br />
-                msg
-                <br />
-                msg
-                <br />
+                <Chat conversationID={conversationID}/>
             </div>
         </>
     );

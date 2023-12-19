@@ -43,5 +43,6 @@ public class Fixture : TestFixture<Program> {
 	protected override async Task TearDownAsync() {
 		await DB.DeleteAsync<User>(AccountID);
 		await DB.DeleteAsync<Conversation>(ConvoID);
+		await DB.DeleteAsync<Conversation>(FullConvoID);
 	}
 }

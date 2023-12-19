@@ -26,6 +26,43 @@ public class Tests : TestClass<Fixture> {
 		convo!.MemberIDs.First().Should().Be(Fixture.AccountID);
 	}
 
+	[Fact, Priority(2)]
+	public async Task Already_Member() {
+		var rsp = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+			ConversationID = Fixture.ConvoID
+		});
+
+		rsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+		var convo = await DB
+			.Find<Conversation>()
+			.MatchID(Fixture.ConvoID)
+			.ExecuteSingleAsync();
+
+		var account = await DB
+			.Find<User>()
+			.MatchID(Fixture.AccountID)
+			.ExecuteSingleAsync();
+
+		convo!.MemberIDs.Count.Should().Be(1);
+		account!.ConversationIDs.Count.Should().Be(1);
+	}
+
+	[Fact, Priority(3)]
+	public async Task In_100_Convos() {
+		await DB.Update<User>()
+			.MatchID(Fixture.AccountID)
+			.Modify(u => u.ConversationIDs, Enumerable.Repeat(ObjectId.GenerateNewId().ToString(), 100).ToList())
+			.ExecuteAsync();
+
+		var rsp = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+			ConversationID = Fixture.ConvoID
+		});
+
+		rsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
+
+
 	[Fact]
 	public async Task Nonexistant() {
 		var rsp = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
@@ -35,7 +72,6 @@ public class Tests : TestClass<Fixture> {
 		rsp.StatusCode.Should().Be(HttpStatusCode.NotFound);
 	}
 
-	[Fact, Priority(1)]
 	public async Task Convo_Is_Full() {
 		var rsp = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
 			ConversationID = Fixture.FullConvoID

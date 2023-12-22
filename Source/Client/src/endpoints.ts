@@ -52,6 +52,18 @@ class Requests {
             .json();
     }
 
+    public static delete(id: string) {
+        return ky.delete(`/API/Friends/Requests/${id}/v1`, { retry: 0 }).json();
+    }
+
+    public static accept(id: string) {
+        return ky.post(`/API/Friends/Requests/${id}/accept/v1`, { retry: 0 }).json();
+    }
+
+    public static decline(id: string) {
+        return ky.post(`/API/Friends/Requests/${id}/decline/v1`, { retry: 0 }).json();
+    }
+
     public static send(values: { recipientID: string; message?: string }) {
         return ky
             .post('/API/Friends/Requests/v1', {

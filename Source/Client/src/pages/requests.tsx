@@ -1,4 +1,4 @@
-import { Toast, ToastContainer } from 'react-bootstrap';
+import { Pagination, Toast, ToastContainer } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import Navbar from '../components/navbar';
 import Endpoints from '../endpoints';
@@ -10,10 +10,10 @@ type GetFriendRequesError = {
 
 export default function Requests() {
     const [toastError, setToastError] = useState<APIErrorRes<GetFriendRequesError> | null>(null);
+    const [type, SetType] = useState<'Incoming' | 'Outgoing'>('Incoming');
     const [requests, setRequests] = useState<FriendRequest[]>([]);
     const [total, setTotal] = useState<number | null>(null);
     const [showError, setShowError] = useState(false);
-    const [type, SetType] = useState<'Incoming' | 'Outgoing'>('Incoming');
     const [page, setPage] = useState(1);
 
     useEffect(() => {
@@ -25,7 +25,7 @@ export default function Requests() {
             .catch((err: APIErrorRes<object>) => {
                 setToastError(err);
             });
-    }, [type]);
+    }, [type, page]);
 
     setPage;
     page;
@@ -66,27 +66,39 @@ export default function Requests() {
                 <br />
                 Total: {total}
                 <br />
-                <ul className="list-group w-75 m-auto">
-                    {requests.map((req) => {
-                        return (
-                            <li
-                                key={req.createdAt}
-                                className="list-group-item bg-light-subtle text-primary border-secondary m-2"
-                            >
-                                {req.message}
-                                <br />
-                                {type === 'Outgoing' ? (
-                                    <div className="btn btn-danger">Delete</div>
-                                ) : (
-                                    <div>
-                                        <div className="btn btn-success">Accept</div>
-                                        <div className="btn btn-danger">Decline</div>
-                                    </div>
-                                )}
-                            </li>
-                        );
-                    })}
-                </ul>
+                <div className="w-75 m-auto">
+                    <ul className="list-group">
+                        {requests.map((req) => {
+                            return (
+                                <li
+                                    key={req.createdAt}
+                                    className="list-group-item bg-light-subtle text-primary border-secondary m-2"
+                                >
+                                    {req.message}
+                                    <br />
+                                    {type === 'Outgoing' ? (
+                                        <div className="btn btn-danger">Delete</div>
+                                    ) : (
+                                        <div>
+                                            <div className="btn btn-success">Accept</div>
+                                            <div className="btn btn-danger">Decline</div>
+                                        </div>
+                                    )}
+                                </li>
+                            );
+                        })}
+                    </ul>
+                    <Pagination size="lg" className="justify-content-center">
+                        <Pagination.First disabled={page === 1} onClick={() => setPage(1)} />
+                        <Pagination.Prev disabled={page === 1} onClick={() => setPage(page - 1)} />
+                        <Pagination.Item>{page}</Pagination.Item>
+                        <Pagination.Next disabled={requests.length < 10} onClick={() => setPage(page + 1)} />
+                        <Pagination.Last
+                            disabled={requests.length < 10}
+                            onClick={() => setPage(Math.floor(total! / 10) + 1)}
+                        />
+                    </Pagination>
+                </div>
             </div>
         </div>
     );

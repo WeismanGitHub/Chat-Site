@@ -35,6 +35,7 @@ type SingleConvoData = {
 type FriendReqStatus = 'Accepted' | 'Declined' | 'Pending';
 
 type FriendRequest = {
+    id: string;
     requesterID: string;
     recipientID: string;
     message?: string;

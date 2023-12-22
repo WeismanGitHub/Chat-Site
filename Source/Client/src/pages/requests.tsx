@@ -13,6 +13,7 @@ export default function Requests() {
     const [type, SetType] = useState<'Incoming' | 'Outgoing'>('Incoming');
     const [requests, setRequests] = useState<FriendRequest[]>([]);
     const [total, setTotal] = useState<number | null>(null);
+    const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
     const [page, setPage] = useState(1);
 
@@ -24,19 +25,39 @@ export default function Requests() {
             })
             .catch((err: APIErrorRes<object>) => {
                 setToastError(err);
+                setShowError(true);
             });
     }, [type, page]);
 
     async function deleteRequest(id: string) {
-        console.log(id);
+        Endpoints.Friends.Requests.delete(id)
+            .then(() => {
+                setRequests(requests.filter((r) => r.id !== id));
+                setTotal(total! - 1);
+                setShowSuccess(true);
+            })
+            .catch((err: APIErrorRes<object>) => {
+                setToastError(err);
+                setShowError(true);
+            });
     }
 
     async function declineRequest(id: string) {
-        console.log(id);
+        Endpoints.Friends.Requests.decline(id)
+            .then(() => setShowSuccess(true))
+            .catch((err: APIErrorRes<object>) => {
+                setToastError(err);
+                setShowError(true);
+            });
     }
 
     async function acceptRequest(id: string) {
-        console.log(id);
+        Endpoints.Friends.Requests.accept(id)
+            .then(() => setShowSuccess(true))
+            .catch((err: APIErrorRes<object>) => {
+                setToastError(err);
+                setShowError(true);
+            });
     }
 
     return (
@@ -64,6 +85,19 @@ export default function Requests() {
                     </Toast.Body>
                 </Toast>
             </ToastContainer>
+            <ToastContainer position="top-end">
+                <Toast
+                    onClose={() => setShowSuccess(false)}
+                    show={showSuccess}
+                    autohide={true}
+                    className="d-inline-block m-1"
+                    bg={'success'}
+                >
+                    <Toast.Header>
+                        <strong className="me-auto">Success!</strong>
+                    </Toast.Header>
+                </Toast>
+            </ToastContainer>
             <div className="text-center fs-3">
                 <div
                     className="btn btn-outline-primary w-25 m-1"
@@ -82,13 +116,12 @@ export default function Requests() {
                                     key={req.createdAt}
                                     className="list-group-item bg-light-subtle text-primary border-secondary m-2"
                                 >
+                                    <div className="fs-4">
+                                        Status: {['Accepted', 'Declined', 'Pending'][req.status]}
+                                    </div>
                                     {req.message}
                                     <br />
-                                    {type === 'Outgoing' ? (
-                                        <div className="btn btn-danger" onClick={() => deleteRequest(req.id)}>
-                                            Delete
-                                        </div>
-                                    ) : (
+                                    {(type === 'Incoming' && req.status === 2) && (
                                         <div>
                                             <div
                                                 className="btn btn-success me-1"
@@ -102,6 +135,11 @@ export default function Requests() {
                                             >
                                                 Decline
                                             </div>
+                                        </div>
+                                    )}
+                                    {type === 'Outgoing' && (
+                                        <div className="btn btn-danger" onClick={() => deleteRequest(req.id)}>
+                                            Delete
                                         </div>
                                     )}
                                 </li>

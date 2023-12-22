@@ -90,7 +90,7 @@ export default function Conversation({ conversationID }: { conversationID: strin
             </div>
 
             <div className="col float-start">
-                <Chat conversationID={conversationID}/>
+                <Chat conversationID={conversationID} />
             </div>
         </>
     );

@@ -3,7 +3,7 @@ using API.Database.Entities;
 using MongoDB.Entities;
 using MongoDB.Bson;
 
-namespace Tests.API.Conversations.SingleConvo.Join;
+namespace Tests.API.Conversations.SingleConvo.Leave;
 
 public class Fixture : TestFixture<Program> {
 	public Fixture(IMessageSink sink) : base(sink) { }
@@ -23,6 +23,7 @@ public class Fixture : TestFixture<Program> {
 			new Conversation() {
 				ID = ConvoID,
 				Name = "Convo 1",
+				MemberIDs = new() { AccountID }
 			}
 		});
 
@@ -30,7 +31,10 @@ public class Fixture : TestFixture<Program> {
 			new Conversation() {
 				ID = FullConvoID,
 				Name = "Convo 2",
-				MemberIDs = Enumerable.Repeat(ObjectId.GenerateNewId().ToString(), 100).ToList()
+				MemberIDs = new() {
+					AccountID,
+					ObjectId.GenerateNewId().ToString()
+				}
 			}
 		});
 

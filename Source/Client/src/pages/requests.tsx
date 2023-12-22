@@ -27,9 +27,17 @@ export default function Requests() {
             });
     }, [type, page]);
 
-    setPage;
-    page;
-    console.log(total, requests);
+    async function deleteRequest(id: string) {
+        console.log(id);
+    }
+
+    async function declineRequest(id: string) {
+        console.log(id);
+    }
+
+    async function acceptRequest(id: string) {
+        console.log(id);
+    }
 
     return (
         <div>
@@ -77,11 +85,23 @@ export default function Requests() {
                                     {req.message}
                                     <br />
                                     {type === 'Outgoing' ? (
-                                        <div className="btn btn-danger">Delete</div>
+                                        <div className="btn btn-danger" onClick={() => deleteRequest(req.id)}>
+                                            Delete
+                                        </div>
                                     ) : (
                                         <div>
-                                            <div className="btn btn-success">Accept</div>
-                                            <div className="btn btn-danger">Decline</div>
+                                            <div
+                                                className="btn btn-success me-1"
+                                                onClick={() => acceptRequest(req.id)}
+                                            >
+                                                Accept
+                                            </div>
+                                            <div
+                                                className="btn btn-danger"
+                                                onClick={() => declineRequest(req.id)}
+                                            >
+                                                Decline
+                                            </div>
                                         </div>
                                     )}
                                 </li>

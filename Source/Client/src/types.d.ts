@@ -39,6 +39,6 @@ type FriendRequest = {
     requesterID: string;
     recipientID: string;
     message?: string;
-    status: FriendReqStatus;
+    status: number;
     createdAt: string;
 };

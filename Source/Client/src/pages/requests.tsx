@@ -121,7 +121,7 @@ export default function Requests() {
                                     </div>
                                     {req.message}
                                     <br />
-                                    {(type === 'Incoming' && req.status === 2) && (
+                                    {type === 'Incoming' && req.status === 2 && (
                                         <div>
                                             <div
                                                 className="btn btn-success me-1"

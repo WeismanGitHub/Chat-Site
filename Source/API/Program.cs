@@ -10,6 +10,7 @@ var settings = section.Get<Settings>()!;
 var app = builder.Build();
 
 app.MapFallbackToFile("/index.html");
+app.MapHub<ChatHub>("/chat");
 app
 	.UseAuthentication()
 	.UseDefaultExceptionHandler()

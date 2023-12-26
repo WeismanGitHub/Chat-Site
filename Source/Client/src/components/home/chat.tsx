@@ -17,6 +17,10 @@ export default function Chat({ conversationID, members }: { conversationID: stri
         const connect = new HubConnectionBuilder().withUrl('/chat').withAutomaticReconnect().build();
 
         setConnection(connect);
+
+        return () => {
+            connection?.stop()
+        }
     }, []);
 
     useEffect(() => {

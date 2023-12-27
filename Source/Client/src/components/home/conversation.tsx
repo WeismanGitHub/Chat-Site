@@ -89,8 +89,8 @@ export default function Conversation({ conversationID }: { conversationID: strin
                 </ul>
             </div>
 
-            <div className="col float-start">
-                <Chat conversationID={conversationID} members={conversation?.members ?? []}/>
+            <div className="col-9 float-start">
+                <Chat conversationID={conversationID} members={conversation?.members ?? []} />
             </div>
         </>
     );

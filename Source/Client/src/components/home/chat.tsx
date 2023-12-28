@@ -17,12 +17,12 @@ export default function Chat({
     members.forEach((member) => {
         memberMap.set(member.id, member.name);
     });
-
+    
     const [toastError, setToastError] = useState<APIErrorRes<object> | null>(null);
     const [showError, setShowError] = useState(false);
 
     useEffect(() => {
-        const connect = new HubConnectionBuilder().withUrl('/chat').withAutomaticReconnect().build();
+        const connect = new HubConnectionBuilder().withUrl(`/chat?conversationID=${conversationID}`).withAutomaticReconnect().build();
         conversationID;
 
         setConnection(connect);
@@ -51,12 +51,30 @@ export default function Chat({
                     ]);
                 });
 
-                connection.on('UserLeft', (message) => {
-                    console.log(message);
+                connection.on("ReceiveError", (err: string) => {
+                    console.log(err)
+                })
+
+                connection.on('UserLeft', (id) => {
+                    const name = memberMap.get(id) ?? 'Unknown';
+
+                    setMessages([
+                        ...messages,
+                        <div key={Date.now() + id} className='text-danger'>
+                            {name} Left!
+                        </div>,
+                    ]);
                 });
 
-                connection.on('UserJoined', (message) => {
-                    console.log(message);
+                connection.on('UserJoined', (id) => {
+                    const name = memberMap.get(id) ?? 'Unknown';
+
+                    setMessages([
+                        ...messages,
+                        <div key={Date.now() + id} className='text-success'>
+                            {name} Joined!
+                        </div>,
+                    ]);
                 });
             })
             .catch((error) => {
@@ -67,6 +85,7 @@ export default function Chat({
 
     async function sendMessage() {
         if (input.length > 1000 || input.length === 0) {
+            // setToastError()
             return;
         }
 

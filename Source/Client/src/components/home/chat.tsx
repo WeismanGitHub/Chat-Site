@@ -42,27 +42,30 @@ export default function Chat({
         connection
             .start()
             .then(() => {
-                connection.on('ReceiveMessage', ({ accountID, message }: { accountID: string; message: string }) => {
-                    const name = memberMap.get(accountID) ?? 'Unknown';
+                connection.on(
+                    'ReceiveMessage',
+                    ({ accountID, message }: { accountID: string; message: string }) => {
+                        const name = memberMap.get(accountID) ?? 'Unknown';
 
-                    setMessages([
-                        ...messages,
-                        <div key={Date.now() + accountID}>
-                            {name} - {message}
-                        </div>,
-                    ]);
-                });
+                        setMessages((prevMessages) => [
+                            ...prevMessages,
+                            <div key={Date.now() + accountID}>
+                                {name} - {message}
+                            </div>,
+                        ]);
+                    }
+                );
 
                 connection.on('ReceiveError', (err: string) => {
-                    setError(err)
-                    setShowError(true)
+                    setError(err);
+                    setShowError(true);
                 });
 
                 connection.on('UserLeft', (id) => {
                     const name = memberMap.get(id) ?? 'Unknown';
 
-                    setMessages([
-                        ...messages,
+                    setMessages((prevMessages) => [
+                        ...prevMessages,
                         <div key={Date.now() + id} className="text-danger">
                             {name} Left!
                         </div>,
@@ -72,8 +75,8 @@ export default function Chat({
                 connection.on('UserJoined', (id) => {
                     const name = memberMap.get(id) ?? 'Unknown';
 
-                    setMessages([
-                        ...messages,
+                    setMessages((prevMessages) => [
+                        ...prevMessages,
                         <div key={Date.now() + id} className="text-success">
                             {name} Joined!
                         </div>,
@@ -81,15 +84,15 @@ export default function Chat({
                 });
             })
             .catch((error: Error) => {
-                setError(error?.message)
-                setShowError(true)
+                setError(error?.message);
+                setShowError(true);
             });
     }, [connection]);
 
     async function sendMessage() {
         if (input.length > 1000 || input.length === 0) {
-            setError("Message must be between 1,000 and 0 characters.")
-            setShowError(true)
+            setError('Message must be between 1,000 and 0 characters.');
+            setShowError(true);
             return;
         }
 
@@ -110,18 +113,14 @@ export default function Chat({
                     bg={'danger'}
                 >
                     <Toast.Header>
-                        <strong className="me-auto">
-                            An error occured!
-                        </strong>
+                        <strong className="me-auto">An error occured!</strong>
                     </Toast.Header>
-                    <Toast.Body>
-                        {error}
-                    </Toast.Body>
+                    <Toast.Body>{error}</Toast.Body>
                 </Toast>
             </ToastContainer>
 
             <div className="d-flex flex-column" style={{ height: '600px' }}>
-                <div className="overflow-y-scroll" style={{ minHeight: '550px' }}>
+                <div className="overflow-y-scroll text-wrap float-start" style={{ minHeight: '550px' }}>
                     {messages}
                 </div>
                 <div className="d-flex p-2">

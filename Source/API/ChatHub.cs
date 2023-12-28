@@ -60,6 +60,10 @@ public class ChatHub : Hub {
 
 	public async Task SendMessage(string message) {
 		try {
+			if (message.Length > 1000) {
+				throw new Exception("Message is too long.");
+			}
+
 			var accountID = Context.GetHttpContext()?.User?.FindFirst("accountID")?.Value;
 			var conversationID = ConversationMap[Context.ConnectionId];
 

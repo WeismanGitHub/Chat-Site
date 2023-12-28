@@ -67,8 +67,7 @@ public class ChatHub : Hub {
 				throw new Exception("Missing conversation ID or account ID.");
 			}
 
-			await Clients.All.SendAsync("ReceiveMessage", message);
-			await Clients.Group("convoID").SendAsync("ReceiveMessage", new { message, accountID });
+			await Clients.Group(conversationID).SendAsync("ReceiveMessage", new { message, accountID });
 		} catch (Exception ex ) {
 			Clients.Caller.SendAsync("ReceiveError", ex.Message);
 		}

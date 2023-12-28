@@ -17,13 +17,15 @@ export default function Chat({
     members.forEach((member) => {
         memberMap.set(member.id, member.name);
     });
-    
-    const [toastError, setToastError] = useState<APIErrorRes<object> | null>(null);
+
+    const [error, setError] = useState<string | null>(null);
     const [showError, setShowError] = useState(false);
 
     useEffect(() => {
-        const connect = new HubConnectionBuilder().withUrl(`/chat?conversationID=${conversationID}`).withAutomaticReconnect().build();
-        conversationID;
+        const connect = new HubConnectionBuilder()
+            .withUrl(`/chat?conversationID=${conversationID}`)
+            .withAutomaticReconnect()
+            .build();
 
         setConnection(connect);
 
@@ -40,27 +42,28 @@ export default function Chat({
         connection
             .start()
             .then(() => {
-                connection.on('ReceiveMessage', ({ id, message }: { id: string; message: string }) => {
-                    const name = memberMap.get(id) ?? 'Unknown';
+                connection.on('ReceiveMessage', ({ accountID, message }: { accountID: string; message: string }) => {
+                    const name = memberMap.get(accountID) ?? 'Unknown';
 
                     setMessages([
                         ...messages,
-                        <div key={Date.now() + id}>
+                        <div key={Date.now() + accountID}>
                             {name} - {message}
                         </div>,
                     ]);
                 });
 
-                connection.on("ReceiveError", (err: string) => {
-                    console.log(err)
-                })
+                connection.on('ReceiveError', (err: string) => {
+                    setError(err)
+                    setShowError(true)
+                });
 
                 connection.on('UserLeft', (id) => {
                     const name = memberMap.get(id) ?? 'Unknown';
 
                     setMessages([
                         ...messages,
-                        <div key={Date.now() + id} className='text-danger'>
+                        <div key={Date.now() + id} className="text-danger">
                             {name} Left!
                         </div>,
                     ]);
@@ -71,21 +74,22 @@ export default function Chat({
 
                     setMessages([
                         ...messages,
-                        <div key={Date.now() + id} className='text-success'>
+                        <div key={Date.now() + id} className="text-success">
                             {name} Joined!
                         </div>,
                     ]);
                 });
             })
-            .catch((error) => {
-                console.log(error);
-                setToastError(error);
+            .catch((error: Error) => {
+                setError(error?.message)
+                setShowError(true)
             });
     }, [connection]);
 
     async function sendMessage() {
         if (input.length > 1000 || input.length === 0) {
-            // setToastError()
+            setError("Message must be between 1,000 and 0 characters.")
+            setShowError(true)
             return;
         }
 
@@ -107,20 +111,17 @@ export default function Chat({
                 >
                     <Toast.Header>
                         <strong className="me-auto">
-                            {toastError?.message || 'Unable to read error name.'}
+                            An error occured!
                         </strong>
                     </Toast.Header>
                     <Toast.Body>
-                        {toastError?.errors &&
-                            Object.values(toastError?.errors).map((err) => {
-                                return <div key={err}>{err}</div>;
-                            })}
+                        {error}
                     </Toast.Body>
                 </Toast>
             </ToastContainer>
 
             <div className="d-flex flex-column" style={{ height: '600px' }}>
-                <div className="overflow-y-scroll" style={{minHeight: '550px'}}>
+                <div className="overflow-y-scroll" style={{ minHeight: '550px' }}>
                     {messages}
                 </div>
                 <div className="d-flex p-2">
@@ -141,7 +142,6 @@ export default function Chat({
                     </button>
                 </div>
             </div>
-
         </>
     );
 }

@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 namespace API;
 
 public class ChatHub : Hub {
-	private readonly ConcurrentDictionary<string, string> ConversationMap = new ConcurrentDictionary<string, string>();
+	private readonly static ConcurrentDictionary<string, string> ConversationMap = new ConcurrentDictionary<string, string>();
 
 	public override async Task OnConnectedAsync() {
 		try {
@@ -21,7 +21,10 @@ public class ChatHub : Hub {
 				throw new Exception("Missing conversation ID or account ID.");
 			}
 
-			ConversationMap[Context.ConnectionId] = conversationID;
+			if (!ConversationMap.TryAdd(Context.ConnectionId, conversationID)) {
+				throw new Exception("An internal server error occurred.");
+			};
+
 			var user = await DB.Find<User>().MatchID(accountID).ExecuteSingleAsync();
 
 			if (user == null) {
@@ -30,8 +33,8 @@ public class ChatHub : Hub {
 				throw new Exception("User not in this conversation.");
 			}
 
-			 await Groups.AddToGroupAsync(this.Context.ConnectionId, conversationID);
-			 await Clients.Group(conversationID).SendAsync("UserJoined", accountID);
+			await Groups.AddToGroupAsync(this.Context.ConnectionId, conversationID);
+			await Clients.Group(conversationID).SendAsync("UserJoined", accountID);
 		} catch (Exception ex) {
 			Clients.Caller.SendAsync("ReceiveError", ex.Message);
 		}
@@ -48,8 +51,8 @@ public class ChatHub : Hub {
 
 			ConversationMap.Remove(Context.ConnectionId, out conversationID);
 
-			await Groups.RemoveFromGroupAsync(Context.ConnectionId, conversationID);
 			await Clients.Group(conversationID).SendAsync("UserLeft", accountID);
+			await Groups.RemoveFromGroupAsync(Context.ConnectionId, conversationID);
 		} catch (Exception ex) {
 			Clients.Caller.SendAsync("ReceiveError", ex.Message);
 		}

@@ -91,7 +91,7 @@ export default function Conversation({ conversationID }: { conversationID: strin
 
             <div className="col-9 float-start">
                 {conversation?.members.length && (
-                    <Chat conversationID={conversationID} members={conversation?.members ?? []} />
+                    <Chat conversationID={conversationID} members={conversation?.members} />
                 )}
             </div>
         </>

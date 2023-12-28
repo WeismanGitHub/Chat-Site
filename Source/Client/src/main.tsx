@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom/client';
 import router from './router';
 import React from 'react';
 import '../theme.css';
+import './style.css';
 
 const queryClient = new QueryClient();
 

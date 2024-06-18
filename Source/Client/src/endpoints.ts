@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 class Account {
     public static get(): Promise<AccountData> {
@@ -41,8 +41,7 @@ class Requests {
         type?: 'Incoming' | 'Outgoing';
         page?: number;
     }): Promise<{ friendRequests: FriendRequest[]; totalCount: number }> {
-        return axios
-            .get(`/API/Friends/Requests/v1?type=${type}&page=${page}`)
+        return axios.get(`/API/Friends/Requests/v1?type=${type}&page=${page}`);
     }
 
     public static delete(id: string) {
@@ -58,8 +57,7 @@ class Requests {
     }
 
     public static send(values: { recipientID: string; message?: string }) {
-        return axios
-            .post('/API/Friends/Requests/v1', values);
+        return axios.post('/API/Friends/Requests/v1', values);
     }
 }
 

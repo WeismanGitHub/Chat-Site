@@ -25,7 +25,7 @@ export default function Navbar() {
             })
             .catch(async (err) => {
                 if (axios.isAxiosError<APIErrorRes<LogoutError>>(err) && err.response?.data) {
-                    setError(err.response.data)
+                    setError(err.response.data);
                     setShowError(true);
                 }
             });

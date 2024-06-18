@@ -150,7 +150,7 @@ export default function Account() {
             setShowUpdateModal(false);
         } catch (err) {
             if (axios.isAxiosError<APIErrorRes<UpdateError>>(err) && err.response?.data) {
-                setToastError(err.response.data)
+                setToastError(err.response.data);
                 setShowError(true);
             }
         }
@@ -349,8 +349,11 @@ export default function Account() {
                                         setShowUpdateModal(false);
                                         navigate('/auth');
                                     } catch (err) {
-                                        if (axios.isAxiosError<APIErrorRes<Record<string, never>>>(err) && err.response?.data) {
-                                            setToastError(err.response.data)
+                                        if (
+                                            axios.isAxiosError<APIErrorRes<Record<string, never>>>(err) &&
+                                            err.response?.data
+                                        ) {
+                                            setToastError(err.response.data);
                                             setShowError(true);
                                         }
                                     }

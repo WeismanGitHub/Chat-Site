@@ -20,11 +20,11 @@ export default function CreateConvo() {
             window.location.reload();
             setShowModal(false);
         } catch (err: unknown) {
-                if (axios.isAxiosError<APIErrorRes<object>>(err) && err.response?.data) {
-                    setToastError(err.response.data)
-                    setShowError(true);
-                    console.log(toastError);
-                }
+            if (axios.isAxiosError<APIErrorRes<object>>(err) && err.response?.data) {
+                setToastError(err.response.data);
+                setShowError(true);
+                console.log(toastError);
+            }
         }
     }
 

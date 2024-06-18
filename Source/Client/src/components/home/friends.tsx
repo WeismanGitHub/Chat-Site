@@ -17,7 +17,7 @@ export default function Friends() {
     useEffect(() => {
         if (error) {
             if (axios.isAxiosError<APIErrorRes<object>>(error) && error.response?.data) {
-                setToastError(error.response.data)
+                setToastError(error.response.data);
                 setShowError(true);
                 console.log(toastError);
             }
@@ -35,7 +35,7 @@ export default function Friends() {
             setShowModal(false);
         } catch (err: unknown) {
             if (axios.isAxiosError<APIErrorRes<object>>(error) && error.response?.data) {
-                setToastError(error.response.data)
+                setToastError(error.response.data);
                 setShowError(true);
                 console.log(toastError);
             }

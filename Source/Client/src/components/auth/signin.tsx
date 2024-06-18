@@ -61,7 +61,7 @@ export default function Signin() {
                         })
                         .catch(async (err) => {
                             if (axios.isAxiosError<APIErrorRes<SigninError>>(err) && err.response?.data) {
-                                setError(err.response.data)
+                                setError(err.response.data);
                                 setShowError(true);
                             }
                         });

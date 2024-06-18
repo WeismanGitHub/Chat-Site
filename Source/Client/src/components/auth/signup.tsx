@@ -108,7 +108,7 @@ export default function Signup() {
                         })
                         .catch(async (err) => {
                             if (axios.isAxiosError<APIErrorRes<SignupError>>(err) && err.response?.data) {
-                                setError(err.response.data)
+                                setError(err.response.data);
                                 setShowError(true);
                             }
                         });

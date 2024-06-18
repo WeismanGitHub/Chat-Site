@@ -23,7 +23,7 @@ export default function Member({ id, name }: { id: string; name: string }) {
             setShowSuccess(true);
         } catch (err: unknown) {
             if (axios.isAxiosError<APIErrorRes<object>>(err) && err.response?.data) {
-                setToastError(err.response.data)
+                setToastError(err.response.data);
                 setShowError(true);
                 console.log(toastError);
             }

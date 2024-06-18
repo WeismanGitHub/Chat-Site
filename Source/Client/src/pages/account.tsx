@@ -7,7 +7,7 @@ import Endpoints from '../endpoints';
 import { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 type UpdateError = {
     newData: {
@@ -24,7 +24,7 @@ export default function Account() {
 
     const navigate = useNavigate();
 
-    const { data } = useQuery<AccountData>({
+    const { data } = useQuery<AxiosResponse<AccountData>>({
         queryKey: ['data'],
         queryFn: () => Endpoints.Account.get(),
     });
@@ -67,7 +67,7 @@ export default function Account() {
             currentPassword?: string;
         } = {};
 
-        if (values.email && values.email === data?.email) {
+        if (values.email && values.email === data?.data?.email) {
             errors.email = 'Email cannot be the same.';
         } else if (values.password && values.currentPassword && values.password === values.currentPassword) {
             errors.password = 'Passwords cannot be the same.';
@@ -144,8 +144,8 @@ export default function Account() {
                 currentPassword: values.currentPassword,
             });
 
-            data!.displayName = update.displayName ?? data!.displayName;
-            data!.email = update.email ?? data!.email;
+            data!.data.displayName = update.displayName ?? data!.data.displayName;
+            data!.data.email = update.email ?? data!.data.email;
 
             setShowUpdateModal(false);
         } catch (err) {
@@ -163,12 +163,12 @@ export default function Account() {
                 <br />
                 <div className="row">
                     <div className="text-center bg-white rounded shadow card-body p-3 bg-primary">
-                        <h1 className="mb-2">{data?.displayName || 'Unkown'}</h1>
-                        <h5 className="mb-2">{data?.email}</h5>
+                        <h1 className="mb-2">{data?.data.displayName || 'Unkown'}</h1>
+                        <h5 className="mb-2">{data?.data.email}</h5>
                         <h5 className="mb-2">
                             Created:{' '}
-                            {data?.createdAt
-                                ? new Date(data.createdAt).toLocaleDateString('en-US', {
+                            {data?.data.createdAt
+                                ? new Date(data.data.createdAt).toLocaleDateString('en-US', {
                                       weekday: 'long',
                                       year: 'numeric',
                                       month: 'long',
@@ -177,8 +177,8 @@ export default function Account() {
                                 : 'Unkown'}
                         </h5>
                         <br />
-                        <h5 className="mb-2">Total Friends: {data?.totalFriends ?? 'Unknown'}</h5>
-                        <h5 className="mb-2">Total Convos: {data?.totalConversations ?? 'Unknown'}</h5>
+                        <h5 className="mb-2">Total Friends: {data?.data.totalFriends ?? 'Unknown'}</h5>
+                        <h5 className="mb-2">Total Convos: {data?.data.totalConversations ?? 'Unknown'}</h5>
                         <br />
                         <Row className="justify-content-center">
                             <a
@@ -199,7 +199,7 @@ export default function Account() {
                                 className="btn btn-info btn-lg w-25 m-2"
                                 role="button"
                                 onClick={() => {
-                                    navigator.clipboard.writeText(data!.id);
+                                    navigator.clipboard.writeText(data!.data.id);
                                 }}
                                 style={{ width: '10%' }}
                             >

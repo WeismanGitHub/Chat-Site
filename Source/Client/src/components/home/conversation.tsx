@@ -13,7 +13,7 @@ export default function Conversation({ conversationID }: { conversationID: strin
     useEffect(() => {
         Endpoints.Conversations.getOne(conversationID)
             .then((res) => {
-                setConversation(res);
+                setConversation(res.data);
             })
             .catch((error) => {
                 console.error(error);

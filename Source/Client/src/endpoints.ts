@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 class Account {
-    public static get(): Promise<AccountData> {
-        return axios.get('/API/Account/v1');
+    public static get() {
+        return axios.get<AccountData>('/API/Account/v1');
     }
 
     public static signin(data: { email: string; password: string }) {
@@ -40,8 +40,8 @@ class Requests {
     }: {
         type?: 'Incoming' | 'Outgoing';
         page?: number;
-    }): Promise<{ friendRequests: FriendRequest[]; totalCount: number }> {
-        return axios.get(`/API/Friends/Requests/v1?type=${type}&page=${page}`);
+    }) {
+        return axios.get<{ friendRequests: FriendRequest[]; totalCount: number }>(`/API/Friends/Requests/v1?type=${type}&page=${page}`);
     }
 
     public static delete(id: string) {
@@ -64,8 +64,8 @@ class Requests {
 class Friends {
     public static Requests = Requests;
 
-    public static get(): Promise<Friend[]> {
-        return axios.get('/API/Friends/v1');
+    public static get() {
+        return axios.get<Friend[]>('/API/Friends/v1');
     }
 
     public static remove(friendID: string) {
@@ -74,23 +74,23 @@ class Friends {
 }
 
 class Conversations {
-    public static get(): Promise<ConversationsData> {
-        return axios.get('/API/Conversations/v1');
+    public static get() {
+        return axios.get<ConversationsData>('/API/Conversations/v1');
     }
 
     public static leave(conversationID: string) {
         return axios.post(`/API/Conversations/${conversationID}/leave/v1`);
     }
 
-    public static getOne(conversationID: string): Promise<SingleConvoData> {
-        return axios.get(`/API/Conversations/${conversationID}/v1`);
+    public static getOne(conversationID: string) {
+        return axios.get<SingleConvoData>(`/API/Conversations/${conversationID}/v1`);
     }
 
-    public static create(conversationName: string): Promise<{ conversationID: string }> {
-        return axios.post('/API/Conversations/v1', { conversationName });
+    public static create(conversationName: string) {
+        return axios.post<{ conversationID: string }>('/API/Conversations/v1', { conversationName });
     }
 
-    public static join(conversationID: string): Promise<void> {
+    public static join(conversationID: string) {
         return axios.post(`/API/Conversations/${conversationID}/join/v1`, { conversationID });
     }
 }

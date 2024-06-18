@@ -20,8 +20,8 @@ export default function Requests() {
     useEffect(() => {
         Endpoints.Friends.Requests.get({ page, type })
             .then((res) => {
-                setRequests(res?.friendRequests ?? []);
-                setTotal(res?.totalCount ?? null);
+                setRequests(res?.data.friendRequests ?? []);
+                setTotal(res?.data.totalCount ?? null);
             })
             .catch((err: APIErrorRes<object>) => {
                 setToastError(err);

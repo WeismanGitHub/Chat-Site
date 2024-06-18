@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ToastContainer, Toast } from 'react-bootstrap';
 import { useQuery } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import Endpoints from '../../endpoints';
 
 export default function Conversations({
@@ -9,12 +9,12 @@ export default function Conversations({
 }: {
     setConvoID: Dispatch<SetStateAction<string | null>>;
 }) {
-    const res = useQuery<ConversationsData, AxiosError<APIErrorRes<object>>>({
-        queryKey: ['data'],
+    const res = useQuery<AxiosResponse<ConversationsData>, AxiosError<APIErrorRes<object>>>({
+        queryKey: [''],
         queryFn: () => Endpoints.Conversations.get(),
     });
 
-    const conversations = res.data;
+    const conversations = res.data?.data;
     const error = res.error;
 
     const [toastError, setToastError] = useState<APIErrorRes<object> | null>(null);
@@ -23,7 +23,7 @@ export default function Conversations({
     useEffect(() => {
         if (error) {
             if (axios.isAxiosError<APIErrorRes<object>>(error) && error.response?.data) {
-                setToastError(error.response.data)
+                setToastError(error.response.data);
                 setShowError(true);
                 console.log(toastError);
             }
@@ -57,6 +57,7 @@ export default function Conversations({
             <ul className="list-group fs-5">
                 {conversations
                     ? conversations?.map((convo) => {
+                        console.log(convo)
                           return (
                               <li
                                   className="list-group-item bg-dark-subtle text-primary border-secondary"

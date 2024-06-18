@@ -1,13 +1,13 @@
 import { ToastContainer, Toast, Modal, Button } from 'react-bootstrap';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useQuery } from '@tanstack/react-query';
-import Endpoints from '../../endpoints';
 import { useEffect, useState } from 'react';
-import axios, { AxiosError } from 'axios';
+import Endpoints from '../../endpoints';
 
 export default function Friends() {
     // eslint-disable-next-line prefer-const
-    let { error, data } = useQuery<Friend[], AxiosError<APIErrorRes<object>>>({
-        queryKey: ['data'],
+    let { error, data } = useQuery<AxiosResponse<Friend[]>, AxiosError<APIErrorRes<object>>>({
+        queryKey: [''],
         queryFn: () => Endpoints.Friends.get(),
     });
 
@@ -30,7 +30,7 @@ export default function Friends() {
     async function removeFriend() {
         try {
             await Endpoints.Friends.remove(selectedFriend!.id);
-            data = data!.filter((friend) => friend.id === selectedFriend?.id);
+            data!.data = data!.data.filter((friend) => friend.id === selectedFriend?.id);
             setFriend(null);
             setShowModal(false);
         } catch (err: unknown) {
@@ -102,8 +102,8 @@ export default function Friends() {
             </Modal>
 
             <ul className="list-group fs-5">
-                {data?.length
-                    ? data.map((friend) => {
+                {data?.data.length
+                    ? data.data.map((friend) => {
                           return (
                               <li
                                   className="list-group-item bg-dark-subtle text-primary border-secondary"

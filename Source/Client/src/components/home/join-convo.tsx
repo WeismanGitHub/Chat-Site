@@ -2,8 +2,8 @@ import { ToastContainer, Toast, Modal, Button, Row, Form, Col } from 'react-boot
 import Endpoints from '../../endpoints';
 import { useState } from 'react';
 import { Formik } from 'formik';
-import { HTTPError } from 'ky';
 import * as yup from 'yup';
+import axios from 'axios';
 
 export default function CreateConvo() {
     const schema = yup.object().shape({
@@ -20,11 +20,11 @@ export default function CreateConvo() {
             window.location.reload();
             setShowModal(false);
         } catch (err: unknown) {
-            if (err instanceof HTTPError) {
-                setToastError(await err.response.json());
-                setShowError(true);
-                console.log(toastError);
-            }
+                if (axios.isAxiosError<APIErrorRes<object>>(err) && err.response?.data) {
+                    setToastError(err.response.data)
+                    setShowError(true);
+                    console.log(toastError);
+                }
         }
     }
 

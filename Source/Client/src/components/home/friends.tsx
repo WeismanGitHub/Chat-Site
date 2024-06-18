@@ -2,11 +2,11 @@ import { ToastContainer, Toast, Modal, Button } from 'react-bootstrap';
 import { useQuery } from '@tanstack/react-query';
 import Endpoints from '../../endpoints';
 import { useEffect, useState } from 'react';
-import { HTTPError } from 'ky';
+import axios, { AxiosError } from 'axios';
 
 export default function Friends() {
     // eslint-disable-next-line prefer-const
-    let { error, data } = useQuery<Friend[], HTTPError>({
+    let { error, data } = useQuery<Friend[], AxiosError<APIErrorRes<object>>>({
         queryKey: ['data'],
         queryFn: () => Endpoints.Friends.get(),
     });
@@ -16,11 +16,11 @@ export default function Friends() {
 
     useEffect(() => {
         if (error) {
-            error.response.json().then((res) => {
-                console.error(res);
-                setToastError(res);
+            if (axios.isAxiosError<APIErrorRes<object>>(error) && error.response?.data) {
+                setToastError(error.response.data)
                 setShowError(true);
-            });
+                console.log(toastError);
+            }
         }
     }, [error]);
 
@@ -34,8 +34,8 @@ export default function Friends() {
             setFriend(null);
             setShowModal(false);
         } catch (err: unknown) {
-            if (err instanceof HTTPError) {
-                setToastError(await err.response.json());
+            if (axios.isAxiosError<APIErrorRes<object>>(error) && error.response?.data) {
+                setToastError(error.response.data)
                 setShowError(true);
                 console.log(toastError);
             }

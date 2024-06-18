@@ -1,16 +1,16 @@
-import ky from 'ky';
+import axios from "axios";
 
 class Account {
     public static get(): Promise<AccountData> {
-        return ky.get('/API/Account/v1', { retry: 0 }).json();
+        return axios.get('/API/Account/v1');
     }
 
     public static signin(data: { email: string; password: string }) {
-        return ky.post('/API/Account/Signin/v1', { json: data, retry: 0 }).json();
+        return axios.post('/API/Account/Signin/v1', data);
     }
 
     public static signup(data: { displayName: string; email: string; password: string }) {
-        return ky.post('/API/Account/Signup/v1', { json: data, retry: 0 }).json();
+        return axios.post('/API/Account/Signup/v1', data);
     }
 
     public static update(data: {
@@ -21,15 +21,15 @@ class Account {
             password: string | null;
         };
     }) {
-        return ky.patch('API/Account/v1', { json: data, retry: 0 }).json();
+        return axios.patch('API/Account/v1', data);
     }
 
     public static delete() {
-        return ky.delete('/API/Account/v1', { retry: 0 }).json();
+        return axios.delete('/API/Account/v1');
     }
 
     public static signout() {
-        return ky.post('/API/Account/Signout/v1', { retry: 0 }).json();
+        return axios.post('/API/Account/Signout/v1');
     }
 }
 
@@ -41,36 +41,25 @@ class Requests {
         type?: 'Incoming' | 'Outgoing';
         page?: number;
     }): Promise<{ friendRequests: FriendRequest[]; totalCount: number }> {
-        return ky
-            .get('/API/Friends/Requests/v1', {
-                retry: 0,
-                searchParams: {
-                    type,
-                    page,
-                },
-            })
-            .json();
+        return axios
+            .get(`/API/Friends/Requests/v1?type=${type}&page=${page}`)
     }
 
     public static delete(id: string) {
-        return ky.delete(`/API/Friends/Requests/${id}/v1`, { retry: 0 }).json();
+        return axios.delete(`/API/Friends/Requests/${id}/v1`);
     }
 
     public static accept(id: string) {
-        return ky.post(`/API/Friends/Requests/${id}/accept/v1`, { retry: 0 }).json();
+        return axios.post(`/API/Friends/Requests/${id}/accept/v1`);
     }
 
     public static decline(id: string) {
-        return ky.post(`/API/Friends/Requests/${id}/decline/v1`, { retry: 0 }).json();
+        return axios.post(`/API/Friends/Requests/${id}/decline/v1`);
     }
 
     public static send(values: { recipientID: string; message?: string }) {
-        return ky
-            .post('/API/Friends/Requests/v1', {
-                retry: 0,
-                json: values,
-            })
-            .json();
+        return axios
+            .post('/API/Friends/Requests/v1', values);
     }
 }
 
@@ -78,33 +67,33 @@ class Friends {
     public static Requests = Requests;
 
     public static get(): Promise<Friend[]> {
-        return ky.get('/API/Friends/v1', { retry: 0 }).json();
+        return axios.get('/API/Friends/v1');
     }
 
     public static remove(friendID: string) {
-        return ky.post(`/API/Friends/${friendID}/remove/v1`, { retry: 0 });
+        return axios.post(`/API/Friends/${friendID}/remove/v1`);
     }
 }
 
 class Conversations {
     public static get(): Promise<ConversationsData> {
-        return ky.get('/API/Conversations/v1', { retry: 0 }).json();
+        return axios.get('/API/Conversations/v1');
     }
 
     public static leave(conversationID: string) {
-        return ky.post(`/API/Conversations/${conversationID}/leave/v1`, { retry: 0 });
+        return axios.post(`/API/Conversations/${conversationID}/leave/v1`);
     }
 
     public static getOne(conversationID: string): Promise<SingleConvoData> {
-        return ky.get(`/API/Conversations/${conversationID}/v1`, { retry: 0 }).json();
+        return axios.get(`/API/Conversations/${conversationID}/v1`);
     }
 
     public static create(conversationName: string): Promise<{ conversationID: string }> {
-        return ky.post('/API/Conversations/v1', { json: { conversationName } }).json();
+        return axios.post('/API/Conversations/v1', { conversationName });
     }
 
     public static join(conversationID: string): Promise<void> {
-        return ky.post(`/API/Conversations/${conversationID}/join/v1`, { json: { conversationID } }).json();
+        return axios.post(`/API/Conversations/${conversationID}/join/v1`, { conversationID });
     }
 }
 

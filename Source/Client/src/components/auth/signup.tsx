@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Endpoints from '../../endpoints';
 import * as formik from 'formik';
 import { useState } from 'react';
-import { HTTPError } from 'ky';
 import * as yup from 'yup';
+import axios from 'axios';
 
 type SignupError = {
     email?: string;
@@ -106,10 +106,11 @@ export default function Signup() {
                             localStorage.setItem('loggedIn', 'true');
                             navigate('/');
                         })
-                        .catch(async (err: HTTPError) => {
-                            const res: APIErrorRes<SignupError> = await err.response.json();
-                            setError(res);
-                            setShowError(true);
+                        .catch(async (err) => {
+                            if (axios.isAxiosError<APIErrorRes<SignupError>>(err) && err.response?.data) {
+                                setError(err.response.data)
+                                setShowError(true);
+                            }
                         });
                 }}
                 initialValues={{

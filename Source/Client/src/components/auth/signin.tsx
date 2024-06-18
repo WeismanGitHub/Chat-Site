@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Endpoints from '../../endpoints';
 import * as formik from 'formik';
 import { useState } from 'react';
-import { HTTPError } from 'ky';
+import axios from 'axios';
 import * as yup from 'yup';
 
 type SigninError = {
@@ -59,10 +59,11 @@ export default function Signin() {
                             localStorage.setItem('loggedIn', 'true');
                             navigate('/');
                         })
-                        .catch(async (err: HTTPError) => {
-                            const res: APIErrorRes<SigninError> = await err.response.json();
-                            setError(res);
-                            setShowError(true);
+                        .catch(async (err) => {
+                            if (axios.isAxiosError<APIErrorRes<SigninError>>(err) && err.response?.data) {
+                                setError(err.response.data)
+                                setShowError(true);
+                            }
                         });
                 }}
                 initialValues={{

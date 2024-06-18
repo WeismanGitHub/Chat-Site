@@ -1,15 +1,15 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ToastContainer, Toast } from 'react-bootstrap';
 import { useQuery } from '@tanstack/react-query';
+import axios, { AxiosError } from 'axios';
 import Endpoints from '../../endpoints';
-import { HTTPError } from 'ky';
 
 export default function Conversations({
     setConvoID,
 }: {
     setConvoID: Dispatch<SetStateAction<string | null>>;
 }) {
-    const res = useQuery<ConversationsData, HTTPError>({
+    const res = useQuery<ConversationsData, AxiosError<APIErrorRes<object>>>({
         queryKey: ['data'],
         queryFn: () => Endpoints.Conversations.get(),
     });
@@ -22,11 +22,11 @@ export default function Conversations({
 
     useEffect(() => {
         if (error) {
-            error.response.json().then((res) => {
-                console.error(res);
-                setToastError(res);
+            if (axios.isAxiosError<APIErrorRes<object>>(error) && error.response?.data) {
+                setToastError(error.response.data)
                 setShowError(true);
-            });
+                console.log(toastError);
+            }
         }
     }, [error]);
 

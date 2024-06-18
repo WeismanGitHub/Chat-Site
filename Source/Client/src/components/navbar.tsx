@@ -2,7 +2,7 @@ import { ToastContainer, Toast } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Endpoints from '../endpoints';
 import { useState } from 'react';
-import { HTTPError } from 'ky';
+import axios from 'axios';
 
 type LogoutError = {
     email?: string;
@@ -23,10 +23,11 @@ export default function Navbar() {
                 localStorage.removeItem('loggedIn');
                 navigate('/auth');
             })
-            .catch(async (err: HTTPError) => {
-                const res: APIErrorRes<LogoutError> = await err.response.json();
-                setError(res);
-                setShowError(true);
+            .catch(async (err) => {
+                if (axios.isAxiosError<APIErrorRes<LogoutError>>(err) && err.response?.data) {
+                    setError(err.response.data)
+                    setShowError(true);
+                }
             });
     }
 

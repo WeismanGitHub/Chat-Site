@@ -6,8 +6,8 @@ import Navbar from '../components/navbar';
 import Endpoints from '../endpoints';
 import { useState } from 'react';
 import { Formik } from 'formik';
-import { HTTPError } from 'ky';
 import * as yup from 'yup';
+import axios from 'axios';
 
 type UpdateError = {
     newData: {
@@ -24,7 +24,7 @@ export default function Account() {
 
     const navigate = useNavigate();
 
-    const { data } = useQuery<AccountData, HTTPError>({
+    const { data } = useQuery<AccountData>({
         queryKey: ['data'],
         queryFn: () => Endpoints.Account.get(),
     });
@@ -149,12 +149,10 @@ export default function Account() {
 
             setShowUpdateModal(false);
         } catch (err) {
-            if (err instanceof HTTPError) {
-                const res: APIErrorRes<UpdateError> = await err.response.json();
-                setToastError(res);
+            if (axios.isAxiosError<APIErrorRes<UpdateError>>(err) && err.response?.data) {
+                setToastError(err.response.data)
+                setShowError(true);
             }
-
-            setShowError(true);
         }
     }
 
@@ -351,13 +349,10 @@ export default function Account() {
                                         setShowUpdateModal(false);
                                         navigate('/auth');
                                     } catch (err) {
-                                        if (err instanceof HTTPError) {
-                                            const res: APIErrorRes<Record<string, never>> =
-                                                await err.response.json();
-                                            setToastError(res);
+                                        if (axios.isAxiosError<APIErrorRes<Record<string, never>>>(err) && err.response?.data) {
+                                            setToastError(err.response.data)
+                                            setShowError(true);
                                         }
-
-                                        setShowError(true);
                                     }
                                 }}
                             >

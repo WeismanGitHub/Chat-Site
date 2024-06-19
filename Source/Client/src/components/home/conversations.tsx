@@ -56,9 +56,7 @@ export default function Conversations({
 
             <ul className="list-group fs-5">
                 {conversations
-                    ? conversations?.map((convo) => {
-                        console.log(convo)
-                          return (
+                    ? conversations?.map((convo) => 
                               <li
                                   className="list-group-item bg-dark-subtle text-primary border-secondary"
                                   key={convo.id}
@@ -78,8 +76,7 @@ export default function Conversations({
                                       })}
                                   </div>
                               </li>
-                          );
-                      })
+                    )
                     : 'No Conversations'}
             </ul>
         </div>

@@ -34,14 +34,10 @@ class Account {
 }
 
 class Requests {
-    public static get({
-        type = 'Incoming',
-        page = 1,
-    }: {
-        type?: 'Incoming' | 'Outgoing';
-        page?: number;
-    }) {
-        return axios.get<{ friendRequests: FriendRequest[]; totalCount: number }>(`/API/Friends/Requests/v1?type=${type}&page=${page}`);
+    public static get({ type = 'Incoming', page = 1 }: { type?: 'Incoming' | 'Outgoing'; page?: number }) {
+        return axios.get<{ friendRequests: FriendRequest[]; totalCount: number }>(
+            `/API/Friends/Requests/v1?type=${type}&page=${page}`
+        );
     }
 
     public static delete(id: string) {

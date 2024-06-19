@@ -107,12 +107,6 @@ export default function Navbar() {
                                 Account
                             </Link>
                         </li>
-                        {loggedIn && 
-                            <li className="nav-item">
-                            <Link className="nav-link" to={'/requests'}>
-                                Requests
-                            </Link>
-                        </li>}
                         <li className="nav-item">
                             {loggedIn ? (
                                 <div

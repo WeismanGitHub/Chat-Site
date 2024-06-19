@@ -39,10 +39,6 @@ async Task InitDatabase() {
 		.Option(o => o.Unique = true)
 		.CreateAsync();
 
-	await DB.Index<FriendRequest>()
-		.Key(fr => fr.RecipientID, KeyType.Ascending)
-		.CreateAsync();
-
 	await DB.MigrateAsync();
 }
 

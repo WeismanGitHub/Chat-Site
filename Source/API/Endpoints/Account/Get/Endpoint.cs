@@ -23,7 +23,6 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 			DisplayName = user.DisplayName,
 			Email = user.Email,
 			TotalConversations = user.ConversationIDs.Count(),
-			TotalFriends = user.FriendIDs.Count(),
 			CreatedAt = user.CreatedAt,
 		});
     }

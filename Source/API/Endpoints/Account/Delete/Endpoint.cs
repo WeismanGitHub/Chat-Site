@@ -29,13 +29,8 @@ sealed class Endpoint : Endpoint<Request> {
 			await transaction.DeleteAsync<Conversation>(convo.ID);
 		}
 
-		await transaction.Update<User>()
-			.Match(user => account.FriendIDs.Contains(user.ID))
-			.Modify(user => user.Pull(u => u.FriendIDs, account.ID))
-			.ExecuteAsync();
 
 		await transaction.DeleteAsync<User>(account.ID);
-		await transaction.DeleteAsync<FriendRequest>(fr => fr.RequesterID == account.ID);
 
 		await transaction.CommitAsync();
 		await CookieAuth.SignOutAsync();

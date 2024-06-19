@@ -12,8 +12,6 @@ public class User : Entity {
     public string DisplayName { get; set; }
     public string Email { get; set; }
     public string PasswordHash { get; set; }
-    [MaxLength(100, ErrorMessage = "Cannot add more than 100 friends.")]
-    public List<string> FriendIDs { get; set; } = new List<string>();
 	[MaxLength(100, ErrorMessage = "Cannot join more than 100 conversations.")]
 	public List<string> ConversationIDs { get; set; } = new List<string>();
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

@@ -18,14 +18,14 @@ public class Fixture : TestFixture<Program> {
 			PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password),
 		});
 
-		await Client.POSTAsync<SigninAPI.Endpoint, SigninAPI.Request>(new SigninAPI.Request() {
+		await Client.POSTAsync<API.Endpoints.Account.Signin, API.Endpoints.Account.Request>(new SigninAPI.Request() {
 			Email = ValidAccount.Email,
 			Password = ValidAccount.Password,
 		});
 	}
 
 	protected override async Task TearDownAsync() {
-		await DB.DeleteAsync<Conversation>(ConvoID);
+		await DB.DeleteAsync<ChatRoom>(ConvoID);
 		await DB.DeleteAsync<User>(AccountID);
 	}
 }

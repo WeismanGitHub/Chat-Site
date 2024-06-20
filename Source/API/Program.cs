@@ -1,6 +1,7 @@
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
 using FastEndpoints.Swagger;
+using API.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureServices.Configure(builder);
@@ -31,16 +32,17 @@ async Task InitDatabase() {
 	);
 
 	var connectionString = settings.Database.MongoURI;
-	await DB.InitAsync(settings.Database.Name, MongoClientSettings.FromConnectionString((connectionString)));
+	await DB.InitAsync(settings.Database.Name, MongoClientSettings.FromConnectionString(connectionString));
 
 	await DB.Index<User>()
 		.Key(u => u.Email, KeyType.Ascending)
 		.Option(o => o.Unique = true)
 		.CreateAsync();
 
-	await DB.Index<FriendRequest>()
-		.Key(fr => fr.RecipientID, KeyType.Ascending)
-		.CreateAsync();
+	await DB.Index<ChatRoom>()
+	.Key(u => u.Name, KeyType.Ascending)
+	.Option(o => o.Unique = true)
+	.CreateAsync();
 
 	await DB.MigrateAsync();
 }

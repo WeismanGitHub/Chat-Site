@@ -18,15 +18,15 @@ public class Fixture : TestFixture<Program> {
 			PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password),
 		});
 
-		await DB.InsertAsync(new List<Conversation>() {
-			new Conversation() {
+		await DB.InsertAsync(new List<ChatRoom>() {
+			new ChatRoom() {
 				ID = ConvoID,
 				Name = "Convo 1",
 				MemberIDs = new List<string>() { AccountID }
 			}
 		});
 
-		await Client.POSTAsync<SigninAPI.Endpoint, SigninAPI.Request>(new SigninAPI.Request() {
+		await Client.POSTAsync<API.Endpoints.Account.Signin, API.Endpoints.Account.Request>(new SigninAPI.Request() {
 			Email = ValidAccount.Email,
 			Password = ValidAccount.Password,
 		});
@@ -34,6 +34,6 @@ public class Fixture : TestFixture<Program> {
 
 	protected override async Task TearDownAsync() {
 		await DB.DeleteAsync<User>(AccountID);
-		await DB.DeleteAsync<Conversation>(ConvoID);
+		await DB.DeleteAsync<ChatRoom>(ConvoID);
 	}
 }

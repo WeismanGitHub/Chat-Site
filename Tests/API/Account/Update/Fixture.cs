@@ -18,7 +18,7 @@ public class Fixture : TestFixture<Program> {
 			PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password)
 		});
 
-		await Client.POSTAsync<APISignin.Endpoint, APISignin.Request>(new APISignin.Request() {
+		await Client.POSTAsync<API.Endpoints.Account.Signin, API.Endpoints.Account.Request>(new APISignin.Request() {
 			Email = ValidAccount.Email,
 			Password = ValidAccount.Password,
 		});

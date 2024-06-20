@@ -1,4 +1,4 @@
-using API.Endpoints.Conversations.Create;
+using API.Endpoints.ChatRooms.Create;
 using API.Database.Entities;
 using MongoDB.Entities;
 using MongoDB.Bson;
@@ -11,7 +11,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Successful_Request() {
-		var (rsp, res) = await Fixture.Client.POSTAsync<Endpoint, Request, Response>(new() {
+		var (rsp, res) = await Fixture.Client.POSTAsync<Create, Request, Response>(new() {
 			ConversationName = "test"
 		});
 
@@ -20,10 +20,10 @@ public class Tests : TestClass<Fixture> {
 		var account = await DB.Find<User>().MatchID(Fixture.AccountID).ExecuteFirstAsync();
 		account.Should().NotBeNull();
 
-		account!.ConversationIDs.Count.Should().Be(1);
-		account.ConversationIDs.First().Should().Be(res.ConversationID);
+		account!.ChatRoomIDs.Count.Should().Be(1);
+		account.ChatRoomIDs.First().Should().Be(res.ConversationID);
 
-		var convo = await DB.Find<Conversation>().MatchID(res.ConversationID).ExecuteFirstAsync();
+		var convo = await DB.Find<ChatRoom>().MatchID(res.ConversationID).ExecuteFirstAsync();
 		convo.Should().NotBeNull();
 
 		convo!.MemberIDs.Count.Should().Be(1);
@@ -39,10 +39,10 @@ public class Tests : TestClass<Fixture> {
 		convoIDs.Add(Fixture.ConvoID);
 
 		await DB.Update<User>().MatchID(Fixture.AccountID)
-			.Modify(u => u.ConversationIDs, convoIDs)
+			.Modify(u => u.ChatRoomIDs, convoIDs)
 			.ExecuteAsync();
 
-		var (rsp, res) = await Fixture.Client.POSTAsync<Endpoint, Request, Response>(new() {
+		var (rsp, res) = await Fixture.Client.POSTAsync<Create, Request, Response>(new() {
 			ConversationName = "test"
 		});
 
@@ -51,17 +51,17 @@ public class Tests : TestClass<Fixture> {
 		var account = await DB.Find<User>().MatchID(Fixture.AccountID).ExecuteFirstAsync();
 		account.Should().NotBeNull();
 
-		account!.ConversationIDs.Count.Should().Be(100);
+		account!.ChatRoomIDs.Count.Should().Be(100);
 
-		foreach (var id in account.ConversationIDs) {
+		foreach (var id in account.ChatRoomIDs) {
 			convoIDs.Contains(id).Should().BeTrue();
 		}
 	}
 
 	[Fact]
 	public async Task Name_Too_Long() {
-		var (rsp, _) = await Fixture.Client.POSTAsync<Endpoint, Request, Response>(new() {
-			ConversationName = new string('*', Conversation.MaxNameLength + 1)
+		var (rsp, _) = await Fixture.Client.POSTAsync<Create, Request, Response>(new() {
+			ConversationName = new string('*', ChatRoom.MaxNameLength + 1)
 		});
 
 		rsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);

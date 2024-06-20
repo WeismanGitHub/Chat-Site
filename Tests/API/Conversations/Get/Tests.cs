@@ -1,4 +1,4 @@
-using API.Endpoints.Conversations.Get;
+using API.Endpoints.ChatRooms.Get;
 using API.Database.Entities;
 using MongoDB.Entities;
 
@@ -9,13 +9,13 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Valid_Request() {
-		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, List<ResConvo>>(new());
+		var (rsp, res) = await Fixture.Client.GETAsync<Get, Request, List<ChatRoomDTO>>(new());
 
 		rsp.IsSuccessStatusCode.Should().BeTrue();
 		res.Should().NotBeNull();
 
 		var convos = await DB
-			.Find<Conversation>()
+			.Find<ChatRoom>()
 			.Match(convo => res.Select(c => c.ID).Contains(convo.ID))
 			.ExecuteAsync();
 
@@ -25,12 +25,12 @@ public class Tests : TestClass<Fixture> {
 			convo.MemberIDs.Contains(Fixture.AccountID).Should().BeTrue();
 		}
 
-		await DB.Update<User>().MatchID(Fixture.AccountID).Modify(u => u.ConversationIDs, new() { }).ExecuteAsync();
+		await DB.Update<User>().MatchID(Fixture.AccountID).Modify(u => u.ChatRoomIDs, new() { }).ExecuteAsync();
 	}
 
 	[Fact]
 	public async Task No_Convos() {
-		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, List<ResConvo>>(new());
+		var (rsp, res) = await Fixture.Client.GETAsync<Get, Request, List<ChatRoomDTO>>(new());
 
 		rsp.IsSuccessStatusCode.Should().BeTrue();
 		res.Count.Should().Be(0);

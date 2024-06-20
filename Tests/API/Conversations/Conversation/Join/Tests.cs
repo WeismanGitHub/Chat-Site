@@ -1,4 +1,4 @@
-using API.Endpoints.Conversations.SingleConvo.Join;
+using API.Endpoints.ChatRooms.SingleChatRoom.Join;
 using API.Database.Entities;
 using MongoDB.Entities;
 using MongoDB.Bson;
@@ -18,7 +18,7 @@ public class Tests : TestClass<Fixture> {
 		rsp.IsSuccessStatusCode.Should().BeTrue();
 
 		var convo = await DB
-			.Find<Conversation>()
+			.Find<ChatRoom>()
 			.MatchID(Fixture.ConvoID)
 			.ExecuteSingleAsync();
 
@@ -35,7 +35,7 @@ public class Tests : TestClass<Fixture> {
 		rsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
 		var convo = await DB
-			.Find<Conversation>()
+			.Find<ChatRoom>()
 			.MatchID(Fixture.ConvoID)
 			.ExecuteSingleAsync();
 
@@ -45,14 +45,14 @@ public class Tests : TestClass<Fixture> {
 			.ExecuteSingleAsync();
 
 		convo!.MemberIDs.Count.Should().Be(1);
-		account!.ConversationIDs.Count.Should().Be(1);
+		account!.ChatRoomIDs.Count.Should().Be(1);
 	}
 
 	[Fact, Priority(3)]
 	public async Task In_100_Convos() {
 		await DB.Update<User>()
 			.MatchID(Fixture.AccountID)
-			.Modify(u => u.ConversationIDs, Enumerable.Repeat(ObjectId.GenerateNewId().ToString(), 100).ToList())
+			.Modify(u => u.ChatRoomIDs, Enumerable.Repeat(ObjectId.GenerateNewId().ToString(), 100).ToList())
 			.ExecuteAsync();
 
 		var rsp = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
@@ -80,7 +80,7 @@ public class Tests : TestClass<Fixture> {
 		rsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
 		var convo = await DB
-			.Find<Conversation>()
+			.Find<ChatRoom>()
 			.MatchID(Fixture.FullConvoID)
 			.ExecuteSingleAsync();
 
@@ -88,6 +88,6 @@ public class Tests : TestClass<Fixture> {
 		convo!.MemberIDs.Contains(Fixture.FullConvoID).Should().BeFalse();
 
 		var account = await DB.Find<User>().MatchID(Fixture.AccountID).ExecuteFirstAsync();
-		account!.ConversationIDs.Contains(convo.ID).Should().BeFalse();
+		account!.ChatRoomIDs.Contains(convo.ID).Should().BeFalse();
 	}
 }

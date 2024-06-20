@@ -15,11 +15,11 @@ public class Fixture : TestFixture<Program> {
 			DisplayName = ValidAccount.DisplayName,
 			Email = ValidAccount.Email,
 			PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password),
-			ConversationIDs = new List<string> { "sdfs", "sdfs" },
+			ChatRoomIDs = new List<string> { "sdfs", "sdfs" },
 			FriendIDs = new List<string> { "sdfs", "sdfs" }
 		});
 
-		await Client.POSTAsync<SigninAPI.Endpoint, SigninAPI.Request>(new SigninAPI.Request() {
+		await Client.POSTAsync<API.Endpoints.Account.Signin, API.Endpoints.Account.Request>(new SigninAPI.Request() {
 			Email = ValidAccount.Email,
 			Password = ValidAccount.Password,
 		});

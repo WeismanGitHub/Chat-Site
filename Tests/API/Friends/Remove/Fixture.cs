@@ -22,7 +22,7 @@ public class Fixture : TestFixture<Program> {
 
 		await DB.InsertAsync(new List<User> { account, friend });
 
-		await Client.POSTAsync<Signin.Endpoint, Signin.Request>(new Signin.Request() {
+		await Client.POSTAsync<API.Endpoints.Account.Signin, API.Endpoints.Account.Request>(new Signin.Request() {
 			Email = account.Email,
 			Password = ValidAccount.Password,
 		});

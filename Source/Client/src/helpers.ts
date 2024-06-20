@@ -3,11 +3,11 @@ import { useEffect } from 'react';
 
 function redirectIfNotLoggedIn() {
     // I know this is kinda unclean.
-    const loggedIn = localStorage.getItem('loggedIn');
+    const authenticated = localStorage.getItem('authenticated');
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!loggedIn) {
+        if (!authenticated) {
             navigate('/auth');
         }
     }, []);

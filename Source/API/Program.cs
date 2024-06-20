@@ -32,12 +32,17 @@ async Task InitDatabase() {
 	);
 
 	var connectionString = settings.Database.MongoURI;
-	await DB.InitAsync(settings.Database.Name, MongoClientSettings.FromConnectionString((connectionString)));
+	await DB.InitAsync(settings.Database.Name, MongoClientSettings.FromConnectionString(connectionString));
 
 	await DB.Index<User>()
 		.Key(u => u.Email, KeyType.Ascending)
 		.Option(o => o.Unique = true)
 		.CreateAsync();
+
+	await DB.Index<ChatRoom>()
+	.Key(u => u.Name, KeyType.Ascending)
+	.Option(o => o.Unique = true)
+	.CreateAsync();
 
 	await DB.MigrateAsync();
 }

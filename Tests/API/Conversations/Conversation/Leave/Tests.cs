@@ -11,7 +11,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact, Priority(1)]
 	public async Task Empty_Convo() {
-		var rsp = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var rsp = await Fixture.Client.POSTAsync<Leave, Request>(new() {
 			ConversationID = Fixture.ConvoID
 		});
 
@@ -34,7 +34,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Nonexistant() {
-		var rsp = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var rsp = await Fixture.Client.POSTAsync<Leave, Request>(new() {
 			ConversationID = ObjectId.GenerateNewId().ToString()
 		});
 
@@ -43,7 +43,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact, Priority(1)]
 	public async Task Convo_Has_Members() {
-		var rsp = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var rsp = await Fixture.Client.POSTAsync<Leave, Request>(new() {
 			ConversationID = Fixture.FullConvoID
 		});
 

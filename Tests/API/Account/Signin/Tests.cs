@@ -1,4 +1,4 @@
-using API.Endpoints.Account.Signin;
+using API.Endpoints.Account;
 
 namespace Tests.API.Account.Signin;
 
@@ -7,7 +7,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Valid_Input() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.POSTAsync<Signin, Request>(new() {
 			Email = ValidAccount.Email,
 			Password = ValidAccount.Password
 		});
@@ -18,7 +18,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Invalid_Email() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.POSTAsync<Signin, Request>(new() {
 			Email = "invalid@email.com",
 			Password = ValidAccount.Password
 		});
@@ -28,7 +28,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Invalid_Password() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.POSTAsync<Signin, Request>(new() {
 			Email = ValidAccount.Email,
 			Password = "invalidpassword"
 		});

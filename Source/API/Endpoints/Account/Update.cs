@@ -9,14 +9,14 @@ public class NewData {
 }
 
 public sealed class Request {
-    [From(Claim.AccountID, IsRequired = true)]
-    public string AccountID { get; set; }
+	[From(Claim.AccountID, IsRequired = true)]
+	public string AccountID { get; set; }
 	public required NewData NewData { get; set; }
 	public required string CurrentPassword { get; set; }
 }
 
 internal sealed class Validator : Validator<Request> {
-    public Validator() {
+	public Validator() {
 		RuleFor(req => req)
 			.MustAsync(async (req, _) => {
 				User? account = await DB.Find<User>().MatchID(req.AccountID).ExecuteSingleAsync();
@@ -26,8 +26,8 @@ internal sealed class Validator : Validator<Request> {
 			.WithMessage("Invalid password.");
 
 		RuleFor(req => req.NewData)
-            .Must(req => req.DisplayName != null || req.Email != null || req.Password != null)
-            .WithMessage("Must modify something");
+			.Must(req => req.DisplayName != null || req.Email != null || req.Password != null)
+			.WithMessage("Must modify something");
 
 		When(req => req.NewData.DisplayName != null, () => {
 			RuleFor(account => account.NewData.DisplayName)
@@ -40,7 +40,7 @@ internal sealed class Validator : Validator<Request> {
 			RuleFor(account => account.NewData.Email)
 				.NotEmpty()
 				.EmailAddress().WithMessage("The format of your email address is invalid.")
-				.MustAsync(async (email, _) => !(await DB.Find<User>().Match(u => u.Email == email).ExecuteAnyAsync()))
+				.MustAsync(async (email, _) => !await DB.Find<User>().Match(u => u.Email == email).ExecuteAnyAsync())
 				.WithErrorCode(nameof(HttpStatusCode.Conflict))
 				.WithMessage("Email is taken.");
 		});
@@ -53,5 +53,43 @@ internal sealed class Validator : Validator<Request> {
 					return password.IsAValidPassword();
 				}).WithMessage("Password is invalid.");
 		});
+	}
+}
+
+public sealed class Endpoint : Endpoint<Request> {
+	public override void Configure() {
+		Patch("/");
+		Group<AccountGroup>();
+		Version(1);
+
+		Summary(settings => {
+			settings.Summary = "Update logged in account.";
+			settings.ExampleRequest = new Request {
+				NewData = new() {
+					DisplayName = "New Name",
+				},
+				CurrentPassword = "Password123"
+			};
+		});
+	}
+
+	public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
+		var update = DB.Update<User>().MatchID(req.AccountID);
+		var newData = req.NewData;
+
+		if (newData.DisplayName != null) {
+			update.Modify(u => u.DisplayName, newData.DisplayName);
+		}
+
+		if (newData.Email != null) {
+			update.Modify(u => u.Email, newData.Email);
+		}
+
+		if (newData.Password != null) {
+			var passwordHash = BCrypt.Net.BCrypt.HashPassword(newData.Password);
+			update.Modify(u => u.PasswordHash, passwordHash);
+		}
+
+		await update.ExecuteAsync(cancellationToken);
 	}
 }

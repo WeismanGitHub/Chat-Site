@@ -11,7 +11,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Successful_Request() {
-		var (rsp, res) = await Fixture.Client.POSTAsync<Endpoint, Request, Response>(new() {
+		var (rsp, res) = await Fixture.Client.POSTAsync<Create, Request, Response>(new() {
 			ConversationName = "test"
 		});
 
@@ -42,7 +42,7 @@ public class Tests : TestClass<Fixture> {
 			.Modify(u => u.ChatRoomIDs, convoIDs)
 			.ExecuteAsync();
 
-		var (rsp, res) = await Fixture.Client.POSTAsync<Endpoint, Request, Response>(new() {
+		var (rsp, res) = await Fixture.Client.POSTAsync<Create, Request, Response>(new() {
 			ConversationName = "test"
 		});
 
@@ -60,7 +60,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Name_Too_Long() {
-		var (rsp, _) = await Fixture.Client.POSTAsync<Endpoint, Request, Response>(new() {
+		var (rsp, _) = await Fixture.Client.POSTAsync<Create, Request, Response>(new() {
 			ConversationName = new string('*', ChatRoom.MaxNameLength + 1)
 		});
 

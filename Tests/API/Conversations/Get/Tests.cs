@@ -9,7 +9,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Valid_Request() {
-		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, List<ChatRoomDTO>>(new());
+		var (rsp, res) = await Fixture.Client.GETAsync<Get, Request, List<ChatRoomDTO>>(new());
 
 		rsp.IsSuccessStatusCode.Should().BeTrue();
 		res.Should().NotBeNull();
@@ -30,7 +30,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task No_Convos() {
-		var (rsp, res) = await Fixture.Client.GETAsync<Endpoint, Request, List<ChatRoomDTO>>(new());
+		var (rsp, res) = await Fixture.Client.GETAsync<Get, Request, List<ChatRoomDTO>>(new());
 
 		rsp.IsSuccessStatusCode.Should().BeTrue();
 		res.Count.Should().Be(0);

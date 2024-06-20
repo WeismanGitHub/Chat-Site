@@ -7,7 +7,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Default_Request() {
-		var (rsp, res) = await Fixture.Client.GETAsync<GetAPI.Endpoint, GetAPI.Request, GetAPI.Response>(new());
+		var (rsp, res) = await Fixture.Client.GETAsync<API.Endpoints.Account.Get, API.Endpoints.Account.Request, API.Endpoints.Account.Response>(new());
 
 		rsp.IsSuccessStatusCode.Should().BeTrue();
 		res.ID.Should().Be(Fixture.AccountID);

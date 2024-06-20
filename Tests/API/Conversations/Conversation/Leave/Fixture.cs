@@ -38,7 +38,7 @@ public class Fixture : TestFixture<Program> {
 			}
 		});
 
-		await Client.POSTAsync<SigninAPI.Endpoint, SigninAPI.Request>(new SigninAPI.Request() {
+		await Client.POSTAsync<API.Endpoints.Account.Signin, API.Endpoints.Account.Request>(new SigninAPI.Request() {
 			Email = ValidAccount.Email,
 			Password = ValidAccount.Password,
 		});

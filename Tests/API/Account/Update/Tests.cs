@@ -1,6 +1,6 @@
-using API.Endpoints.Account.Update;
 using API.Database.Entities;
 using MongoDB.Entities;
+using API.Endpoints.Account;
 
 namespace Tests.API.Account.Update;
 
@@ -10,7 +10,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact, Priority(1)]
 	public async Task Valid_Update() {
-		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.PATCHAsync<Update, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
 				DisplayName = "New DisplayName",
@@ -32,7 +32,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Invalid_CurrentPassword() {
-		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.PATCHAsync<Update, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
 				DisplayName = "New DisplayName",
@@ -45,7 +45,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task No_Changes() {
-		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.PATCHAsync<Update, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() { },
 			CurrentPassword = ValidAccount.Password
@@ -62,7 +62,7 @@ public class Tests : TestClass<Fixture> {
 			PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password)
 		});
 
-		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.PATCHAsync<Update, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
 				Email = "taken" + ValidAccount.Email,
@@ -76,7 +76,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Empty_Email() {
-		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.PATCHAsync<Update, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
 				Email = "",
@@ -89,7 +89,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Empty_DisplayName() {
-		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.PATCHAsync<Update, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
 				DisplayName = "",
@@ -102,7 +102,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task DisplayName_Too_Long() {
-		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.PATCHAsync<Update, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
 				DisplayName = new string('*', User.MaxNameLength + 1),
@@ -115,7 +115,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Empty_Password() {
-		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.PATCHAsync<Update, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
 				Password = "",
@@ -128,7 +128,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Password_Too_Long() {
-		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.PATCHAsync<Update, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
 				Password = "VP1" + new string('*', User.MaxPasswordLength - 2) // VP1 is to meet the other requirements.
@@ -141,7 +141,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Password_Too_Short() {
-		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.PATCHAsync<Update, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
 				Password = "VP1" + new string('*', User.MinPasswordLength - 1) // VP1 is to meet the other requirements.
@@ -154,7 +154,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Password_Missing_Digit() {
-		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.PATCHAsync<Update, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
 				Password = "InvalidPassword"
@@ -167,7 +167,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Password_Missing_Uppercase() {
-		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.PATCHAsync<Update, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
 				Password = "invalidpassword1"
@@ -180,7 +180,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Password_Missing_Lowercase() {
-		var res = await Fixture.Client.PATCHAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.PATCHAsync<Update, Request>(new() {
 			AccountID = Fixture.AccountID,
 			NewData = new() {
 				Password = "INVALIDPASSWORD1"

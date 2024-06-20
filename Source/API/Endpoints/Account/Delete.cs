@@ -8,20 +8,20 @@ sealed class Request {
 }
 
 sealed class Endpoint : Endpoint<Request> {
-    public override void Configure() {
-        Delete("/");
-        Group<AccountGroup>();
-        Version(1);
+	public override void Configure() {
+		Delete("/");
+		Group<AccountGroup>();
+		Version(1);
 
-        Summary(settings => settings.Summary = "Delete logged in account.");
-    }
+		Summary(settings => settings.Summary = "Delete logged in account.");
+	}
 
-    public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-        var account = await DB.Find<User>().OneAsync(req.AccountID);
+	public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
+		var account = await DB.Find<User>().OneAsync(req.AccountID);
 
-        if (account == null) {
-            ThrowError("Could not find your account.", 404);
-        }
+		if (account == null) {
+			ThrowError("Could not find your account.", 404);
+		}
 
 		var transaction = new Transaction();
 
@@ -39,5 +39,5 @@ sealed class Endpoint : Endpoint<Request> {
 
 		await transaction.CommitAsync();
 		await CookieAuth.SignOutAsync();
-    }
+	}
 }

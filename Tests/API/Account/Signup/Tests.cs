@@ -1,6 +1,6 @@
-using API.Endpoints.Account.Signup;
 using API.Database.Entities;
 using MongoDB.Entities;
+using API.Endpoints.Account;
 
 namespace Tests.API.Account.Signup;
 
@@ -9,7 +9,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact, Priority(1)]
 	public async Task Valid_User_Input() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.POSTAsync<Signup, Request>(new() {
 			DisplayName = ValidAccount.DisplayName,
 			Email = ValidAccount.Email,
 			Password = ValidAccount.Password
@@ -24,7 +24,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact, Priority(2)]
 	public async Task Taken_Email() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.POSTAsync<Signup, Request>(new() {
 			DisplayName = ValidAccount.Email,
 			Email = ValidAccount.Email,
 			Password = ValidAccount.Password
@@ -35,7 +35,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Empty_DisplayName() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.POSTAsync<Signup, Request>(new() {
 			DisplayName = "",
 			Email = ValidAccount.Email,
 			Password = ValidAccount.Password
@@ -46,7 +46,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task DisplayName_Too_Long() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.POSTAsync<Signup, Request>(new() {
 			DisplayName = new string('*', User.MaxNameLength + 1),
 			Email = ValidAccount.Email,
 			Password = ValidAccount.Password
@@ -57,7 +57,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Empty_Email() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.POSTAsync<Signup, Request>(new() {
 			DisplayName = ValidAccount.DisplayName,
 			Email = "",
 			Password = ValidAccount.Password
@@ -68,7 +68,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task EmptyPassword() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.POSTAsync<Signup, Request>(new() {
 			DisplayName = "",
 			Email = ValidAccount.Email,
 			Password = ValidAccount.Password
@@ -79,7 +79,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Password_Too_Long() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.POSTAsync<Signup, Request>(new() {
 			DisplayName = ValidAccount.DisplayName,
 			Email = ValidAccount.Email,
 			Password = "VP1" + new string('*', User.MaxPasswordLength - 2) // VP1 is to meet the other requirements.
@@ -90,7 +90,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Password_Too_Short() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.POSTAsync<Signup, Request>(new() {
 			DisplayName = ValidAccount.DisplayName,
 			Email = ValidAccount.Email,
 			Password = "VP1" + new string('*', User.MinPasswordLength - 1) // VP1 is to meet the other requirements.
@@ -101,7 +101,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Password_Missing_Digit() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.POSTAsync<Signup, Request>(new() {
 			DisplayName = ValidAccount.DisplayName,
 			Email = ValidAccount.Email,
 			Password = "InvalidPassword"
@@ -112,7 +112,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Password_Missing_Uppercase() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.POSTAsync<Signup, Request>(new() {
 			DisplayName = ValidAccount.DisplayName,
 			Email = ValidAccount.Email,
 			Password = "invalidpassword1"
@@ -123,7 +123,7 @@ public class Tests : TestClass<Fixture> {
 
 	[Fact]
 	public async Task Password_Missing_Lowercase() {
-		var res = await Fixture.Client.POSTAsync<Endpoint, Request>(new() {
+		var res = await Fixture.Client.POSTAsync<Signup, Request>(new() {
 			DisplayName = ValidAccount.DisplayName,
 			Email = ValidAccount.Email,
 			Password = "INVALIDPASSWORD1"

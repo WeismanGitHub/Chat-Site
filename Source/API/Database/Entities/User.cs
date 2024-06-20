@@ -9,9 +9,9 @@ public class User : Entity {
     public const int MaxPasswordLength = 70;
     public const int MinPasswordLength = 10;
 
-    public string DisplayName { get; set; }
-    public string Email { get; set; }
-    public string PasswordHash { get; set; }
+    public required string DisplayName { get; set; }
+    public required string Email { get; set; }
+    public required string PasswordHash { get; set; }
 	[MaxLength(100, ErrorMessage = "Cannot join more than 100 chat rooms.")]
 	public List<string> ChatRoomIDs { get; set; } = new List<string>();
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

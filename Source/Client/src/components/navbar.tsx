@@ -1,6 +1,5 @@
 import { ToastContainer, Toast, Modal, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import Endpoints from '../endpoints';
 import { useState } from 'react';
 import axios from 'axios';
 
@@ -10,26 +9,31 @@ type LogoutError = {
 };
 
 export default function Navbar() {
-    const loggedIn = Boolean(localStorage.getItem('loggedIn'));
+    const authenticated = Boolean(localStorage.getItem('authenticated'));
     const navigate = useNavigate();
 
     const [showError, setShowError] = useState(false);
-    const [error, setError] = useState<APIErrorRes<LogoutError> | null>(null);
+    const [error, setError] = useState<APIError<LogoutError> | null>(null);
     const toggleError = () => setShowError(!showError);
     const [showModal, setShowModal] = useState(false);
 
     async function logout() {
-        await Endpoints.Account.signout()
-            .then(() => {
-                localStorage.removeItem('loggedIn');
-                navigate('/auth');
-            })
-            .catch(async (err) => {
-                if (axios.isAxiosError<APIErrorRes<LogoutError>>(err) && err.response?.data) {
-                    setError(err.response.data);
-                    setShowError(true);
-                }
-            });
+        try {
+            await axios.post('/API/Account/Signout/v1')
+            localStorage.removeItem('authenticated');
+            navigate('/auth');
+        } catch(err) {
+            if (axios.isAxiosError<APIError<LogoutError>>(err) && err.response?.data) {
+                setError(err.response.data);
+                setShowError(true);
+            } else {
+                setError({
+                    errors: {},
+                    message: 'Something went wrong!',
+                    statusCode: 500
+                })
+            }
+        }
     }
 
     return (
@@ -74,7 +78,10 @@ export default function Navbar() {
                 </Modal.Footer>
             </Modal>
 
-            <nav className="navbar navbar-expand-lg navbar-expand-md navbar-dark bg-primary fixed-top p-1 ps-3 pe-3" id="navbar">
+            <nav
+                className="navbar navbar-expand-lg navbar-expand-md navbar-dark bg-primary fixed-top p-1 ps-3 pe-3"
+                id="navbar"
+            >
                 <Link className="navbar-brand m-0" to={'/'}>
                     <img src="/icon.png" width={50} height={50} alt="icon" className="me-2" />
                     <span className="fs-3">Chat Site v2</span>
@@ -108,7 +115,7 @@ export default function Navbar() {
                             </Link>
                         </li>
                         <li className="nav-item">
-                            {loggedIn ? (
+                            {authenticated ? (
                                 <div
                                     className="nav-link"
                                     style={{ cursor: 'pointer' }}

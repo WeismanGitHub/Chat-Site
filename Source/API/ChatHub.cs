@@ -3,6 +3,11 @@ using System.Collections.Concurrent;
 
 namespace API;
 
+public class Member {
+	public required string Id { get; set; }
+	public required string Name { get; set; }
+}
+
 public class ChatHub : Hub {
 	private readonly static ConcurrentDictionary<string, string> ChatRoomMap = new ConcurrentDictionary<string, string>();
 
@@ -14,7 +19,7 @@ public class ChatHub : Hub {
 				throw new Exception("You must log in.");
 			}
 
-			string chatId = Context.GetHttpContext()?.Request.Query["chatRoomID"];
+			string? chatId = Context.GetHttpContext()?.Request.Query["chatRoomID"];
 			var accountID = httpContext?.User?.FindFirst("accountID")?.Value;
 
 			if (chatId == null || accountID == null) {
@@ -34,9 +39,9 @@ public class ChatHub : Hub {
 			}
 
 			await Groups.AddToGroupAsync(this.Context.ConnectionId, chatId);
-			await Clients.Group(chatId).SendAsync("UserJoined", accountID);
+			await Clients.Group(chatId).SendAsync("UserConnected", accountID);
 		} catch (Exception ex) {
-			Clients.Caller.SendAsync("ReceiveError", ex.Message);
+			await Clients.Caller.SendAsync("ReceiveError", ex.Message);
 		}
 	}
 
@@ -51,10 +56,10 @@ public class ChatHub : Hub {
 
 			ChatRoomMap.Remove(Context.ConnectionId, out chatID);
 
-			await Clients.Group(chatID).SendAsync("UserLeft", accountID);
+			await Clients.Group(chatID).SendAsync("UserDisconnected", accountID);
 			await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatID);
 		} catch (Exception ex) {
-			Clients.Caller.SendAsync("ReceiveError", ex.Message);
+			await Clients.Caller.SendAsync("ReceiveError", ex.Message);
 		}
 	}
 
@@ -73,7 +78,23 @@ public class ChatHub : Hub {
 
 			await Clients.Group(chatID).SendAsync("ReceiveMessage", new { message, accountID });
 		} catch (Exception ex ) {
-			Clients.Caller.SendAsync("ReceiveError", ex.Message);
+			await Clients.Caller.SendAsync("ReceiveError", ex.Message);
+		}
+	}
+
+	public async Task UserJoined(string chatID, Member member) {
+		try {
+			await Clients.Group(chatID).SendAsync("UserJoined", member);
+		} catch (Exception ex) {
+			await Clients.Caller.SendAsync("ReceiveError", ex.Message);
+		}
+	}
+
+	public async Task UserLeft(string chatID, string userID) {
+		try {
+			await Clients.Group(chatID).SendAsync("UserLeft", new { userID });
+		} catch (Exception ex) {
+			await Clients.Caller.SendAsync("ReceiveError", ex.Message);
 		}
 	}
 }

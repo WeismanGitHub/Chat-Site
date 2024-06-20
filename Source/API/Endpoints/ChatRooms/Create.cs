@@ -3,7 +3,8 @@
 public sealed class Request {
 	[From(Claim.AccountID, IsRequired = true)]
 	public string AccountID { get; set; }
-	public required string ChatRoomName { get; set; }
+	public required string Name { get; set; }
+	public required string Password { get; set; }
 }
 
 public sealed class Response {
@@ -12,12 +13,19 @@ public sealed class Response {
 
 internal sealed class Validator : Validator<Request> {
 	public Validator() {
-		RuleFor(req => req.ChatRoomName)
+		RuleFor(req => req.Name)
 			.NotEmpty()
 			.MinimumLength(ChatRoom.MinNameLength)
 			.WithMessage($"Chat room name must be at least {ChatRoom.MinNameLength} characters.")
 			.MaximumLength(ChatRoom.MaxNameLength)
 			.WithMessage($"Chat room name must be at most {ChatRoom.MaxNameLength} characters.");
+
+		RuleFor(req => req.Password)
+			.NotEmpty()
+			.MinimumLength(ChatRoom.MinPasswordLength)
+			.WithMessage($"Password name must be at least {ChatRoom.MinPasswordLength} characters.")
+			.MaximumLength(ChatRoom.MaxPasswordLength)
+			.WithMessage($"Password must be at most {ChatRoom.MaxPasswordLength} characters.");
 	}
 }
 
@@ -45,8 +53,9 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 		var chatID = ObjectId.GenerateNewId().ToString();
 		await DB.InsertAsync(new ChatRoom() {
 			ID = chatID,
-			Name = req.ChatRoomName,
-			MemberIDs = new List<string>() { req.AccountID }
+			Name = req.Name,
+			MemberIDs = new List<string>() { req.AccountID },
+			PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password)
 		}, cancellation: cancellationToken);
 
 		account.ChatRoomIDs.Add(chatID);

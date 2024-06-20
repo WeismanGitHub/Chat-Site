@@ -2,6 +2,11 @@
 
 namespace API.Endpoints.Account.Delete;
 
+sealed class Request {
+	[From(Claim.AccountID, IsRequired = true)]
+	public string AccountID { get; set; }
+}
+
 sealed class Endpoint : Endpoint<Request> {
     public override void Configure() {
         Delete("/");
@@ -20,13 +25,13 @@ sealed class Endpoint : Endpoint<Request> {
 
 		var transaction = new Transaction();
 
-		var convo = await transaction.UpdateAndGet<Conversation>()
-			.Match(convo => account.ConversationIDs.Contains(convo.ID))
-			.Modify(convo => convo.Pull(c => c.MemberIDs, account.ID))
+		var chat = await transaction.UpdateAndGet<ChatRoom>()
+			.Match(c => account.ChatRoomIDs.Contains(c.ID))
+			.Modify(c => c.Pull<string>(c => c.MemberIDs, account.ID))
 			.ExecuteAsync();
 
-		if (convo.MemberIDs.Count == 0) {
-			await transaction.DeleteAsync<Conversation>(convo.ID);
+		if (chat.MemberIDs.Count == 0) {
+			await transaction.DeleteAsync<ChatRoom>(chat.ID);
 		}
 
 

@@ -9,6 +9,6 @@ public sealed class Response {
 	public string ID { get; set; }
 	public string DisplayName { get; set; }
 	public string Email { get; set; }
-	public int TotalConversations { get; set; }
+	public int ChatRooms { get; set; }
 	public DateTime CreatedAt { get; set; }
 }

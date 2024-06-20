@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 namespace API;
 
 public class ChatHub : Hub {
-	private readonly static ConcurrentDictionary<string, string> ConversationMap = new ConcurrentDictionary<string, string>();
+	private readonly static ConcurrentDictionary<string, string> ChatRoomMap = new ConcurrentDictionary<string, string>();
 
 	public override async Task OnConnectedAsync() {
 		try {
@@ -14,14 +14,14 @@ public class ChatHub : Hub {
 				throw new Exception("You must log in.");
 			}
 
-			string conversationID = Context.GetHttpContext()?.Request.Query["conversationID"];
+			string chatId = Context.GetHttpContext()?.Request.Query["chatRoomID"];
 			var accountID = httpContext?.User?.FindFirst("accountID")?.Value;
 
-			if (conversationID == null || accountID == null) {
-				throw new Exception("Missing conversation ID or account ID.");
+			if (chatId == null || accountID == null) {
+				throw new Exception("Missing chat room ID or account ID.");
 			}
 
-			if (!ConversationMap.TryAdd(Context.ConnectionId, conversationID)) {
+			if (!ChatRoomMap.TryAdd(Context.ConnectionId, chatId)) {
 				throw new Exception("An internal server error occurred.");
 			};
 
@@ -29,12 +29,12 @@ public class ChatHub : Hub {
 
 			if (user == null) {
 				throw new Exception("Could not find user in database.");
-			} else if (!user.ConversationIDs.Contains(conversationID)) {
-				throw new Exception("User not in this conversation.");
+			} else if (!user.ChatRoomIDs.Contains(chatId)) {
+				throw new Exception("User is not in this chat room.");
 			}
 
-			await Groups.AddToGroupAsync(this.Context.ConnectionId, conversationID);
-			await Clients.Group(conversationID).SendAsync("UserJoined", accountID);
+			await Groups.AddToGroupAsync(this.Context.ConnectionId, chatId);
+			await Clients.Group(chatId).SendAsync("UserJoined", accountID);
 		} catch (Exception ex) {
 			Clients.Caller.SendAsync("ReceiveError", ex.Message);
 		}
@@ -43,16 +43,16 @@ public class ChatHub : Hub {
 	public override async Task OnDisconnectedAsync(Exception exception) {
 		try {
 			var accountID = Context.GetHttpContext()?.User?.FindFirst("accountID")?.Value;
-			var conversationID = ConversationMap[Context.ConnectionId];
+			var chatID = ChatRoomMap[Context.ConnectionId];
 
-			if (conversationID == null || accountID == null) {
-				throw new Exception("Missing conversation ID or account ID.");
+			if (chatID == null || accountID == null) {
+				throw new Exception("Missing chat room ID or account ID.");
 			}
 
-			ConversationMap.Remove(Context.ConnectionId, out conversationID);
+			ChatRoomMap.Remove(Context.ConnectionId, out chatID);
 
-			await Clients.Group(conversationID).SendAsync("UserLeft", accountID);
-			await Groups.RemoveFromGroupAsync(Context.ConnectionId, conversationID);
+			await Clients.Group(chatID).SendAsync("UserLeft", accountID);
+			await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatID);
 		} catch (Exception ex) {
 			Clients.Caller.SendAsync("ReceiveError", ex.Message);
 		}
@@ -65,13 +65,13 @@ public class ChatHub : Hub {
 			}
 
 			var accountID = Context.GetHttpContext()?.User?.FindFirst("accountID")?.Value;
-			var conversationID = ConversationMap[Context.ConnectionId];
+			var chatID = ChatRoomMap[Context.ConnectionId];
 
-			if (conversationID == null || accountID == null) {
-				throw new Exception("Missing conversation ID or account ID.");
+			if (chatID == null || accountID == null) {
+				throw new Exception("Missing chat room ID or account ID.");
 			}
 
-			await Clients.Group(conversationID).SendAsync("ReceiveMessage", new { message, accountID });
+			await Clients.Group(chatID).SendAsync("ReceiveMessage", new { message, accountID });
 		} catch (Exception ex ) {
 			Clients.Caller.SendAsync("ReceiveError", ex.Message);
 		}

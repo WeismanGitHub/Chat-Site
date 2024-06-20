@@ -15,7 +15,7 @@ public class Fixture : TestFixture<Program> {
 			DisplayName = ValidAccount.DisplayName,
 			Email = ValidAccount.Email,
 			PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password),
-			ConversationIDs = new List<string> { "sdfs", "sdfs" },
+			ChatRoomIDs = new List<string> { "sdfs", "sdfs" },
 			FriendIDs = new List<string> { "sdfs", "sdfs" }
 		});
 

@@ -1,4 +1,4 @@
-using API.Endpoints.Conversations.SingleConvo.Leave;
+using API.Endpoints.ChatRooms.SingleChatRoom.Leave;
 using API.Database.Entities;
 using MongoDB.Entities;
 using MongoDB.Bson;
@@ -19,7 +19,7 @@ public class Tests : TestClass<Fixture> {
 		rsp.IsSuccessStatusCode.Should().BeTrue();
 
 		var convo = await DB
-			.Find<Conversation>()
+			.Find<ChatRoom>()
 			.MatchID(Fixture.ConvoID)
 			.ExecuteSingleAsync();
 
@@ -29,7 +29,7 @@ public class Tests : TestClass<Fixture> {
 			.ExecuteSingleAsync();
 
 		convo.Should().BeNull();
-		account!.ConversationIDs.Count().Should().Be(0);
+		account!.ChatRoomIDs.Count().Should().Be(0);
 	}
 
 	[Fact]
@@ -51,7 +51,7 @@ public class Tests : TestClass<Fixture> {
 		rsp.IsSuccessStatusCode.Should().BeTrue();
 
 		var convo = await DB
-			.Find<Conversation>()
+			.Find<ChatRoom>()
 			.MatchID(Fixture.ConvoID)
 			.ExecuteSingleAsync();
 
@@ -61,6 +61,6 @@ public class Tests : TestClass<Fixture> {
 			.ExecuteSingleAsync();
 
 		convo!.MemberIDs.Count.Should().Be(1);
-		account!.ConversationIDs.Count().Should().Be(0);
+		account!.ChatRoomIDs.Count().Should().Be(0);
 	}
 }

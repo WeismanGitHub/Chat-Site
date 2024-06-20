@@ -1,39 +1,39 @@
-﻿namespace API.Endpoints.Conversations.Get;
+﻿namespace API.Endpoints.ChatRooms.Get;
 
-public sealed class Endpoint : Endpoint<Request, List<ResConvo>> {
+public sealed class Endpoint : Endpoint<Request, List<ChatRoomDTO>> {
     public override void Configure() {
         Get("/");
-        Group<ConversationGroup>();
+        Group<ChatRoomGroup>();
         Version(1);
         
         Summary(settings => {
-            settings.Summary = "Get logged in account's conversations.";
+            settings.Summary = "Get logged in account's chat rooms.";
         });
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
         var account = await DB.Find<User>()
-            .Project(u => new() { ConversationIDs = u.ConversationIDs })
+            .Project(u => new() { ChatRoomIDs = u.ChatRoomIDs })
             .OneAsync(req.AccountID);
 
         if (account == null) {
             ThrowError("Could not find your account.", 404);
         }
 
-        if (account.ConversationIDs.Count == 0) {
+        if (account.ChatRoomIDs.Count == 0) {
             await SendAsync(null);
         }
 
-        var conversations = await DB
-			.Find<Conversation, ResConvo>()
-            .Match(c => account.ConversationIDs.Contains(c.ID))
+        var chats = await DB
+			.Find<ChatRoom, ChatRoomDTO>()
+            .Match(c => account.ChatRoomIDs.Contains(c.ID))
             .Project(u => new() {
 				ID = u.ID,
 				Name = u.Name,
 				CreatedAt = DateTime.UtcNow,
             })
-            .ExecuteAsync();
+            .ExecuteAsync(cancellationToken);
 
-		await SendAsync(conversations);
+		await SendAsync(chats);
     }
 }

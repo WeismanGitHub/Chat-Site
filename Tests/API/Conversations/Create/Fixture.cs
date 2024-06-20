@@ -25,7 +25,7 @@ public class Fixture : TestFixture<Program> {
 	}
 
 	protected override async Task TearDownAsync() {
-		await DB.DeleteAsync<Conversation>(ConvoID);
+		await DB.DeleteAsync<ChatRoom>(ConvoID);
 		await DB.DeleteAsync<User>(AccountID);
 	}
 }

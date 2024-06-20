@@ -12,7 +12,7 @@ public sealed class Endpoint : Endpoint<Request, Response> {
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-        var user = await DB.Find<User>().OneAsync(req.AccountID);
+        var user = await DB.Find<User>().OneAsync(req.AccountID, cancellationToken);
 
         if (user == null) {
             ThrowError("Could not find your account.", 404);
@@ -22,7 +22,7 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 			ID = req.AccountID,
 			DisplayName = user.DisplayName,
 			Email = user.Email,
-			TotalConversations = user.ConversationIDs.Count(),
+			ChatRooms = user.ChatRoomIDs.Count(),
 			CreatedAt = user.CreatedAt,
 		});
     }

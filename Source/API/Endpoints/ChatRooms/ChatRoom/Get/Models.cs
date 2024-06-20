@@ -1,9 +1,9 @@
-﻿namespace API.Endpoints.Conversations.SingleConvo.Get;
+﻿namespace API.Endpoints.ChatRooms.SingleChatRoom.Get;
 
 public sealed class Request {
     [From(Claim.AccountID, IsRequired = true)]
     public string AccountID { get; set; }
-	public required string ConversationID { get; set; }
+	public required string ChatRoomID { get; set; }
 
 }
 

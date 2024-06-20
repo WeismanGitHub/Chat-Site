@@ -1,20 +1,20 @@
-﻿namespace API.Endpoints.Conversations.SingleConvo.Get;
+﻿namespace API.Endpoints.ChatRooms.SingleChatRoom.Get;
 
 public sealed class Endpoint : Endpoint<Request, Response> {
     public override void Configure() {
-		Get("/{ConversationID}");
-		Group<ConversationGroup>();
+		Get("/{ChatRoomID}");
+		Group<ChatRoomGroup>();
         Version(1);
         
         Summary(settings => {
-            settings.Summary = "Get the data for a conversation.";
+            settings.Summary = "Get the data for a chat room.";
         });
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-        var conversation = await DB
-        .Find<Conversation>()
-			.MatchID(req.ConversationID)
+        var chat = await DB
+		.Find<ChatRoom>()
+			.MatchID(req.ChatRoomID)
             .Match(c => c.MemberIDs.Contains(req.AccountID))
             .Project(c => new() {
 				ID = c.ID,
@@ -24,12 +24,12 @@ public sealed class Endpoint : Endpoint<Request, Response> {
             })
             .ExecuteSingleAsync();
 
-		if (conversation == null) {
-			ThrowError("Could not find conversation.", 404);
+		if (chat == null) {
+			ThrowError("Could not find chat room.", 404);
 		}
 
 		var members = await DB.Find<User, Member>()
-			.Match(u => conversation.MemberIDs.Contains(u.ID))
+			.Match(u => chat.MemberIDs.Contains(u.ID))
 			.Project(u => new() {
 				ID = u.ID,
 				Name = u.DisplayName,
@@ -37,9 +37,9 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 			.ExecuteAsync();
 
 		await SendAsync(new Response() {
-			ID = conversation.ID,
-			Name = conversation.Name,
-			CreatedAt = conversation.CreatedAt,
+			ID = chat.ID,
+			Name = chat.Name,
+			CreatedAt = chat.CreatedAt,
 			Members = members
 		});
     }

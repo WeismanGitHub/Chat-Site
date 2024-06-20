@@ -24,10 +24,6 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 		Get("/{ChatRoomID}");
 		Group<ChatRoomGroup>();
         Version(1);
-        
-        Summary(settings => {
-            settings.Summary = "Get the data for a chat room.";
-        });
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {

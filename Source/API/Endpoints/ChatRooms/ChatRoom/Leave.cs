@@ -14,10 +14,6 @@ public sealed class Endpoint : Endpoint<Request> {
 		Version(1);
 
 		Description(builder => builder.Accepts<Request>());
-
-		Summary(settings => {
-			settings.Summary = "Leave a chat room.";
-		});
 	}
 
 	public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
@@ -26,18 +22,18 @@ public sealed class Endpoint : Endpoint<Request> {
 		var chatUpdateRes = await transaction.UpdateAndGet<ChatRoom>()
 			.MatchID(req.ChatRoomID)
 			.Modify(c => c.Pull(c => c.MemberIDs, req.AccountID))
-			.ExecuteAsync();
+			.ExecuteAsync(cancellationToken);
 
 		var userUpdateRes = await transaction.Update<User>()
 			.MatchID(req.AccountID)
 			.Modify(user => user.Pull(u => u.ChatRoomIDs, req.ChatRoomID))
-			.ExecuteAsync();
+			.ExecuteAsync(cancellationToken);
 
 		if (chatUpdateRes.MemberIDs.Count == 0) {
 			await transaction.DeleteAsync<ChatRoom>(req.ChatRoomID);
 		}
 
-		await transaction.CommitAsync();
+		await transaction.CommitAsync(cancellationToken);
 
 		if (chatUpdateRes == null || userUpdateRes.ModifiedCount != 1) {
 			ThrowError("Something went wrong.", 500);

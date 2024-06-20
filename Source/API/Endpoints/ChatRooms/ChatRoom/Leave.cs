@@ -9,7 +9,7 @@ public sealed class Request {
 
 public sealed class Endpoint : Endpoint<Request> {
 	public override void Configure() {
-		Post("/{ChatRoomID}/leave");
+		Post("/{ChatRoomID}/Leave");
 		Group<ChatRoomGroup>();
 		Version(1);
 

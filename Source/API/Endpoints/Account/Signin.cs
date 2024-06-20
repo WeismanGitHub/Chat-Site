@@ -7,11 +7,6 @@ public static class Data {
 		return DB
 			.Find<User>()
 			.Match(u => u.Email == email)
-			.Project(u => new() {
-				PasswordHash = u.PasswordHash,
-				DisplayName = u.DisplayName,
-				ID = u.ID,
-			})
 			.ExecuteSingleAsync();
 	}
 }
@@ -42,7 +37,6 @@ public sealed class Endpoint : Endpoint<Request> {
 		Version(1);
 
 		Summary(settings => {
-			settings.Summary = "Sign into an account.";
 			settings.ExampleRequest = new Request {
 				Email = "person1@email.com",
 				Password = "Password123",

@@ -34,10 +34,6 @@ public sealed class Endpoint : Endpoint<Request, Response> {
         Post("/");
         Group<ChatRoomGroup>();
         Version(1);
-        
-        Summary(settings => {
-            settings.Summary = "Create a chat room.";
-        });
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {

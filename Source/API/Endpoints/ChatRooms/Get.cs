@@ -20,9 +20,7 @@ public sealed class Endpoint : Endpoint<Request, List<ChatRoomDTO>> {
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-        var account = await DB.Find<User>()
-            .Project(u => new() { ChatRoomIDs = u.ChatRoomIDs })
-            .OneAsync(req.AccountID);
+        var account = await DB.Find<User>().OneAsync(req.AccountID, cancellationToken);
 
         if (account == null) {
             ThrowError("Could not find your account.", 404);

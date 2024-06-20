@@ -35,13 +35,7 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 		.Find<ChatRoom>()
 			.MatchID(req.ChatRoomID)
             .Match(c => c.MemberIDs.Contains(req.AccountID))
-            .Project(c => new() {
-				ID = c.ID,
-				Name = c.Name,
-				MemberIDs = c.MemberIDs,
-				CreatedAt = c.CreatedAt
-            })
-            .ExecuteSingleAsync();
+            .ExecuteSingleAsync(cancellationToken);
 
 		if (chat == null) {
 			ThrowError("Could not find chat room.", 404);
@@ -56,7 +50,7 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 			.ExecuteAsync(cancellationToken);
 
 		await SendAsync(new Response() {
-			ID = chat.ID,
+			ID = req.ChatRoomID,
 			Name = chat.Name,
 			CreatedAt = chat.CreatedAt,
 			Members = members

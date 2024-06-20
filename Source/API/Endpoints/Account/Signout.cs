@@ -7,10 +7,6 @@ public sealed class Endpoint : EndpointWithoutRequest {
 		Post("/Signout");
 		Group<AccountGroup>();
 		Version(1);
-
-		Summary(settings => {
-			settings.Summary = "Delete the auth cookie, signing you out.";
-		});
 	}
 
 	public override async Task HandleAsync(CancellationToken cancellationToken) {

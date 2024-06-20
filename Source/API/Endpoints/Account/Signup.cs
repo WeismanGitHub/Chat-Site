@@ -42,7 +42,6 @@ public sealed class Endpoint : Endpoint<Request> {
 		Version(1);
 
 		Summary(settings => {
-			settings.Summary = "Create an account.";
 			settings.ExampleRequest = new Request {
 				DisplayName = "Person 1",
 				Email = "person1@email.com",
@@ -61,12 +60,12 @@ public sealed class Endpoint : Endpoint<Request> {
 		ThrowIfAnyErrors();
 
 		try {
-			await account.SaveAsync();
+			await account.SaveAsync(cancellation: cancellationToken);
 		} catch (Exception) {
 			var emailIsTaken = await Data.EmailAddressIsTaken(account.Email);
 
 			if (emailIsTaken) {
-				ThrowError(r => r.Email, "That Email is unavailable.", 409);
+				ThrowError(r => r.Email, "That email is unavailable.", 409);
 			}
 
 			throw;

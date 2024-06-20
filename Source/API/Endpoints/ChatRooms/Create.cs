@@ -3,11 +3,11 @@
 public sealed class Request {
 	[From(Claim.AccountID, IsRequired = true)]
 	public string AccountID { get; set; }
-	public string ChatRoomName { get; set; }
+	public required string ChatRoomName { get; set; }
 }
 
 public sealed class Response {
-	public string ChatRoomID { get; set; }
+	public required string ChatRoomID { get; set; }
 }
 
 internal sealed class Validator : Validator<Request> {
@@ -37,7 +37,7 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 
         if (account == null) {
             ThrowError("Could not find your account.", 404);
-        } else if (account.ChatRoomIDs.Count() >= 100) {
+        } else if (account.ChatRoomIDs.Count >= 100) {
 			ThrowError("Cannot join more than 100 chat rooms.", 400);
 		}
 
@@ -47,13 +47,13 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 			ID = chatID,
 			Name = req.ChatRoomName,
 			MemberIDs = new List<string>() { req.AccountID }
-		});
+		}, cancellation: cancellationToken);
 
 		account.ChatRoomIDs.Add(chatID);
-		await account.SaveAsync();
+		await account.SaveAsync(cancellation: cancellationToken);
 
 		await SendAsync(new() {
 			ChatRoomID = chatID
-		});
+		}, cancellation: cancellationToken);
 	}
 }

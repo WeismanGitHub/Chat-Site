@@ -8,15 +8,15 @@ public sealed class Request {
 }
 
 public sealed class Member {
-	public string ID { get; set; }
-	public string Name { get; set; }
+	public required string ID { get; set; }
+	public required string Name { get; set; }
 }
 
 public sealed class Response {
-	public string ID { get; set; }
-	public string Name { get; set; }
+	public required string ID { get; set; }
+	public required string Name { get; set; }
 	public DateTime CreatedAt { get; set; }
-	public List<Member> Members { get; set; }
+	public required List<Member> Members { get; set; }
 }
 
 public sealed class Endpoint : Endpoint<Request, Response> {
@@ -53,13 +53,13 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 				ID = u.ID,
 				Name = u.DisplayName,
 			})
-			.ExecuteAsync();
+			.ExecuteAsync(cancellationToken);
 
 		await SendAsync(new Response() {
 			ID = chat.ID,
 			Name = chat.Name,
 			CreatedAt = chat.CreatedAt,
 			Members = members
-		});
+		}, cancellation: cancellationToken);
     }
 }

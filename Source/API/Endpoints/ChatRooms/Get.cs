@@ -17,10 +17,6 @@ public sealed class Endpoint : Endpoint<Request, List<ChatRoomDTO>> {
         Get("/");
         Group<ChatRoomGroup>();
         Version(1);
-        
-        Summary(settings => {
-            settings.Summary = "Get logged in account's chat rooms.";
-        });
     }
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
@@ -33,7 +29,7 @@ public sealed class Endpoint : Endpoint<Request, List<ChatRoomDTO>> {
         }
 
         if (account.ChatRoomIDs.Count == 0) {
-            await SendAsync(null);
+            await SendAsync(null, cancellation: cancellationToken);
         }
 
         var chats = await DB
@@ -46,6 +42,6 @@ public sealed class Endpoint : Endpoint<Request, List<ChatRoomDTO>> {
             })
             .ExecuteAsync(cancellationToken);
 
-		await SendAsync(chats);
+		await SendAsync(chats, cancellation: cancellationToken);
     }
 }

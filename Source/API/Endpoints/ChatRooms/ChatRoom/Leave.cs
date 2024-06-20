@@ -2,7 +2,7 @@
 
 public sealed class Request {
 	[From(Claim.AccountID, IsRequired = true)]
-	public required string AccountID { get; set; }
+	public string AccountID { get; set; }
 	public required string ChatRoomID { get; set; }
 
 }

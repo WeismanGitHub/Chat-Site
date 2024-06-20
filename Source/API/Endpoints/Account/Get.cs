@@ -6,9 +6,9 @@ public sealed class Request {
 }
 
 public sealed class Response {
-	public string ID { get; set; }
-	public string DisplayName { get; set; }
-	public string Email { get; set; }
+	public required string ID { get; set; }
+	public required string DisplayName { get; set; }
+	public required string Email { get; set; }
 	public int ChatRooms { get; set; }
 	public DateTime CreatedAt { get; set; }
 }
@@ -18,10 +18,6 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 		Get("/");
 		Group<AccountGroup>();
 		Version(1);
-
-		Summary(settings => {
-			settings.Summary = "Get logged in account information.";
-		});
 	}
 
 	public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
@@ -35,8 +31,8 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 			ID = req.AccountID,
 			DisplayName = user.DisplayName,
 			Email = user.Email,
-			ChatRooms = user.ChatRoomIDs.Count(),
+			ChatRooms = user.ChatRoomIDs.Count,
 			CreatedAt = user.CreatedAt,
-		});
+		}, cancellation: cancellationToken);
 	}
 }

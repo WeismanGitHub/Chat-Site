@@ -14,14 +14,10 @@ public sealed class Endpoint : Endpoint<Request> {
         Version(1);
 
 		Description(builder => builder.Accepts<Request>());
-
-        Summary(settings => {
-            settings.Summary = "Join a chat room.";
-        });
     }
 
 	public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-		var chat = await DB.Find<ChatRoom>().MatchID(req.ChatRoomID).ExecuteSingleAsync();
+		var chat = await DB.Find<ChatRoom>().MatchID(req.ChatRoomID).ExecuteSingleAsync(cancellationToken);
 
 		if (chat == null) {
 			ThrowError("Could not find chat room", 404);
@@ -34,13 +30,13 @@ public sealed class Endpoint : Endpoint<Request> {
 		var transaction = new Transaction();
 
 		chat.MemberIDs.Add(req.AccountID);
-		await chat.SaveAsync(transaction.Session);
+		await chat.SaveAsync(transaction.Session, cancellationToken);
 
 		await transaction.Update<User>()
 			.MatchID(req.AccountID)
 			.Modify(user => user.Push(u => u.ChatRoomIDs, req.ChatRoomID))
-			.ExecuteAsync();
+			.ExecuteAsync(cancellationToken);
 
-		 await transaction.CommitAsync();
+		 await transaction.CommitAsync(cancellationToken);
 	}
 }

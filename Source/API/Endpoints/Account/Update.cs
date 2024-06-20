@@ -63,7 +63,6 @@ public sealed class Endpoint : Endpoint<Request> {
 		Version(1);
 
 		Summary(settings => {
-			settings.Summary = "Update logged in account.";
 			settings.ExampleRequest = new Request {
 				NewData = new() {
 					DisplayName = "New Name",

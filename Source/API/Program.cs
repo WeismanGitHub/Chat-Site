@@ -35,7 +35,7 @@ async Task InitDatabase() {
 	await DB.InitAsync(settings.Database.Name, MongoClientSettings.FromConnectionString(connectionString));
 
 	await DB.Index<User>()
-		.Key(u => u.Email, KeyType.Ascending)
+		.Key(u => u.Name, KeyType.Ascending)
 		.Option(o => o.Unique = true)
 		.CreateAsync();
 

@@ -41,7 +41,7 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 			.Match(u => chat.MemberIDs.Contains(u.ID))
 			.Project(u => new() {
 				ID = u.ID,
-				Name = u.DisplayName,
+				Name = u.Name,
 			})
 			.ExecuteAsync(cancellationToken);
 

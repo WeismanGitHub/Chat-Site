@@ -27,7 +27,7 @@ public class Fixture : TestFixture<Program> {
 
 		await DB.InsertAsync(new User() {
 			ID = AccountID,
-			DisplayName = ValidAccount.DisplayName,
+			Name = ValidAccount.DisplayName,
 			Email = ValidAccount.Email,
 			PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password)
 		});

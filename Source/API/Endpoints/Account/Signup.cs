@@ -3,17 +3,18 @@
 namespace API.Endpoints.Account.Signup;
 
 public sealed class Request {
-	public required string DisplayName { get; set; }
+	public required string 
+		Name { get; set; }
 	public required string Email { get; set; }
 	public required string Password { get; set; }
 }
 
 internal sealed class Validator : Validator<Request> {
 	public Validator() {
-		RuleFor(account => account.DisplayName)
-			.NotEmpty().WithMessage("DisplayName is required.")
-			.MinimumLength(1).WithMessage("DisplayName cannot be empty.")
-			.MaximumLength(User.MaxNameLength).WithMessage($"DisplayName cannot be longer than {User.MaxNameLength} characters.");
+		RuleFor(account => account.Name)
+			.NotEmpty().WithMessage("Name is required.")
+			.MinimumLength(1).WithMessage("Name cannot be empty.")
+			.MaximumLength(User.MaxNameLength).WithMessage($"Name cannot be longer than {User.MaxNameLength} characters.");
 
 		RuleFor(account => account.Email)
 			.NotEmpty().WithMessage("Email is required.")
@@ -43,7 +44,7 @@ public sealed class Endpoint : Endpoint<Request> {
 
 		Summary(settings => {
 			settings.ExampleRequest = new Request {
-				DisplayName = "Person 1",
+				Name = "Person 1",
 				Email = "person1@email.com",
 				Password = "Password123",
 			};
@@ -53,7 +54,7 @@ public sealed class Endpoint : Endpoint<Request> {
 	public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
 		User account = new() {
 			Email = req.Email.ToLower(),
-			DisplayName = req.DisplayName,
+			Name = req.Name,
 			PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password)
 		};
 

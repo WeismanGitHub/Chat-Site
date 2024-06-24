@@ -20,19 +20,19 @@ public class Fixture : TestFixture<Program> {
 		await DB.InsertAsync(new List<User> {
 			new () {
 				ID = UserID1,
-				DisplayName = ValidAccount.DisplayName,
+				Name = ValidAccount.DisplayName,
 				Email = ValidAccount.Email,
 				PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password)
 			},
 			new () {
 				ID = UserID2,
-				DisplayName = ValidAccount.DisplayName,
+				Name = ValidAccount.DisplayName,
 				Email = "2@email.com",
 				PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password)
 			},
 			new () {
 				ID = UserID3,
-				DisplayName = ValidAccount.DisplayName,
+				Name = ValidAccount.DisplayName,
 				Email = "3@email.com",
 				PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password)
 			}

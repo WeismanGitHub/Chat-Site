@@ -13,7 +13,7 @@ internal static class FakeData {
 
 		UserFaker = new Faker<User>()
 			.RuleFor(u => u.ID, _ => ObjectId.GenerateNewId().ToString())
-			.RuleFor(u => u.DisplayName, f => f.Name.FirstName())
+			.RuleFor(u => u.Name, f => f.Name.FirstName())
 			.RuleFor(u => u.Email, f => f.Internet.Email())
 			.RuleFor(u => u.CreatedAt, _ => DateTime.UtcNow)
 			.RuleFor(u => u.ChatRoomIDs, f => new List<string>())

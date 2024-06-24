@@ -13,14 +13,14 @@ public class Fixture : TestFixture<Program> {
 	protected override async Task SetupAsync() {
 		await DB.InsertAsync(new User() {
 			ID = UserID1,
-			DisplayName = ValidAccount.DisplayName,
+			Name = ValidAccount.DisplayName,
 			Email = ValidAccount.Email,
 			PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password)
 		});
 
 		await DB.InsertAsync(new User() {
 			ID = UserID2,
-			DisplayName = ValidAccount.DisplayName,
+			Name = ValidAccount.DisplayName,
 			Email = "2@email.com",
 			PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password)
 		});

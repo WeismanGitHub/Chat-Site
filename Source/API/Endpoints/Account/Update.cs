@@ -3,7 +3,7 @@
 namespace API.Endpoints.Account.Update;
 
 public class NewData {
-	public string? DisplayName { get; set; }
+	public string? Name { get; set; }
 	public string? Email { get; set; }
 	public string? Password { get; set; }
 }
@@ -26,14 +26,14 @@ internal sealed class Validator : Validator<Request> {
 			.WithMessage("Invalid password.");
 
 		RuleFor(req => req.NewData)
-			.Must(req => req.DisplayName != null || req.Email != null || req.Password != null)
+			.Must(req => req.Name != null || req.Email != null || req.Password != null)
 			.WithMessage("Must modify something");
 
-		When(req => req.NewData.DisplayName != null, () => {
-			RuleFor(account => account.NewData.DisplayName)
+		When(req => req.NewData.Name != null, () => {
+			RuleFor(account => account.NewData.Name)
 			.NotEmpty()
-			.MinimumLength(1).WithMessage("DisplayName cannot be empty.")
-			.MaximumLength(User.MaxNameLength).WithMessage($"DisplayName cannot be longer than {User.MaxNameLength} characters.");
+			.MinimumLength(1).WithMessage("Name cannot be empty.")
+			.MaximumLength(User.MaxNameLength).WithMessage($"Name cannot be longer than {User.MaxNameLength} characters.");
 		});
 
 		When(req => req.NewData.Email != null, () => {
@@ -65,7 +65,7 @@ public sealed class Endpoint : Endpoint<Request> {
 		Summary(settings => {
 			settings.ExampleRequest = new Request {
 				NewData = new() {
-					DisplayName = "New Name",
+					Name = "New Name",
 				},
 				CurrentPassword = "Password123"
 			};
@@ -76,8 +76,8 @@ public sealed class Endpoint : Endpoint<Request> {
 		var update = DB.Update<User>().MatchID(req.AccountID);
 		var newData = req.NewData;
 
-		if (newData.DisplayName != null) {
-			update.Modify(u => u.DisplayName, newData.DisplayName);
+		if (newData.Name != null) {
+			update.Modify(u => u.Name, newData.Name);
 		}
 
 		if (newData.Email != null) {

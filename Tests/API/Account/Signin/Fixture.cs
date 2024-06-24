@@ -7,7 +7,7 @@ public class Fixture : TestFixture<Program> {
 	public Fixture(IMessageSink sink) : base(sink) { }
 	protected override Task SetupAsync() {
 		return DB.InsertAsync(new User() {
-			DisplayName = ValidAccount.DisplayName,
+			Name = ValidAccount.DisplayName,
 			Email = ValidAccount.Email,
 			PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password)
 		});

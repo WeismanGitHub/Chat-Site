@@ -3,24 +3,24 @@
 namespace API.Endpoints.Account.Signin;
 
 public static class Data {
-	internal static Task<User?> GetAccount(string email) {
+	internal static Task<User?> GetAccount(string name) {
 		return DB
 			.Find<User>()
-			.Match(u => u.Email == email)
+			.Match(u => u.Name == name)
 			.ExecuteSingleAsync();
 	}
 }
 
 public sealed class Request {
-	public required string Email { get; set; }
+	public required string Name { get; set; }
 	public required string Password { get; set; }
 }
 
 internal sealed class Validator : Validator<Request> {
 	public Validator() {
-		RuleFor(account => account.Email)
-			.NotEmpty().WithMessage("Email is required.")
-			.EmailAddress().WithMessage("The format of your email address is invalid.");
+		RuleFor(account => account.Name)
+			.NotEmpty()
+			.WithMessage("Name is required.");
 
 		RuleFor(account => account.Password)
 			.NotEmpty().WithMessage("Password is required.")
@@ -38,14 +38,14 @@ public sealed class Endpoint : Endpoint<Request> {
 
 		Summary(settings => {
 			settings.ExampleRequest = new Request {
-				Email = "person1@email.com",
+				Name = "Username",
 				Password = "Password123",
 			};
 		});
 	}
 
 	public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
-		var account = await Data.GetAccount(req.Email);
+		var account = await Data.GetAccount(req.Name);
 
 		if (account == null) {
 			ThrowError("Could not find an account with that email.", 400);

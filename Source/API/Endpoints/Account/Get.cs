@@ -7,8 +7,7 @@ public sealed class Request {
 
 public sealed class Response {
 	public required string ID { get; set; }
-	public required string DisplayName { get; set; }
-	public required string Email { get; set; }
+	public required string Name { get; set; }
 	public int ChatRooms { get; set; }
 	public DateTime CreatedAt { get; set; }
 }
@@ -29,8 +28,7 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 
 		await SendAsync(new() {
 			ID = req.AccountID,
-			DisplayName = user.DisplayName,
-			Email = user.Email,
+			Name = user.Name,
 			ChatRooms = user.ChatRoomIDs.Count,
 			CreatedAt = user.CreatedAt,
 		}, cancellation: cancellationToken);

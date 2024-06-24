@@ -25,7 +25,7 @@ public class Tests : TestClass<Fixture> {
 		var acc = await DB.Find<User>().MatchID(Fixture.AccountID).ExecuteSingleAsync();
 		acc.Should().NotBeNull();
 
-		acc!.DisplayName.Should().Be("New DisplayName");
+		acc!.Name.Should().Be("New DisplayName");
 		acc!.Email.Should().Be("new" + ValidAccount.Email);
 		BCrypt.Net.BCrypt.Verify(ValidAccount.Password + "new", acc!.PasswordHash).Should().BeTrue();
 	}
@@ -57,7 +57,7 @@ public class Tests : TestClass<Fixture> {
 	[Fact]
 	public async Task Taken_Email() {
 		await DB.InsertAsync(new User() {
-			DisplayName = ValidAccount.DisplayName,
+			Name = ValidAccount.DisplayName,
 			Email = "taken" + ValidAccount.Email,
 			PasswordHash = BCrypt.Net.BCrypt.HashPassword(ValidAccount.Password)
 		});

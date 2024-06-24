@@ -4,7 +4,6 @@ namespace API.Endpoints.Account.Update;
 
 public class NewData {
 	public string? Name { get; set; }
-	public string? Email { get; set; }
 	public string? Password { get; set; }
 }
 
@@ -19,15 +18,11 @@ internal sealed class Validator : Validator<Request> {
 	public Validator() {
 		RuleFor(req => req)
 			.MustAsync(async (req, _) => {
-				User? account = await DB.Find<User>().MatchID(req.AccountID).ExecuteSingleAsync();
-				return account == null ? false : BCrypt.Net.BCrypt.Verify(req.CurrentPassword, account.PasswordHash);
+				var account = await DB.Find<User>().MatchID(req.AccountID).ExecuteSingleAsync();
+				return account != null && BCrypt.Net.BCrypt.Verify(req.CurrentPassword, account.PasswordHash);
 			})
 			.WithErrorCode(nameof(HttpStatusCode.Unauthorized))
 			.WithMessage("Invalid password.");
-
-		RuleFor(req => req.NewData)
-			.Must(req => req.Name != null || req.Email != null || req.Password != null)
-			.WithMessage("Must modify something");
 
 		When(req => req.NewData.Name != null, () => {
 			RuleFor(account => account.NewData.Name)
@@ -36,22 +31,18 @@ internal sealed class Validator : Validator<Request> {
 			.MaximumLength(User.MaxNameLength).WithMessage($"Name cannot be longer than {User.MaxNameLength} characters.");
 		});
 
-		When(req => req.NewData.Email != null, () => {
-			RuleFor(account => account.NewData.Email)
+		When(req => req.NewData.Name != null, () => {
+			RuleFor(account => account.NewData.Name)
 				.NotEmpty()
-				.EmailAddress().WithMessage("The format of your email address is invalid.")
-				.MustAsync(async (email, _) => !await DB.Find<User>().Match(u => u.Email == email).ExecuteAnyAsync())
+				.MustAsync(async (name, _) => !await DB.Find<User>().Match(u => u.Name == name).ExecuteAnyAsync(_))
 				.WithErrorCode(nameof(HttpStatusCode.Conflict))
-				.WithMessage("Email is taken.");
+				.WithMessage("Name is taken.");
 		});
 
 		When(req => req.NewData.Password != null, () => {
 			RuleFor(account => account.NewData.Password)
 				.NotEmpty()
-				.Must(password => {
-					if (password == null) return true;
-					return password.IsAValidPassword();
-				}).WithMessage("Password is invalid.");
+				.Must(password => password == null || password.IsAValidPassword()).WithMessage("Password is invalid.");
 		});
 	}
 }
@@ -78,10 +69,6 @@ public sealed class Endpoint : Endpoint<Request> {
 
 		if (newData.Name != null) {
 			update.Modify(u => u.Name, newData.Name);
-		}
-
-		if (newData.Email != null) {
-			update.Modify(u => u.Email, newData.Email);
 		}
 
 		if (newData.Password != null) {

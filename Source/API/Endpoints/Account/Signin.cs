@@ -48,7 +48,7 @@ public sealed class Endpoint : Endpoint<Request> {
 		var account = await Data.GetAccount(req.Name);
 
 		if (account == null) {
-			ThrowError("Could not find an account with that email.", 400);
+			ThrowError("Could not find an account with that name.", 400);
 		} else if (!BCrypt.Net.BCrypt.Verify(req.Password, account.PasswordHash)) {
 			ThrowError("Invalid Credentials", 400);
 		}

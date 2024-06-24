@@ -13,14 +13,14 @@ var app = builder.Build();
 app.MapFallbackToFile("/index.html");
 app.MapHub<ChatHub>("/chat");
 app
-	.UseAuthentication()
 	.UseDefaultExceptionHandler()
-	.UseAuthorization()
-	.UseFastEndpoints(config => { config.Endpoints.RoutePrefix = "API"; })
+	.UseResponseCaching()
+	.UseHttpsRedirection()
 	.UseDefaultFiles()
 	.UseStaticFiles()
-	.UseHttpsRedirection()
-	.UseResponseCaching()
+	.UseAuthentication()
+	.UseAuthorization()
+	.UseFastEndpoints(config => config.Endpoints.RoutePrefix = "API")
 	.UseSwaggerGen();
 
 await InitDatabase();

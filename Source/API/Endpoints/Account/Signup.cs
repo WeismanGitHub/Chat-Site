@@ -3,9 +3,7 @@
 namespace API.Endpoints.Account.Signup;
 
 public sealed class Request {
-	public required string 
-		Name { get; set; }
-	public required string Email { get; set; }
+	public required string Name { get; set; }
 	public required string Password { get; set; }
 }
 
@@ -16,10 +14,6 @@ internal sealed class Validator : Validator<Request> {
 			.MinimumLength(1).WithMessage("Name cannot be empty.")
 			.MaximumLength(User.MaxNameLength).WithMessage($"Name cannot be longer than {User.MaxNameLength} characters.");
 
-		RuleFor(account => account.Email)
-			.NotEmpty().WithMessage("Email is required.")
-			.EmailAddress().WithMessage("The format of your email address is invalid.");
-
 		RuleFor(account => account.Password)
 			.NotEmpty().WithMessage("Password is required.")
 			.Must(password => password.IsAValidPassword()).WithMessage("Password is invalid.");
@@ -27,10 +21,10 @@ internal sealed class Validator : Validator<Request> {
 }
 
 public static class Data {
-	internal static Task<bool> EmailAddressIsTaken(string email) {
+	internal static Task<bool> NameIsTaken(string name) {
 		return DB
 			.Find<User>()
-			.Match(u => u.Email == email)
+			.Match(u => u.Name == name)
 			.ExecuteAnyAsync();
 	}
 }
@@ -45,7 +39,6 @@ public sealed class Endpoint : Endpoint<Request> {
 		Summary(settings => {
 			settings.ExampleRequest = new Request {
 				Name = "Person 1",
-				Email = "person1@email.com",
 				Password = "Password123",
 			};
 		});
@@ -53,7 +46,6 @@ public sealed class Endpoint : Endpoint<Request> {
 
 	public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
 		User account = new() {
-			Email = req.Email.ToLower(),
 			Name = req.Name,
 			PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password)
 		};
@@ -63,10 +55,10 @@ public sealed class Endpoint : Endpoint<Request> {
 		try {
 			await account.SaveAsync(cancellation: cancellationToken);
 		} catch (Exception) {
-			var emailIsTaken = await Data.EmailAddressIsTaken(account.Email);
+			var NameIsTaken = await Data.NameIsTaken(account.Name);
 
-			if (emailIsTaken) {
-				ThrowError(r => r.Email, "That email is unavailable.", 409);
+			if (NameIsTaken) {
+				ThrowError(r => r.Name, "That name is unavailable.", 409);
 			}
 
 			throw;

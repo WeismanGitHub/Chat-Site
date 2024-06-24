@@ -92,7 +92,7 @@ public class ChatHub : Hub {
 
 	public async Task UserLeft(string chatID, string userID) {
 		try {
-			await Clients.Group(chatID).SendAsync("UserLeft", new { userID });
+			await Clients.Group(chatID).SendAsync("UserLeft", userID);
 		} catch (Exception ex) {
 			await Clients.Caller.SendAsync("ReceiveError", ex.Message);
 		}

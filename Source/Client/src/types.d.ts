@@ -6,7 +6,7 @@ type APIError<Errors> = {
 
 type Friend = {
     id: string;
-    displayName: string;
+    name: string;
     createdAt: string;
 };
 
@@ -18,7 +18,7 @@ type Chats = {
 
 type Account = {
     id: string;
-    displayName: string;
+    name: string;
     conversations: number;
     createdAt: string;
 };

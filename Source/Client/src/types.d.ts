@@ -19,7 +19,7 @@ type Chats = {
 type Account = {
     id: string;
     name: string;
-    conversations: number;
+    chatRooms: number;
     createdAt: string;
 };
 

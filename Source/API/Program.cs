@@ -4,6 +4,7 @@ using FastEndpoints.Swagger;
 using API.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddEnvironmentVariables();
 ConfigureServices.Configure(builder);
 var config = builder.Configuration;
 var section = config.GetSection("Settings");

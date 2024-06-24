@@ -1,27 +1,25 @@
+import { Toast, ToastContainer } from 'react-bootstrap';
 import { redirectIfNotLoggedIn } from '../helpers';
 import { useEffect, useState } from 'react';
 import Navbar from '../navbar';
 import axios from 'axios';
-import { Toast, ToastContainer } from 'react-bootstrap';
 
 export default function Home() {
     redirectIfNotLoggedIn();
 
     const [chatID, setChatID] = useState<string | null>(null);
-    const [error, setError] = useState<APIError<unknown> | null>(null)
+    const [error, setError] = useState<APIError<unknown> | null>(null);
 
     return (
         <>
             <Navbar />
             <div className="full-height-minus-navbar">
-                <div className="col-3">
-                    {<Chats setChatID={setChatID} setError={setError}/>}
-                </div>
+                {<Chats setChatID={setChatID} setError={setError} />}
                 <div className="col-9">
-                    <Chat chatID={chatID}/>
+                    <Chat chatID={chatID} />
                 </div>
             </div>
-            
+
             <ToastContainer position="top-end">
                 <Toast
                     onClose={() => setError(null)}
@@ -42,7 +40,13 @@ export default function Home() {
     );
 }
 
-function Chats({ setChatID, setError }: { setChatID: setState<string | null>; setError: setState<APIError<object>> }) {
+function Chats({
+    setChatID,
+    setError,
+}: {
+    setChatID: setState<string | null>;
+    setError: setState<APIError<object>>;
+}) {
     const [chats, setChats] = useState<Chats | null>(null);
 
     useEffect(() => {
@@ -55,138 +59,76 @@ function Chats({ setChatID, setError }: { setChatID: setState<string | null>; se
                     setError({
                         errors: err.response.data.errors ?? [],
                         statusCode: err.response.status,
-                        message: err.response.data.message ?? 'Something went wrong!'
-                    })
+                        message: err.response.data.message ?? 'Something went wrong!',
+                    });
                 } else {
                     setError({
                         errors: [],
                         statusCode: 500,
-                        message: 'Something went wrong!'
-                    })
+                        message: 'Something went wrong!',
+                    });
                 }
             }
         })();
-    }, [])
+    }, []);
 
-    console.log(chats, setChatID)
-
-    return <>
-    {/* useEffect(() => {
-        (async () => {
-            try {
-                const res = await axios.patch<Chats>(`/API/ChatRooms/${chatID}/v1`);
-
-                setChat(res.data)
-    
-                setAccount({
-                    id: account.id,
-                    conversations: account.conversations,
-                    createdAt: account.createdAt,
-                    email: update.email ?? account.email,
-                    displayName: update.displayName ?? account.displayName
-                })
-    
-                setShowUpdateModal(false);
-            } catch (err) {
-                if (axios.isAxiosError<APIError<UpdateError>>(err) && err.response?.data) {
-                    setToastError(err.response.data);
-                    setShowError(true);
-                }
-            }
-        })()
-        Endpoints.Conversations.getOne(conversationID)
-            .then((res) => {
-                setChat(res.data);
-            })
-            .catch((error) => {
-                console.error(error);
-                setShowError(true);
-                setToastError(error);
-            });
-    }, [conversationID]);
-
-    async function leaveConvo() {
-        try {
-            await Endpoints.Conversations.leave(conversationID);
-            window.location.reload();
-        } catch (err: unknown) {
-            setToastError(err as APIError<object>);
-            setShowError(true);
-            console.log(toastError);
-        }
-    }
+    console.log(chats, setChatID);
 
     return (
         <>
-            <ToastContainer position="top-end">
-                <Toast
-                    onClose={() => setShowError(!showError)}
-                    show={showError}
-                    autohide={true}
-                    className="d-inline-block m-1"
-                    bg={'danger'}
-                >
-                    <Toast.Header>
-                        <strong className="me-auto">
-                            {toastError?.message || 'Unable to read error name.'}
-                        </strong>
-                    </Toast.Header>
-                    <Toast.Body>
-                        {toastError?.errors &&
-                            Object.values(toastError?.errors).map((err) => {
-                                return <div key={err}>{err}</div>;
-                            })}
-                    </Toast.Body>
-                </Toast>
-            </ToastContainer>
+            <button
+                className="btn btn-primary d-md-none ms-1"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasExample"
+                aria-controls="offcanvasExample"
+                style={{ position: 'absolute', top: '50%', left: 0 }}
+            >
+                {'>'}
+            </button>
 
-            <div className="fs-2 justify-content-center">
-                {chat?.name}
-                <div
-                    className="btn btn-outline-primary m-1 ms-5 fs-6 p-0"
-                    onClick={leaveConvo}
-                    style={{ width: '10%' }}
-                >
-                    Leave
+            <div
+                className="offcanvas offcanvas-start bg-primary-subtle"
+                tabIndex={-1}
+                id="offcanvasExample"
+                aria-labelledby="offcanvasExampleLabel"
+            >
+                <div className="offcanvas-header">
+                    <h5 className="offcanvas-title" id="offcanvasExampleLabel">
+                        Chat Rooms
+                    </h5>
                 </div>
-                <div
-                    className="btn btn-outline-primary m-1 fs-6 p-0"
-                    onClick={() => {
-                        navigator.clipboard.writeText(conversationID);
-                    }}
-                    style={{ width: '10%' }}
-                >
-                    Copy ID
+                <div className="offcanvas-body">
+                    <ChatsList />
                 </div>
             </div>
-            <div className="overflow-y-scroll h-25 vh-100 pb-5 col-3 float-end">
-                <ul className="list-group fs-5">
-                    {chat &&
-                        chat.members.map((member) => {
-                            return <Member id={member.id} name={member.name} key={member.id} />;
-                        })}
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                </ul>
-            </div>
 
-            <div className="col-9 float-start">
-                {chat?.members.length && (
-                    <Chat conversationID={conversationID} members={chat?.members} />
-                )}
+            <div className="col-3 d-none d-md-block">
+                <ChatsList />
             </div>
         </>
     );
-} */}
 
-    </>
+    function ChatsList() {
+        return (
+            <>
+                {!chats?.length ? (
+                    <div>No Chats!</div>
+                ) : (
+                    <div>
+                        {chats.map((chat) => (
+                            <div key={chat.id}>{chat.name}</div>
+                        ))}
+                    </div>
+                )}
+            </>
+        );
+    }
 }
 
 function Chat({ chatID }: { chatID: string | null }) {
-    console.log(chatID)
-    return <></>
+    console.log(chatID);
+    return <></>;
 }
 
 // function Chat({

@@ -9,10 +9,10 @@ export default function About() {
             <Navbar />
             <div className="full-height-minus-navbar d-flex align-items-center justify-content-center">
                 <Card style={{ width: '80%', maxWidth: '500px' }}>
-                <Card.Header className="bg-primary text-white">
+                    <Card.Header className="bg-primary text-white">
                         <h2>About Chat Site v2</h2>
                     </Card.Header>
-                    <Card.Body className='fs-4'>
+                    <Card.Body className="fs-4">
                         <Card.Text>
                             <p>
                                 Chat Site v2 is a remake of an{' '}

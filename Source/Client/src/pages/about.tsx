@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import Navbar from '../components/navbar';
+import Navbar from '../navbar';
 
 export default function About() {
     return (

@@ -23,14 +23,10 @@ internal sealed class Endpoint : Endpoint<Request> {
 
 		var transaction = new Transaction();
 
-		var chat = await transaction.UpdateAndGet<ChatRoom>()
+		await transaction.UpdateAndGet<ChatRoom>()
 			.Match(c => account.ChatRoomIDs.Contains(c.ID))
 			.Modify(c => c.Pull<string>(c => c.MemberIDs, account.ID))
 			.ExecuteAsync(cancellationToken);
-
-		if (chat.MemberIDs.Count == 0) {
-			await transaction.DeleteAsync<ChatRoom>(chat.ID);
-		}
 
 		await transaction.DeleteAsync<User>(account.ID);
 

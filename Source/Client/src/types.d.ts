@@ -23,11 +23,13 @@ type Account = {
     createdAt: string;
 };
 
+type Member = { id: string; name: string };
+
 type Chat = {
     id: string;
     name: string;
     createdAt: string;
-    members: { id: string; name: string }[];
+    members: Member[];
 };
 
 type setState<T> = React.Dispatch<SetStateAction<T>>;

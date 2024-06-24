@@ -19,7 +19,6 @@ type Chats = {
 type Account = {
     id: string;
     displayName: string;
-    email: string;
     conversations: number;
     createdAt: string;
 };

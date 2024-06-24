@@ -19,10 +19,10 @@ export default function Navbar() {
 
     async function logout() {
         try {
-            await axios.post('/API/Account/Signout/v1')
+            await axios.post('/API/Account/Signout/v1');
             localStorage.removeItem('authenticated');
             navigate('/auth');
-        } catch(err) {
+        } catch (err) {
             if (axios.isAxiosError<APIError<LogoutError>>(err) && err.response?.data) {
                 setError(err.response.data);
                 setShowError(true);
@@ -30,8 +30,8 @@ export default function Navbar() {
                 setError({
                     errors: {},
                     message: 'Something went wrong!',
-                    statusCode: 500
-                })
+                    statusCode: 500,
+                });
             }
         }
     }

@@ -1,31 +1,74 @@
 import { redirectIfNotLoggedIn } from '../helpers';
-import { useState } from 'react';
-
+import { useEffect, useState } from 'react';
 import Navbar from '../navbar';
+import axios from 'axios';
+import { Toast, ToastContainer } from 'react-bootstrap';
 
 export default function Home() {
     redirectIfNotLoggedIn();
 
     const [chatID, setChatID] = useState<string | null>(null);
-    const [error, setError] = useState()
+    const [error, setError] = useState<APIError<unknown> | null>(null)
 
     return (
         <>
             <Navbar />
             <div className="full-height-minus-navbar">
                 <div className="col-3">
-                    {<Chats setConvoID={setChatID} />}
+                    {<Chats setChatID={setChatID} setError={setError}/>}
                 </div>
                 <div className="col-9">
                     <Chat chatID={chatID}/>
                 </div>
             </div>
+            
+            <ToastContainer position="top-end">
+                <Toast
+                    onClose={() => setError(null)}
+                    show={error !== null}
+                    autohide={true}
+                    className="d-inline-block m-1"
+                    bg={'danger'}
+                >
+                    <Toast.Header>
+                        <strong className="me-auto">{error?.message}</strong>
+                    </Toast.Header>
+                    <Toast.Body className="text-white">
+                        <strong>{error?.errors?.toString() ?? 'Something went wrong.'}</strong>
+                    </Toast.Body>
+                </Toast>
+            </ToastContainer>
         </>
     );
 }
 
-function Chats({ setConvoID }: { setConvoID: setState<string | null> }) {
-    const [chat, setChat] = useState<Chat | null>(null);
+function Chats({ setChatID, setError }: { setChatID: setState<string | null>; setError: setState<APIError<object>> }) {
+    const [chats, setChats] = useState<Chats | null>(null);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const res = await axios.get<Chats>('/API/ChatRooms/v1');
+                setChats(res.data);
+            } catch (err) {
+                if (axios.isAxiosError<APIError<object>>(err) && err.response?.data) {
+                    setError({
+                        errors: err.response.data.errors ?? [],
+                        statusCode: err.response.status,
+                        message: err.response.data.message ?? 'Something went wrong!'
+                    })
+                } else {
+                    setError({
+                        errors: [],
+                        statusCode: 500,
+                        message: 'Something went wrong!'
+                    })
+                }
+            }
+        })();
+    }, [])
+
+    console.log(chats, setChatID)
 
     return <>
     {/* useEffect(() => {
@@ -142,6 +185,7 @@ function Chats({ setConvoID }: { setConvoID: setState<string | null> }) {
 }
 
 function Chat({ chatID }: { chatID: string | null }) {
+    console.log(chatID)
     return <></>
 }
 

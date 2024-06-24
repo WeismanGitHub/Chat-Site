@@ -1,5 +1,5 @@
-type APIErrorRes<APIError> = {
-    errors: APIError & { generalErrors?: string };
+type APIError<Errors> = {
+    errors: Errors;
     message: string;
     statusCode: number;
 };
@@ -10,35 +10,25 @@ type Friend = {
     createdAt: string;
 };
 
-type ConversationsData = {
+type Chats = {
     id: string;
     name: string;
     createdAt: string;
 }[];
 
-type AccountData = {
+type Account = {
     id: string;
     displayName: string;
     email: string;
-    totalConversations: number;
-    totalFriends: number;
+    conversations: number;
     createdAt: string;
 };
 
-type SingleConvoData = {
+type Chat = {
     id: string;
     name: string;
     createdAt: string;
     members: { id: string; name: string }[];
 };
 
-type FriendReqStatus = 'Accepted' | 'Declined' | 'Pending';
-
-type FriendRequest = {
-    id: string;
-    requesterID: string;
-    recipientID: string;
-    message?: string;
-    status: number;
-    createdAt: string;
-};
+type setState<T> = React.Dispatch<SetStateAction<T>>;

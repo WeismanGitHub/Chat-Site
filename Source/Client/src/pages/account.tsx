@@ -218,11 +218,7 @@ export default function Account() {
                             newPassword?: string;
                         } = {};
 
-                        if (
-                            values.password &&
-                            values.newPassword &&
-                            values.password === values.newPassword
-                        ) {
+                        if (values.password && values.newPassword && values.password === values.newPassword) {
                             errors.password = 'Passwords cannot be the same.';
                         }
 

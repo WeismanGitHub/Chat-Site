@@ -105,9 +105,9 @@ function Chats({
 
             <div
                 className="col-2 d-none d-md-block"
-                style={{ height: '120px', position: 'absolute', top: 0, left: 0, backgroundColor: '#7756b0' }}
+                style={{ height: '100px', position: 'absolute', top: 0, left: 0, backgroundColor: '#7756b0' }}
             />
-            <div className="col-2 d-none d-md-block h-100">
+            <div className="col-2 d-none d-md-block h-100 fs-5">
                 <ChatsList />
             </div>
         </>
@@ -115,26 +115,26 @@ function Chats({
 
     function ChatsList() {
         return (
-            <>
+            <div className="h-100" style={{ backgroundColor: '#7756b0', color: 'white' }}>
                 {!chats?.length ? (
-                    <div>No Chats!</div>
-                ) : (
-                    <div className='h-100' style={{ backgroundColor: '#7756b0', color: 'white' }}>
-                        <ListGroup variant="flush">
-                        {chats.map((chat) => (
-                                <ListGroup.Item
-                                    active={chatID == chat.id}
-                                    key={chat.id}
-                                    action
-                                    onClick={() => setChatID(chat.id)}
-                                >
-                                {chat.name}
-                                </ListGroup.Item>
-                        ))}
-                        </ListGroup>
+                    <div className="w-100 h-100 d-flex justify-content-center align-items-center">
+                        <strong style={{ height: '50px' }}>No Chats</strong>
                     </div>
+                ) : (
+                    <ListGroup variant="flush">
+                        {chats.map((chat) => (
+                            <ListGroup.Item
+                                active={chatID == chat.id}
+                                key={chat.id}
+                                action
+                                onClick={() => setChatID(chat.id)}
+                            >
+                                {chat.name}
+                            </ListGroup.Item>
+                        ))}
+                    </ListGroup>
                 )}
-            </>
+            </div>
         );
     }
 }

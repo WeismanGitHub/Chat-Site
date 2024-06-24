@@ -1,4 +1,4 @@
-import { Toast, ToastContainer } from 'react-bootstrap';
+import { ListGroup, Toast, ToastContainer } from 'react-bootstrap';
 import { ReactNode, useEffect, useState } from 'react';
 import { redirectIfNotLoggedIn } from '../helpers';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
@@ -9,14 +9,14 @@ export default function Home() {
     redirectIfNotLoggedIn();
 
     const [error, setError] = useState<APIError<unknown> | null>(null);
-    const [chat, setChat] = useState<Chat | null>(null);
+    const [chatID, setChatID] = useState<string | null>(null);
 
     return (
         <>
             <Navbar />
             <div className="full-height-minus-navbar">
-                <Chats setChat={setChat} setError={setError} />
-                {chat && <Chat chat={chat} setError={setError} />}
+                <Chats setChatID={setChatID} setError={setError} chatID={chatID} />
+                {chatID && <Chat chatID={chatID} setError={setError} />}
             </div>
 
             <ToastContainer position="top-end">
@@ -40,11 +40,13 @@ export default function Home() {
 }
 
 function Chats({
-    setChat,
+    setChatID,
     setError,
+    chatID,
 }: {
-    setChat: setState<Chat | null>;
+    setChatID: setState<string | null>;
     setError: setState<APIError<object>>;
+    chatID: string | null;
 }) {
     const [chats, setChats] = useState<Chats | null>(null);
 
@@ -91,17 +93,21 @@ function Chats({
                 id="offcanvasExample"
                 aria-labelledby="offcanvasExampleLabel"
             >
-                <div className="offcanvas-header">
+                <div className="offcanvas-header" style={{ backgroundColor: '#593196', color: 'white' }}>
                     <h5 className="offcanvas-title" id="offcanvasExampleLabel">
                         Chat Rooms
                     </h5>
                 </div>
-                <div className="offcanvas-body">
+                <div className="offcanvas-body" style={{ backgroundColor: '#7756b0' }}>
                     <ChatsList />
                 </div>
             </div>
 
-            <div className="col-3 d-none d-md-block">
+            <div
+                className="col-2 d-none d-md-block"
+                style={{ height: '120px', position: 'absolute', top: 0, left: 0, backgroundColor: '#7756b0' }}
+            />
+            <div className="col-2 d-none d-md-block h-100">
                 <ChatsList />
             </div>
         </>
@@ -113,12 +119,19 @@ function Chats({
                 {!chats?.length ? (
                     <div>No Chats!</div>
                 ) : (
-                    <div>
+                    <div className='h-100' style={{ backgroundColor: '#7756b0', color: 'white' }}>
+                        <ListGroup variant="flush">
                         {chats.map((chat) => (
-                            <div key={chat.id} onClick={() => setChat(chat)}>
+                                <ListGroup.Item
+                                    active={chatID == chat.id}
+                                    key={chat.id}
+                                    action
+                                    onClick={() => setChatID(chat.id)}
+                                >
                                 {chat.name}
-                            </div>
+                                </ListGroup.Item>
                         ))}
+                        </ListGroup>
                     </div>
                 )}
             </>

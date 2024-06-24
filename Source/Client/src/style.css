@@ -49,3 +49,17 @@
 .nav-link {
     color: white;
 }
+
+.list-group-item {
+    background-color: #7756b0;
+    color: white;
+}
+
+.list-group-item:hover,
+.list-group-item:focus {
+    background-color: #513d76;
+}
+
+.list-group-item.active {
+    background-color: #3f325c;
+}

@@ -1,7 +1,7 @@
-import { ListGroup, Toast, ToastContainer } from 'react-bootstrap';
+import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { ListGroup, Row, Toast, ToastContainer } from 'react-bootstrap';
 import { ReactNode, useEffect, useState } from 'react';
 import { redirectIfNotLoggedIn } from '../helpers';
-import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import Navbar from '../navbar';
 import axios from 'axios';
 
@@ -15,8 +15,12 @@ export default function Home() {
         <>
             <Navbar />
             <div className="full-height-minus-navbar">
-                <Chats setChatID={setChatID} setError={setError} chatID={chatID} />
-                {chatID && <Chat chatID={chatID} setError={setError} />}
+                <div className='container-fluid p-0 m-0 w-100 h-100'>
+                    <Row className='h-100 w-100 p-0 m-0'>
+                        <Chats setChatID={setChatID} setError={setError} chatID={chatID} />
+                        <Chat chatID={chatID} setError={setError} />
+                    </Row>
+                </div>
             </div>
 
             <ToastContainer position="top-end">
@@ -79,35 +83,36 @@ function Chats({
                 className="btn btn-primary d-md-none ms-1"
                 type="button"
                 data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasExample"
-                aria-controls="offcanvasExample"
-                style={{ position: 'absolute', top: '50%', left: 0 }}
+                data-bs-target="#offcanvasResponsive"
+                aria-controls="offcanvasResponsive"
+                style={{ position: 'absolute', top: '50%', left: 0, width: '40px' }}
             >
                 {'>'}
             </button>
 
             <div
-                className="offcanvas offcanvas-start bg-primary-subtle"
+                className="offcanvas offcanvas-start bg-primary-subtle p-0"
                 tabIndex={-1}
                 style={{ maxWidth: '85%' }}
-                id="offcanvasExample"
-                aria-labelledby="offcanvasExampleLabel"
+                id="offcanvasResponsive"
+                aria-labelledby="offcanvasResponsiveLabel"
             >
                 <div className="offcanvas-header" style={{ backgroundColor: '#593196', color: 'white' }}>
-                    <h5 className="offcanvas-title" id="offcanvasExampleLabel">
+                    <h5 className="offcanvas-title" id="offcanvasResponsiveLabel">
                         Chat Rooms
                     </h5>
+                    <button type="button" className="btn-close custom-close-btn" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasResponsive" aria-label="Close"></button>
                 </div>
-                <div className="offcanvas-body" style={{ backgroundColor: '#7756b0' }}>
+                <div className="offcanvas-body w-100" style={{ backgroundColor: '#7756b0' }}>
                     <ChatsList />
                 </div>
             </div>
 
             <div
-                className="col-2 d-none d-md-block"
+                className="col-2 d-none d-md-block p-0 m-0"
                 style={{ height: '100px', position: 'absolute', top: 0, left: 0, backgroundColor: '#7756b0' }}
             />
-            <div className="col-2 d-none d-md-block h-100 fs-5">
+            <div className="col-2 d-none d-md-block h-100 fs-5  p-0 m-0">
                 <ChatsList />
             </div>
         </>
@@ -139,7 +144,7 @@ function Chats({
     }
 }
 
-function Chat({ chatID, setError }: { chatID: string; setError: setState<APIError<unknown> | null> }) {
+function Chat({ chatID, setError }: { chatID: string | null; setError: setState<APIError<unknown> | null> }) {
     const [connection, setConnection] = useState<null | HubConnection>(null);
     const [messages, setMessages] = useState<ReactNode[]>([]);
     const [chat, setChat] = useState<Chat | null>(null);
@@ -148,11 +153,14 @@ function Chat({ chatID, setError }: { chatID: string; setError: setState<APIErro
     const memberMap = new Map<string, string>();
 
     useEffect(() => {
+        if (!chatID) return;
+
         axios
             .get<Chat>(`/API/ChatRooms/${chatID}/v1`)
             .then((res) => {
                 setChat(res.data);
 
+                memberMap.clear();
                 res.data.members.forEach((member) => {
                     memberMap.set(member.id, member.name);
                 });
@@ -175,7 +183,7 @@ function Chat({ chatID, setError }: { chatID: string; setError: setState<APIErro
         return () => {
             connection?.stop();
         };
-    }, []);
+    }, [chatID]);
 
     useEffect(() => {
         if (!connection) return;
@@ -291,7 +299,74 @@ function Chat({ chatID, setError }: { chatID: string; setError: setState<APIErro
     //     );
     // }
 
-    return <div className="col-md-10"></div>;
+    return (
+        <div className="col-md-10 col-sm-12 h-100 p-0 m-0">
+            {!chat ? (
+                <div className='d-flex justify-content-center align-items-center h-100 w-100'><h2>No Chat Selected</h2></div>
+            ) : (
+                <>
+                    <button
+                        className="btn btn-primary d-md-none ms-1"
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasExample"
+                        aria-controls="offcanvasExample"
+                        style={{ position: 'absolute', top: '50%', left: 0 }}
+                    >
+                        {'<'}
+                    </button>
+
+                    <div
+                        className="offcanvas offcanvas-end bg-primary-subtle"
+                        tabIndex={-1}
+                        style={{ maxWidth: '85%' }}
+                        id="offcanvasExample"
+                        aria-labelledby="offcanvasExampleLabel"
+                    >
+                        <div
+                            className="offcanvas-header"
+                            style={{ backgroundColor: '#593196', color: 'white' }}
+                        >
+                            <h5 className="offcanvas-title" id="offcanvasExampleLabel">
+                                Members
+                            </h5>
+                        </div>
+                        <div className="offcanvas-body" style={{ backgroundColor: '#7756b0' }}>
+                            <MembersList />
+                        </div>
+                    </div>
+
+                    <div
+                        className="col-2 d-none d-md-block float-end"
+                        style={{
+                            height: '100px',
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            backgroundColor: '#7756b0',
+                        }}
+                    />
+                    <div className="col-2 d-none d-md-block h-100 fs-5 float-end w-100">
+                        <MembersList />
+                    </div>
+                </>
+            )}
+        </div>
+    );
+
+    function MembersList() {
+        return (
+            <div className="h-100" style={{ backgroundColor: '#7756b0', color: 'white' }}>
+                <ListGroup variant="flush">
+                    {chat?.members.map((member) => (
+                        <ListGroup.Item key={member.id} action>
+                            {member.name}
+                        </ListGroup.Item>
+                    ))}
+                </ListGroup>
+            </div>
+        );
+    }
 }
 
 // function CreateConvo() {

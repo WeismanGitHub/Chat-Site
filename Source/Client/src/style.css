@@ -63,3 +63,7 @@
 .list-group-item.active {
     background-color: #3f325c;
 }
+
+.custom-close-btn {
+    filter: invert(1);
+}

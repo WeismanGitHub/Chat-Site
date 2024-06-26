@@ -235,7 +235,11 @@ function Chats({
                     >
                         Create
                     </Button>
-                    <Button className="m-1 btn-md" style={{ width: 'fit-content', minWidth: '72px' }} onClick={() => setShowJoin(true)}>
+                    <Button
+                        className="m-1 btn-md"
+                        style={{ width: 'fit-content', minWidth: '72px' }}
+                        onClick={() => setShowJoin(true)}
+                    >
                         Join
                     </Button>
                 </Row>
@@ -304,9 +308,7 @@ function Chats({
                                     </Row>
                                 </Modal.Body>
                                 <Modal.Footer>
-                                    <Button type="submit">
-                                        Create
-                                    </Button>
+                                    <Button type="submit">Create</Button>
                                     <Button variant="secondary" onSubmit={() => setShowCreate(false)}>
                                         Close
                                     </Button>
@@ -315,7 +317,7 @@ function Chats({
                         </Modal>
                     )}
                 </Formik>
-                
+
                 <Formik
                     validationSchema={yup.object({
                         id: yup
@@ -326,11 +328,17 @@ function Chats({
                     validateOnChange
                     onSubmit={async (values) => {
                         try {
-                            const res = await axios.post<{ name: string, createdAt: Date }>(`/API/ChatRooms/${values.id}/Join/v1`);
+                            const res = await axios.post<{ name: string; createdAt: Date }>(
+                                `/API/ChatRooms/${values.id}/Join/v1`
+                            );
 
                             setChats([
                                 ...(chats ?? []),
-                                { createdAt: res.data.createdAt.toString(), id: values.id, name: res.data.name },
+                                {
+                                    createdAt: res.data.createdAt.toString(),
+                                    id: values.id,
+                                    name: res.data.name,
+                                },
                             ]);
 
                             setShowCreate(false);
@@ -378,9 +386,7 @@ function Chats({
                                     </Row>
                                 </Modal.Body>
                                 <Modal.Footer>
-                                    <Button type="submit">
-                                        Join
-                                    </Button>
+                                    <Button type="submit">Join</Button>
                                     <Button variant="secondary" onSubmit={() => setShowJoin(false)}>
                                         Close
                                     </Button>

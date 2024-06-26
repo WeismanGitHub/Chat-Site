@@ -1,9 +1,24 @@
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
-import { ListGroup, Row, Toast, ToastContainer } from 'react-bootstrap';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { redirectIfNotLoggedIn } from '../helpers';
+import { Formik } from 'formik';
 import Navbar from '../navbar';
+import * as yup from 'yup';
 import axios from 'axios';
+import {
+    Button,
+    Col,
+    Form,
+    FormControl,
+    FormGroup,
+    FormLabel,
+    InputGroup,
+    ListGroup,
+    Modal,
+    Row,
+    Toast,
+    ToastContainer,
+} from 'react-bootstrap';
 
 export default function Home() {
     redirectIfNotLoggedIn();
@@ -116,7 +131,7 @@ function Chats({
 
             <div
                 className="col-2 d-none d-md-block p-0 m-0"
-                style={{ height: '100px', position: 'absolute', top: 0, left: 0, backgroundColor: '#7756b0' }}
+                style={{ height: '80px', position: 'absolute', top: 0, left: 0, backgroundColor: '#7756b0' }}
             />
             <div className="col-2 d-none d-md-block h-100 fs-5 p-0 m-0">
                 <ChatsList />
@@ -129,24 +144,252 @@ function Chats({
             <div className="h-100" style={{ backgroundColor: '#7756b0', color: 'white' }}>
                 {!chats?.length ? (
                     <div className="w-100 h-100 d-flex justify-content-center align-items-center">
-                        <strong style={{ height: '50px' }}>No Chats</strong>
+                        <ChatsButtons />
                     </div>
                 ) : (
-                    <ListGroup variant="flush" className="custom-list-group">
-                        {chats.map((chat) => (
-                            <ListGroup.Item
-                                className="custom-list-item"
-                                active={chatID == chat.id}
-                                key={chat.id}
-                                action
-                                onClick={() => setChatID(chat.id)}
-                            >
-                                {chat.name}
-                            </ListGroup.Item>
-                        ))}
-                    </ListGroup>
+                    <>
+                        <div className="pb-2" style={{ borderBottom: '1.5px solid #513d76' }}>
+                            <ChatsButtons />
+                        </div>
+                        <ListGroup variant="flush" className="custom-list-group">
+                            {chats.map((chat) => (
+                                <ListGroup.Item
+                                    className="custom-list-item"
+                                    active={chatID == chat.id}
+                                    key={chat.id}
+                                    action
+                                    onClick={() => setChatID(chat.id)}
+                                >
+                                    <Row>
+                                        <Col className="flex-column flex-grow-1">{chat.name}</Col>
+                                        <Col
+                                            className="p-0 m-0"
+                                            xs="auto"
+                                            style={{ width: '22.5px' }}
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <svg
+                                                data-bs-toggle="dropdown"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="white"
+                                                className="bi bi-three-dots-vertical float-end"
+                                                viewBox="0 0 16 16"
+                                                width="22.5"
+                                                height="22.5"
+                                            >
+                                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                                            </svg>
+                                            <div className="dropdown-menu dropdown-menu-start">
+                                                <div
+                                                    className="dropdown-item"
+                                                    onClick={() => navigator.clipboard.writeText(chat.id)}
+                                                >
+                                                    Copy ID
+                                                </div>
+                                                <div
+                                                    className="dropdown-item"
+                                                    onClick={async () => {
+                                                        try {
+                                                            await axios.post(
+                                                                `/API/ChatRooms/${chat.id}/Leave/v1`
+                                                            );
+                                                            setChats(chats.filter((c) => c.id !== chat.id));
+
+                                                            if (chatID === chat.id) {
+                                                                setChatID(null);
+                                                            }
+                                                        } catch (err) {
+                                                            setError({
+                                                                errors: {},
+                                                                message: 'Could not leave chat!',
+                                                                statusCode: 500,
+                                                            });
+                                                        }
+                                                    }}
+                                                >
+                                                    Leave
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </ListGroup.Item>
+                            ))}
+                        </ListGroup>
+                    </>
                 )}
             </div>
+        );
+    }
+
+    function ChatsButtons() {
+        const [showCreate, setShowCreate] = useState(false);
+        const [showJoin, setShowJoin] = useState(false);
+
+        return (
+            <>
+                <Row className="d-flex justify-content-center">
+                    <Button
+                        className="m-1 btn-md"
+                        onClick={() => setShowCreate(true)}
+                        style={{ width: 'fit-content', minWidth: '72px' }}
+                    >
+                        Create
+                    </Button>
+                    <Button className="m-1 btn-md" style={{ width: 'fit-content', minWidth: '72px' }} onClick={() => setShowJoin(true)}>
+                        Join
+                    </Button>
+                </Row>
+
+                <Formik
+                    validationSchema={yup.object({
+                        name: yup
+                            .string()
+                            .required('Name is required.')
+                            .max(25, 'Name cannot be more than 25 characters.'),
+                    })}
+                    validateOnChange
+                    onSubmit={async (values) => {
+                        try {
+                            const res = await axios.post<{ id: string }>('/API/ChatRooms/v1', {
+                                name: values.name,
+                            });
+
+                            setChats([
+                                ...(chats ?? []),
+                                { createdAt: new Date().toString(), id: res.data.id, name: values.name },
+                            ]);
+
+                            setShowCreate(false);
+                        } catch (err) {
+                            if (axios.isAxiosError<APIError<unknown>>(err) && err.response?.data) {
+                                setError(err.response.data);
+                            }
+                        }
+                    }}
+                    initialValues={{
+                        name: '',
+                    }}
+                >
+                    {({ handleSubmit, handleChange, values, errors }) => (
+                        <Modal
+                            show={showCreate}
+                            centered
+                            keyboard={true}
+                            onHide={() => setShowCreate(false)}
+                            animation={false}
+                        >
+                            <Form noValidate onSubmit={handleSubmit}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Create</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <Row className="mb-3">
+                                        <FormGroup as={Col} controlId="name">
+                                            <FormLabel>Name</FormLabel>
+                                            <InputGroup hasValidation>
+                                                <FormControl
+                                                    autoComplete="off"
+                                                    autoFocus
+                                                    aria-describedby="inputGroupPrepend"
+                                                    name="name"
+                                                    value={values.name}
+                                                    onChange={handleChange}
+                                                    isInvalid={!!errors.name}
+                                                />
+                                                <FormControl.Feedback type="invalid">
+                                                    {errors.name}
+                                                </FormControl.Feedback>
+                                            </InputGroup>
+                                        </FormGroup>
+                                    </Row>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button type="submit">
+                                        Create
+                                    </Button>
+                                    <Button variant="secondary" onSubmit={() => setShowCreate(false)}>
+                                        Close
+                                    </Button>
+                                </Modal.Footer>
+                            </Form>
+                        </Modal>
+                    )}
+                </Formik>
+                
+                <Formik
+                    validationSchema={yup.object({
+                        id: yup
+                            .string()
+                            .required('ID is required.')
+                            .max(30, 'ID cannot be more than 30 characters.'),
+                    })}
+                    validateOnChange
+                    onSubmit={async (values) => {
+                        try {
+                            const res = await axios.post<{ name: string, createdAt: Date }>(`/API/ChatRooms/${values.id}/Join/v1`);
+
+                            setChats([
+                                ...(chats ?? []),
+                                { createdAt: res.data.createdAt.toString(), id: values.id, name: res.data.name },
+                            ]);
+
+                            setShowCreate(false);
+                        } catch (err) {
+                            if (axios.isAxiosError<APIError<unknown>>(err) && err.response?.data) {
+                                setError(err.response.data);
+                            }
+                        }
+                    }}
+                    initialValues={{
+                        id: '',
+                    }}
+                >
+                    {({ handleSubmit, handleChange, values, errors }) => (
+                        <Modal
+                            show={showJoin}
+                            centered
+                            keyboard={true}
+                            onHide={() => setShowJoin(false)}
+                            animation={false}
+                        >
+                            <Form noValidate onSubmit={handleSubmit}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Join</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <Row className="mb-3">
+                                        <FormGroup as={Col} controlId="idid">
+                                            <FormLabel>ID</FormLabel>
+                                            <InputGroup hasValidation>
+                                                <FormControl
+                                                    autoComplete="off"
+                                                    autoFocus
+                                                    aria-describedby="inputGroupPrepend"
+                                                    name="id"
+                                                    value={values.id}
+                                                    onChange={handleChange}
+                                                    isInvalid={!!errors.id}
+                                                />
+                                                <FormControl.Feedback type="invalid">
+                                                    {errors.id}
+                                                </FormControl.Feedback>
+                                            </InputGroup>
+                                        </FormGroup>
+                                    </Row>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button type="submit">
+                                        Join
+                                    </Button>
+                                    <Button variant="secondary" onSubmit={() => setShowJoin(false)}>
+                                        Close
+                                    </Button>
+                                </Modal.Footer>
+                            </Form>
+                        </Modal>
+                    )}
+                </Formik>
+            </>
         );
     }
 }
@@ -159,7 +402,7 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
     const messageEnd = useRef(null);
 
     useEffect(() => {
-        // @ts-expect-error asdfs
+        // @ts-expect-error nothing
         messageEnd.current?.scrollIntoView({ behavior: 'instant' });
     }, [messages]);
 
@@ -167,6 +410,7 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
 
     useEffect(() => {
         (async () => {
+            if (!chatID && chat !== null) return setChat(null);
             if (!chatID) return;
             setMessages([]);
 
@@ -195,9 +439,13 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
 
                                 setMessages((prevMessages) => [
                                     ...prevMessages,
-                                    <div key={Date.now() + accountID + Math.random()}>
-                                        {name} - {message}
-                                    </div>,
+                                    <li
+                                        className="p-2 rounded mb-1 bg-info"
+                                        style={{ color: 'white', width: 'fit-content' }}
+                                        key={Date.now() + accountID + Math.random()}
+                                    >
+                                        <strong>{name}</strong>: {message}
+                                    </li>,
                                 ]);
                             }
                         );
@@ -215,9 +463,13 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
 
                             setMessages((prevMessages) => [
                                 ...prevMessages,
-                                <div key={Date.now() + id} className="text-success">
-                                    {name} Connected!
-                                </div>,
+                                <li
+                                    className="p-2 bg-success rounded mb-1"
+                                    style={{ color: 'white', width: 'fit-content' }}
+                                    key={id + Date.now()}
+                                >
+                                    <strong>{name}</strong>: Connected
+                                </li>,
                             ]);
                         });
 
@@ -226,9 +478,13 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
 
                             setMessages((prevMessages) => [
                                 ...prevMessages,
-                                <div key={Date.now() + id} className="text-danger">
-                                    {name} Disconnected!
-                                </div>,
+                                <li
+                                    className="p-2 bg-danger rounded mb-1"
+                                    style={{ color: 'white', width: 'fit-content' }}
+                                    key={id + Date.now()}
+                                >
+                                    <strong>{name}</strong>: Disconnected
+                                </li>,
                             ]);
                         });
 
@@ -284,17 +540,17 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
     ) : (
         <>
             <div className="col-md-8 col-sm-12 h-100 p-0 m-0 d-flex flex-column">
-                <div className="overflow-y-auto text-wrap w-100 text-break flex-grow-1 ps-2 pe-2">
+                <ul className="overflow-y-auto text-wrap w-100 text-break flex-grow-1 ps-2 pe-2">
                     {messages}
-                    <div ref={messageEnd}></div>
-                </div>
+                    <li ref={messageEnd}></li>
+                </ul>
                 <Row className="d-flex justify-content-center ps-2 pe-2 m-0 mb-1">
                     <input
                         type="text"
                         className="form-control rounded m-0"
                         style={{ width: '85%' }}
                         value={input}
-                        placeholder=" ..."
+                        placeholder="..."
                         onChange={(event) => {
                             setInput(event.target.value);
                         }}
@@ -380,98 +636,3 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
         );
     }
 }
-
-// function CreateConvo() {
-//     const schema = yup.object().shape({
-//         conversationID: yup
-//             .string()
-//             .required('Convo ID is a required field.')
-//             .min(1, 'Must be at least 1 characters.')
-//             .max(25, 'Cannot be more than 25 characters.'),
-//     });
-
-//     async function joinConvo(values: { conversationID: string }) {
-//         try {
-//             await Endpoints.Conversations.join(values.conversationID);
-//             window.location.reload();
-//             setShowModal(false);
-//         } catch (err: unknown) {
-//             if (axios.isAxiosError<APIError<object>>(err) && err.response?.data) {
-//                 setToastError(err.response.data);
-//                 setShowError(true);
-//                 console.log(toastError);
-//             }
-//         }
-//     }
-
-//     const [toastError, setToastError] = useState<APIError<object> | null>(null);
-//     const [showError, setShowError] = useState(false);
-//     const [showModal, setShowModal] = useState(false);
-
-//     return (
-//         <>
-//             <div className="btn btn-outline-primary" onClick={() => setShowModal(true)}>
-//                 Join Convo
-//             </div>
-
-//             <ToastContainer position="top-end">
-//                 <Toast
-//                     onClose={() => setShowError(false)}
-//                     show={showError}
-//                     autohide={true}
-//                     className="d-inline-block m-1"
-//                     bg={'danger'}
-//                 >
-//                     <Toast.Header>
-//                         <strong className="me-auto">
-//                             {toastError?.message || 'Unable to read error name.'}
-//                         </strong>
-//                     </Toast.Header>
-//                     <Toast.Body>
-//                         {toastError?.errors &&
-//                             Object.values(toastError?.errors).map((err) => {
-//                                 return <div key={err}>{err}</div>;
-//                             })}
-//                     </Toast.Body>
-//                 </Toast>
-//             </ToastContainer>
-
-//             <Modal show={showModal}>
-//                 <Modal.Dialog>
-//                     <Modal.Header closeButton onClick={() => setShowModal(false)}></Modal.Header>
-//                     <Modal.Body>
-//                         <div className="w-100">
-//                             <Formik
-//                                 validationSchema={schema}
-//                                 validateOnChange
-//                                 onSubmit={joinConvo}
-//                                 initialValues={{ conversationID: '' }}
-//                             >
-//                                 {({ handleSubmit, handleChange, values, errors }) => (
-//                                     <Form noValidate onSubmit={handleSubmit}>
-//                                         <Row className="mb-3">
-//                                             <Form.Group as={Col} controlId="conversationID">
-//                                                 <Form.Label>Convo ID</Form.Label>
-//                                                 <Form.Control
-//                                                     type="text"
-//                                                     name="conversationID"
-//                                                     value={values.conversationID}
-//                                                     onChange={handleChange}
-//                                                     isInvalid={!!errors.conversationID}
-//                                                 />
-//                                                 <Form.Control.Feedback type="invalid">
-//                                                     {errors.conversationID}
-//                                                 </Form.Control.Feedback>
-//                                             </Form.Group>
-//                                         </Row>
-//                                         <Button type="submit">Join</Button>
-//                                     </Form>
-//                                 )}
-//                             </Formik>
-//                         </div>
-//                     </Modal.Body>
-//                 </Modal.Dialog>
-//             </Modal>
-//         </>
-//     );
-// }

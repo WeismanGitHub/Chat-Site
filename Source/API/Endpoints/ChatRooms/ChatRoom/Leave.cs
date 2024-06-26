@@ -1,8 +1,4 @@
-﻿using API.Database.Entities;
-
-using Microsoft.AspNetCore.SignalR;
-
-using System;
+﻿using Microsoft.AspNetCore.SignalR;
 
 namespace API.Endpoints.ChatRooms.SingleChatRoom.Leave;
 

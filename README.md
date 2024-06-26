@@ -9,6 +9,7 @@
   ## Instructions
   To run the tests, you need to create an `appsettings.Testing.json` file in the `API` project root. It must match the structure of `appsettings.json` and have the secrets filled in.
   ## Example Images
-  ![image](https://github.com/WeismanGitHub/Chat-Site-v2/assets/102398620/ab3b3279-22a9-478e-a4d6-7b450df2bbd1)
-  ![image](https://github.com/WeismanGitHub/Chat-Site-v2/assets/102398620/6b3943b5-177c-4b5e-accb-a25ab428ddef)
+  ![image](https://github.com/WeismanGitHub/Chat-Site-v2/assets/102398620/bdde873a-0239-438b-ae26-33066e0531f5)
+  ![image](https://github.com/WeismanGitHub/Chat-Site-v2/assets/102398620/9bc85e80-0585-427b-b241-6b8ef05eb1f7)
+  ![image](https://github.com/WeismanGitHub/Chat-Site-v2/assets/102398620/0165b512-a8f2-4e4c-97c6-6767a1a84ae0)
 </div>

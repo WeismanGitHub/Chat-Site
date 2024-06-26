@@ -30,10 +30,10 @@ export default function About() {
                             </p>
                             <div className="d-flex justify-content-center">
                                 <a className="m-1" href={'https://github.com/WeismanGitHub/Chat-Site-v2'}>
-                                    <Button>GitHub</Button>
+                                    <Button className="btn-lg">GitHub</Button>
                                 </a>
                                 <a className="m-1" href={'/swagger/index.html'}>
-                                    <Button>Swagger</Button>
+                                    <Button className="btn-lg">Swagger</Button>
                                 </a>
                             </div>
                         </Card.Text>

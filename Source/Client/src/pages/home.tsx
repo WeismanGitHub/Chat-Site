@@ -161,6 +161,7 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
 
     useEffect(() => {
         if (!chatID) return;
+        setMessages([]);
 
         axios
             .get<Chat>(`/API/ChatRooms/${chatID}/v1`)
@@ -237,7 +238,7 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
                     setMessages((prevMessages) => [
                         ...prevMessages,
                         <div key={Date.now() + id} className="text-success">
-                            {name} Joined!
+                            {name} Connected!
                         </div>,
                     ]);
                 });
@@ -275,94 +276,92 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
         setInput('');
     }
 
-    console.log(sendMessage, messages, chat);
-
-    //     return (
-    //         <>
-
-    //             <div className="d-flex flex-column" style={{ height: '600px' }}>
-    //                 <div className="overflow-y-scroll text-wrap float-start" style={{ minHeight: '550px' }}>
-    //                     {messages}
-    //                 </div>
-    //                 <div className="d-flex p-2">
-    //                     <input
-    //                         className="form-control rounded me-1"
-    //                         type="text"
-    //                         value={input}
-    //                         placeholder=" ..."
-    //                         onChange={(event) => {
-    //                             setInput(event.target.value);
-    //                         }}
-    //                         onKeyPress={(event) => {
-    //                             event.key === 'Enter' && sendMessage();
-    //                         }}
-    //                     />
-    //                     <button className="btn btn-primary rounded" onClick={sendMessage}>
-    //                         Send
-    //                     </button>
-    //                 </div>
-    //             </div>
-    //         </>
-    //     );
-    // }
-
     return !chat ? (
         <div className="m-0 p-0 col-sm-12 col-md-10 d-flex justify-content-center align-items-center h-100">
             <h2>No Chat Selected</h2>
         </div>
     ) : (
         <>
-            <div className="col-md-8 col-sm-12 h-100">Chat Selected</div>
-            <>
-                <button
-                    className="btn btn-primary d-md-none me-1"
-                    type="button"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasExample"
-                    aria-controls="offcanvasExample"
-                    style={{ position: 'absolute', top: '50%', right: 0, width: '40px' }}
-                >
-                    {'<'}
-                </button>
+            <div className="col-md-8 col-sm-12 h-100 p-0 m-0">
+                <div style={{ height: '93%' }} className="overflow-y-auto text-wrap float-start w-100">
+                    {messages}
+                </div>
+                <Row className='d-flex justify-content-center'>
+                    <input
+                        type="text"
+                        className="form-control rounded m-0 p-1"
+                        style={{ width: '80%' }}
+                        value={input}
+                        placeholder=" ..."
+                        onChange={(event) => {
+                            setInput(event.target.value);
+                        }}
+                        onKeyPress={(event) => {
+                            if (!input.length) return;
 
-                <div
-                    className="offcanvas offcanvas-end bg-primary-subtle p-0"
-                    tabIndex={-1}
-                    style={{ maxWidth: '85%' }}
-                    id="offcanvasExample"
-                    aria-labelledby="offcanvasExampleLabel"
-                >
-                    <div className="offcanvas-header" style={{ backgroundColor: '#593196', color: 'white' }}>
-                        <h5 className="offcanvas-title" id="offcanvasExampleLabel">
-                            Chat Rooms
-                        </h5>
+                            event.key === 'Enter' && sendMessage();
+                        }}
+                    />
+                    <div style={{ width: '10%' }} className="float-end d-flex justify-content-center m-0 p-0">
                         <button
                             type="button"
-                            className="btn-close custom-close-btn"
-                            data-bs-dismiss="offcanvas"
-                            data-bs-target="#offcanvasExample"
-                            aria-label="Close"
-                        ></button>
+                            className="btn-primary btn-lg btn"
+                            onClick={sendMessage}
+                        >
+                            Send
+                        </button>
                     </div>
-                    <div className="offcanvas-body w-100" style={{ backgroundColor: '#7756b0' }}>
-                        <MembersList />
-                    </div>
-                </div>
+                </Row>
+            </div>
 
-                <div
-                    className="col-2 d-none d-md-block p-0 m-0"
-                    style={{
-                        height: '100px',
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: '#7756b0',
-                    }}
-                />
-                <div className="col-2 d-none d-md-block fs-5 float-end p-0 m-0 h-100">
+            <button
+                className="btn btn-primary d-md-none me-1"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasExample"
+                aria-controls="offcanvasExample"
+                style={{ position: 'absolute', top: '50%', right: 0, width: '40px' }}
+            >
+                {'<'}
+            </button>
+
+            <div
+                className="offcanvas offcanvas-end bg-primary-subtle p-0"
+                tabIndex={-1}
+                style={{ maxWidth: '85%' }}
+                id="offcanvasExample"
+                aria-labelledby="offcanvasExampleLabel"
+            >
+                <div className="offcanvas-header" style={{ backgroundColor: '#593196', color: 'white' }}>
+                    <h5 className="offcanvas-title" id="offcanvasExampleLabel">
+                        Chat Rooms
+                    </h5>
+                    <button
+                        type="button"
+                        className="btn-close custom-close-btn"
+                        data-bs-dismiss="offcanvas"
+                        data-bs-target="#offcanvasExample"
+                        aria-label="Close"
+                    ></button>
+                </div>
+                <div className="offcanvas-body w-100" style={{ backgroundColor: '#7756b0' }}>
                     <MembersList />
                 </div>
-            </>
+            </div>
+
+            <div
+                className="col-2 d-none d-md-block p-0 m-0"
+                style={{
+                    height: '100px',
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    backgroundColor: '#7756b0',
+                }}
+            />
+            <div className="col-2 d-none d-md-block fs-5 float-end p-0 m-0 h-100">
+                <MembersList />
+            </div>
         </>
     );
 

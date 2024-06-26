@@ -494,13 +494,32 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
                             ]);
                         });
 
-                        connect.on('UserLeft', (member: Member) => {
-                            console.log(member);
+                        connect.on('UserJoined', (member: Member) => {
+                            memberMap.set(member.id, member.name);
+
+                            setMessages((prevMessages) => [
+                                ...prevMessages,
+                                <li
+                                    className="p-2 bg-success rounded mb-1"
+                                    style={{ color: 'white', width: '100%' }}
+                                    key={member.id + Date.now()}
+                                >
+                                    <strong>{member.name}</strong>: Joined
+                                </li>,
+                            ]);
                         });
 
-                        connect.on('UserJoined', (userID: string) => {
-                            memberMap.delete(userID);
-                            console.log(userID);
+                        connect.on('UserLeft', (userID: string) => {
+                            setMessages((prevMessages) => [
+                                ...prevMessages,
+                                <li
+                                    className="p-2 bg-danger rounded mb-1"
+                                    style={{ color: 'white', width: '100%' }}
+                                    key={userID + Date.now()}
+                                >
+                                    <strong>{memberMap.get(userID)}</strong>: Left
+                                </li>,
+                            ]);
                         });
                     })
                     .catch((error: Error) => {

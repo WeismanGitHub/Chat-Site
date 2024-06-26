@@ -40,11 +40,6 @@ async Task InitDatabase() {
 		.Option(o => o.Unique = true)
 		.CreateAsync();
 
-	await DB.Index<ChatRoom>()
-	.Key(u => u.Name, KeyType.Ascending)
-	.Option(o => o.Unique = true)
-	.CreateAsync();
-
 	await DB.MigrateAsync();
 }
 

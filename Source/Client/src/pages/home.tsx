@@ -68,17 +68,24 @@ function Chats({
     setError: setState<APIError<object>>;
     chatID: string | null;
 }) {
-    const [chats, setChats] = useState<Chats | null>(null);
+    const [chats, setChats] = useState<Chats>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
         (async () => {
             try {
                 const res = await axios.get<Chats>('/API/ChatRooms/v1');
+
+                if (!Array.isArray(res.data)) {
+                    navigate('/auth');
+                    localStorage.removeItem('authenticated');
+                }
+
                 setChats(res.data);
             } catch (err) {
                 if (axios.isAxiosError<APIError<object>>(err) && err.response?.data) {
                     if (err.status === 401) {
+                        localStorage.removeItem('authenticated');
                         navigate('/auth');
                     }
 
@@ -158,68 +165,71 @@ function Chats({
                             <ChatsButtons />
                         </div>
                         <ListGroup variant="flush" className="custom-list-group">
-                            {chats.map((chat) => (
-                                <ListGroup.Item
-                                    className="custom-list-item"
-                                    active={chatID == chat.id}
-                                    key={chat.id}
-                                    action
-                                    onClick={() => setChatID(chat.id)}
-                                >
-                                    <Row>
-                                        <Col className="flex-column flex-grow-1">{chat.name}</Col>
-                                        <Col
-                                            className="p-0 m-0"
-                                            xs="auto"
-                                            style={{ width: '22.5px' }}
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <svg
-                                                data-bs-toggle="dropdown"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="white"
-                                                className="bi bi-three-dots-vertical float-end"
-                                                viewBox="0 0 16 16"
-                                                width="22.5"
-                                                height="22.5"
+                            {Array.isArray(chats) &&
+                                chats?.map((chat) => (
+                                    <ListGroup.Item
+                                        className="custom-list-item"
+                                        active={chatID == chat.id}
+                                        key={chat.id}
+                                        action
+                                        onClick={() => setChatID(chat.id)}
+                                    >
+                                        <Row>
+                                            <Col className="flex-column flex-grow-1">{chat.name}</Col>
+                                            <Col
+                                                className="p-0 m-0"
+                                                xs="auto"
+                                                style={{ width: '22.5px' }}
+                                                onClick={(e) => e.stopPropagation()}
                                             >
-                                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
-                                            </svg>
-                                            <div className="dropdown-menu dropdown-menu-start">
-                                                <div
-                                                    className="dropdown-item"
-                                                    onClick={() => navigator.clipboard.writeText(chat.id)}
+                                                <svg
+                                                    data-bs-toggle="dropdown"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="white"
+                                                    className="bi bi-three-dots-vertical float-end"
+                                                    viewBox="0 0 16 16"
+                                                    width="22.5"
+                                                    height="22.5"
                                                 >
-                                                    Copy ID
-                                                </div>
-                                                <div
-                                                    className="dropdown-item"
-                                                    onClick={async () => {
-                                                        try {
-                                                            await axios.post(
-                                                                `/API/ChatRooms/${chat.id}/Leave/v1`
-                                                            );
-                                                            setChats(chats.filter((c) => c.id !== chat.id));
+                                                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                                                </svg>
+                                                <div className="dropdown-menu dropdown-menu-start">
+                                                    <div
+                                                        className="dropdown-item"
+                                                        onClick={() => navigator.clipboard.writeText(chat.id)}
+                                                    >
+                                                        Copy ID
+                                                    </div>
+                                                    <div
+                                                        className="dropdown-item"
+                                                        onClick={async () => {
+                                                            try {
+                                                                await axios.post(
+                                                                    `/API/ChatRooms/${chat.id}/Leave/v1`
+                                                                );
+                                                                setChats(
+                                                                    chats.filter((c) => c.id !== chat.id)
+                                                                );
 
-                                                            if (chatID === chat.id) {
-                                                                setChatID(null);
+                                                                if (chatID === chat.id) {
+                                                                    setChatID(null);
+                                                                }
+                                                            } catch (err) {
+                                                                setError({
+                                                                    errors: {},
+                                                                    message: 'Could not leave chat!',
+                                                                    statusCode: 500,
+                                                                });
                                                             }
-                                                        } catch (err) {
-                                                            setError({
-                                                                errors: {},
-                                                                message: 'Could not leave chat!',
-                                                                statusCode: 500,
-                                                            });
-                                                        }
-                                                    }}
-                                                >
-                                                    Leave
+                                                        }}
+                                                    >
+                                                        Leave
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                </ListGroup.Item>
-                            ))}
+                                            </Col>
+                                        </Row>
+                                    </ListGroup.Item>
+                                ))}
                         </ListGroup>
                     </>
                 )}

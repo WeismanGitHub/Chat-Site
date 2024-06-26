@@ -15,8 +15,8 @@ export default function Home() {
         <>
             <Navbar />
             <div className="full-height-minus-navbar">
-                <div className='container-fluid p-0 m-0 w-100 h-100'>
-                    <Row className='h-100 w-100 p-0 m-0'>
+                <div className="container-fluid p-0 m-0 w-100 h-100">
+                    <Row className="h-100 w-100 p-0 m-0">
                         <Chats setChatID={setChatID} setError={setError} chatID={chatID} />
                         <Chat chatID={chatID} setError={setError} />
                     </Row>
@@ -101,7 +101,13 @@ function Chats({
                     <h5 className="offcanvas-title" id="offcanvasResponsiveLabel">
                         Chat Rooms
                     </h5>
-                    <button type="button" className="btn-close custom-close-btn" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasResponsive" aria-label="Close"></button>
+                    <button
+                        type="button"
+                        className="btn-close custom-close-btn"
+                        data-bs-dismiss="offcanvas"
+                        data-bs-target="#offcanvasResponsive"
+                        aria-label="Close"
+                    ></button>
                 </div>
                 <div className="offcanvas-body w-100" style={{ backgroundColor: '#7756b0' }}>
                     <ChatsList />
@@ -112,7 +118,7 @@ function Chats({
                 className="col-2 d-none d-md-block p-0 m-0"
                 style={{ height: '100px', position: 'absolute', top: 0, left: 0, backgroundColor: '#7756b0' }}
             />
-            <div className="col-2 d-none d-md-block h-100 fs-5  p-0 m-0">
+            <div className="col-2 d-none d-md-block h-100 fs-5 p-0 m-0">
                 <ChatsList />
             </div>
         </>
@@ -126,9 +132,10 @@ function Chats({
                         <strong style={{ height: '50px' }}>No Chats</strong>
                     </div>
                 ) : (
-                    <ListGroup variant="flush">
+                    <ListGroup variant="flush" className="custom-list-group">
                         {chats.map((chat) => (
                             <ListGroup.Item
+                                className="custom-list-item"
                                 active={chatID == chat.id}
                                 key={chat.id}
                                 action
@@ -299,67 +306,72 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
     //     );
     // }
 
-    return (
-        <div className="col-md-10 col-sm-12 h-100 p-0 m-0">
-            {!chat ? (
-                <div className='d-flex justify-content-center align-items-center h-100 w-100'><h2>No Chat Selected</h2></div>
-            ) : (
-                <>
-                    <button
-                        className="btn btn-primary d-md-none ms-1"
-                        type="button"
-                        data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasExample"
-                        aria-controls="offcanvasExample"
-                        style={{ position: 'absolute', top: '50%', left: 0 }}
-                    >
-                        {'<'}
-                    </button>
+    return !chat ? (
+        <div className="m-0 p-0 col-sm-12 col-md-10 d-flex justify-content-center align-items-center h-100">
+            <h2>No Chat Selected</h2>
+        </div>
+    ) : (
+        <>
+            <div className="col-md-8 col-sm-12 h-100">Chat Selected</div>
+            <>
+                <button
+                    className="btn btn-primary d-md-none me-1"
+                    type="button"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasExample"
+                    aria-controls="offcanvasExample"
+                    style={{ position: 'absolute', top: '50%', right: 0, width: '40px' }}
+                >
+                    {'<'}
+                </button>
 
-                    <div
-                        className="offcanvas offcanvas-end bg-primary-subtle"
-                        tabIndex={-1}
-                        style={{ maxWidth: '85%' }}
-                        id="offcanvasExample"
-                        aria-labelledby="offcanvasExampleLabel"
-                    >
-                        <div
-                            className="offcanvas-header"
-                            style={{ backgroundColor: '#593196', color: 'white' }}
-                        >
-                            <h5 className="offcanvas-title" id="offcanvasExampleLabel">
-                                Members
-                            </h5>
-                        </div>
-                        <div className="offcanvas-body" style={{ backgroundColor: '#7756b0' }}>
-                            <MembersList />
-                        </div>
+                <div
+                    className="offcanvas offcanvas-end bg-primary-subtle p-0"
+                    tabIndex={-1}
+                    style={{ maxWidth: '85%' }}
+                    id="offcanvasExample"
+                    aria-labelledby="offcanvasExampleLabel"
+                >
+                    <div className="offcanvas-header" style={{ backgroundColor: '#593196', color: 'white' }}>
+                        <h5 className="offcanvas-title" id="offcanvasExampleLabel">
+                            Chat Rooms
+                        </h5>
+                        <button
+                            type="button"
+                            className="btn-close custom-close-btn"
+                            data-bs-dismiss="offcanvas"
+                            data-bs-target="#offcanvasExample"
+                            aria-label="Close"
+                        ></button>
                     </div>
-
-                    <div
-                        className="col-2 d-none d-md-block float-end"
-                        style={{
-                            height: '100px',
-                            position: 'absolute',
-                            top: 0,
-                            right: 0,
-                            backgroundColor: '#7756b0',
-                        }}
-                    />
-                    <div className="col-2 d-none d-md-block h-100 fs-5 float-end w-100">
+                    <div className="offcanvas-body w-100" style={{ backgroundColor: '#7756b0' }}>
                         <MembersList />
                     </div>
-                </>
-            )}
-        </div>
+                </div>
+
+                <div
+                    className="col-2 d-none d-md-block p-0 m-0"
+                    style={{
+                        height: '100px',
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: '#7756b0',
+                    }}
+                />
+                <div className="col-2 d-none d-md-block fs-5 float-end p-0 m-0 h-100">
+                    <MembersList />
+                </div>
+            </>
+        </>
     );
 
     function MembersList() {
         return (
             <div className="h-100" style={{ backgroundColor: '#7756b0', color: 'white' }}>
-                <ListGroup variant="flush">
+                <ListGroup variant="flush" className="custom-list-group">
                     {chat?.members.map((member) => (
-                        <ListGroup.Item key={member.id} action>
+                        <ListGroup.Item key={member.id} className="custom-list-item">
                             {member.name}
                         </ListGroup.Item>
                     ))}

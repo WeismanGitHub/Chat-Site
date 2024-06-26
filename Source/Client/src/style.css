@@ -67,3 +67,7 @@
 .custom-close-btn {
     filter: invert(1);
 }
+
+.custom-list-group .custom-list-item:not(:last-child) {
+    border-bottom: 1.5px solid #513d76;
+}

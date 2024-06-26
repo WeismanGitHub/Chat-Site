@@ -1,6 +1,7 @@
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { redirectIfNotLoggedIn } from '../helpers';
+import { useNavigate } from 'react-router-dom';
 import { Formik } from 'formik';
 import Navbar from '../navbar';
 import * as yup from 'yup';
@@ -68,6 +69,7 @@ function Chats({
     chatID: string | null;
 }) {
     const [chats, setChats] = useState<Chats | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         (async () => {
@@ -76,6 +78,10 @@ function Chats({
                 setChats(res.data);
             } catch (err) {
                 if (axios.isAxiosError<APIError<object>>(err) && err.response?.data) {
+                    if (err.status === 401) {
+                        navigate('/auth');
+                    }
+
                     setError({
                         errors: err.response.data.errors ?? [],
                         statusCode: err.response.status,

@@ -1,4 +1,6 @@
-﻿namespace API.Endpoints.ChatRooms.Join;
+﻿using Microsoft.AspNetCore.SignalR;
+
+namespace API.Endpoints.ChatRooms.Join;
 
 public sealed class Request {
 	[From(Claim.AccountID, IsRequired = true)]
@@ -37,11 +39,17 @@ public sealed class Endpoint : Endpoint<Request> {
 		chat.MemberIDs.Add(req.AccountID);
 		await chat.SaveAsync(transaction.Session, cancellationToken);
 
-		await transaction.Update<User>()
+		var user = await transaction.UpdateAndGet<User>()
 			.MatchID(req.AccountID)
 			.Modify(user => user.Push(u => u.ChatRoomIDs, chat.ID))
 			.ExecuteAsync(cancellationToken);
 
 		await transaction.CommitAsync(cancellationToken);
+
+		var hub = HttpContext.RequestServices.GetRequiredService<IHubContext<ChatHub>>();
+
+		if (hub != null) {
+			await hub.Clients.Group(chat.ID).SendAsync("UserJoined", new Member() { Id = req.AccountID, Name = user.Name }, cancellationToken: cancellationToken);
+		}
 	}
 }

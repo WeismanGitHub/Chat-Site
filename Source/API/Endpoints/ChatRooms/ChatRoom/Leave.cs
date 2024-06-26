@@ -1,4 +1,10 @@
-﻿namespace API.Endpoints.ChatRooms.SingleChatRoom.Leave;
+﻿using API.Database.Entities;
+
+using Microsoft.AspNetCore.SignalR;
+
+using System;
+
+namespace API.Endpoints.ChatRooms.SingleChatRoom.Leave;
 
 public sealed class Request {
 	[From(Claim.AccountID, IsRequired = true)]
@@ -39,6 +45,12 @@ public sealed class Endpoint : Endpoint<Request> {
 			ThrowError("Something went wrong.", 500);
 		} else if (userUpdateRes.MatchedCount == 0) {
 			ThrowError("Could not find your account.", 404);
+		}
+
+		var hub = HttpContext.RequestServices.GetRequiredService<IHubContext<ChatHub>>();
+
+		if (hub != null) {
+			await hub.Clients.Group(chatUpdateRes.ID).SendAsync("UserLeft", req.AccountID);
 		}
 	}
 }

@@ -1,23 +1,22 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace API.Endpoints.ChatRooms.Join;
+namespace API.Endpoints.ChatRooms.SingleChatRoom.Join;
 
 public sealed class Request {
 	[From(Claim.AccountID, IsRequired = true)]
 	public string AccountID { get; set; }
 	public required string ID { get; set; }
+
 }
 
-internal sealed class Validator : Validator<Request> {
-	public Validator() {
-		RuleFor(req => req.ID)
-			.NotEmpty();
-	}
+public sealed class Response {
+	public required string Name { get; set; }
+	public required DateTime CreatedAt { get; set; }
 }
 
-public sealed class Endpoint : Endpoint<Request> {
+public sealed class Endpoint : Endpoint<Request, Response> {
 	public override void Configure() {
-		Post("/Join");
+		Post("/{ID}/Join");
 		Group<ChatRoomGroup>();
 		Version(1);
 
@@ -54,5 +53,9 @@ public sealed class Endpoint : Endpoint<Request> {
 		if (hub != null) {
 			await hub.Clients.Group(chat.ID).SendAsync("UserJoined", new Member() { Id = req.AccountID, Name = user.Name }, cancellationToken: cancellationToken);
 		}
+
+		Console.WriteLine(hub == null);
+
+		await SendAsync(new Response() { CreatedAt = chat.CreatedAt, Name = chat.Name }, cancellation: cancellationToken);
 	}
 }

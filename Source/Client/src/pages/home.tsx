@@ -1,6 +1,6 @@
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { ListGroup, Row, Toast, ToastContainer } from 'react-bootstrap';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { redirectIfNotLoggedIn } from '../helpers';
 import Navbar from '../navbar';
 import axios from 'axios';
@@ -80,12 +80,12 @@ function Chats({
     return (
         <>
             <button
-                className="btn btn-primary d-md-none ms-1"
+                className="btn btn-primary d-md-none ms-1 p-1"
                 type="button"
                 data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasResponsive"
                 aria-controls="offcanvasResponsive"
-                style={{ position: 'absolute', top: '50%', left: 0, width: '40px' }}
+                style={{ position: 'absolute', top: '50%', left: 0, width: 'fit-content' }}
             >
                 {'>'}
             </button>
@@ -93,7 +93,7 @@ function Chats({
             <div
                 className="offcanvas offcanvas-start bg-primary-subtle p-0"
                 tabIndex={-1}
-                style={{ maxWidth: '85%' }}
+                style={{ maxWidth: '50%' }}
                 id="offcanvasResponsive"
                 aria-labelledby="offcanvasResponsiveLabel"
             >
@@ -156,6 +156,12 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
     const [messages, setMessages] = useState<ReactNode[]>([]);
     const [chat, setChat] = useState<Chat | null>(null);
     const [input, setInput] = useState('');
+    const messageEnd = useRef(null);
+
+    useEffect(() => {
+        // @ts-expect-error asdfs
+        messageEnd.current?.scrollIntoView({ behavior: 'instant' });
+    }, [messages]);
 
     const memberMap = new Map<string, string>();
 
@@ -282,15 +288,16 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
         </div>
     ) : (
         <>
-            <div className="col-md-8 col-sm-12 h-100 p-0 m-0">
-                <div style={{ height: '93%' }} className="overflow-y-auto text-wrap float-start w-100">
+            <div className="col-md-8 col-sm-12 h-100 p-0 m-0 d-flex flex-column">
+                <div className="overflow-y-auto text-wrap w-100 text-break flex-grow-1 ps-2 pe-2">
                     {messages}
+                    <div ref={messageEnd}></div>
                 </div>
-                <Row className='d-flex justify-content-center'>
+                <Row className="d-flex justify-content-center ps-2 pe-2 m-0 mb-1">
                     <input
                         type="text"
-                        className="form-control rounded m-0 p-1"
-                        style={{ width: '80%' }}
+                        className="form-control rounded m-0"
+                        style={{ width: '85%' }}
                         value={input}
                         placeholder=" ..."
                         onChange={(event) => {
@@ -302,25 +309,24 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
                             event.key === 'Enter' && sendMessage();
                         }}
                     />
-                    <div style={{ width: '10%' }} className="float-end d-flex justify-content-center m-0 p-0">
-                        <button
-                            type="button"
-                            className="btn-primary btn-lg btn"
-                            onClick={sendMessage}
-                        >
-                            Send
-                        </button>
-                    </div>
+                    <button
+                        type="button"
+                        className="btn-primary btn-lg btn ms-1 p-1"
+                        onClick={sendMessage}
+                        style={{ width: 'fit-content' }}
+                    >
+                        Send
+                    </button>
                 </Row>
             </div>
 
             <button
-                className="btn btn-primary d-md-none me-1"
+                className="btn btn-primary d-md-none me-1 p-1"
                 type="button"
                 data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasExample"
                 aria-controls="offcanvasExample"
-                style={{ position: 'absolute', top: '50%', right: 0, width: '40px' }}
+                style={{ position: 'absolute', top: '50%', right: 0, width: 'fit-content' }}
             >
                 {'<'}
             </button>
@@ -328,13 +334,13 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
             <div
                 className="offcanvas offcanvas-end bg-primary-subtle p-0"
                 tabIndex={-1}
-                style={{ maxWidth: '85%' }}
+                style={{ maxWidth: '50%' }}
                 id="offcanvasExample"
                 aria-labelledby="offcanvasExampleLabel"
             >
                 <div className="offcanvas-header" style={{ backgroundColor: '#593196', color: 'white' }}>
                     <h5 className="offcanvas-title" id="offcanvasExampleLabel">
-                        Chat Rooms
+                        Members
                     </h5>
                     <button
                         type="button"

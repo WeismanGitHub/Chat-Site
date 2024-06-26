@@ -77,22 +77,6 @@ public class ChatHub : Hub {
 			}
 
 			await Clients.Group(chatID).SendAsync("ReceiveMessage", new { message, accountID });
-		} catch (Exception ex ) {
-			await Clients.Caller.SendAsync("ReceiveError", ex.Message);
-		}
-	}
-
-	public async Task UserJoined(string chatID, Member member) {
-		try {
-			await Clients.Group(chatID).SendAsync("UserJoined", member);
-		} catch (Exception ex) {
-			await Clients.Caller.SendAsync("ReceiveError", ex.Message);
-		}
-	}
-
-	public async Task UserLeft(string chatID, string userID) {
-		try {
-			await Clients.Group(chatID).SendAsync("UserLeft", userID);
 		} catch (Exception ex) {
 			await Clients.Caller.SendAsync("ReceiveError", ex.Message);
 		}

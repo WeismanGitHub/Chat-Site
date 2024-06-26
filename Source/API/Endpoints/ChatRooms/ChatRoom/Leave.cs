@@ -46,7 +46,7 @@ public sealed class Endpoint : Endpoint<Request> {
 		var hub = HttpContext.RequestServices.GetRequiredService<IHubContext<ChatHub>>();
 
 		if (hub != null) {
-			await hub.Clients.Group(chatUpdateRes.ID).SendAsync("UserLeft", req.AccountID);
+			await hub.Clients.Group(chatUpdateRes.ID).SendAsync("UserLeft", req.AccountID, cancellationToken: cancellationToken);
 		}
 	}
 }

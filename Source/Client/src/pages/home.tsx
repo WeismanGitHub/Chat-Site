@@ -166,106 +166,101 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
     const memberMap = new Map<string, string>();
 
     useEffect(() => {
-        if (!chatID) return;
-        setMessages([]);
+        (async () => {
+            if (!chatID) return;
+            setMessages([]);
 
-        axios
-            .get<Chat>(`/API/ChatRooms/${chatID}/v1`)
-            .then((res) => {
+            try {
+                const res = await axios.get<Chat>(`/API/ChatRooms/${chatID}/v1`);
                 setChat(res.data);
 
                 memberMap.clear();
                 res.data.members.forEach((member) => {
                     memberMap.set(member.id, member.name);
                 });
-            })
-            .catch(() =>
+
+                const connect = new HubConnectionBuilder()
+                    .withUrl(`/chat?chatRoomID=${chatID}`)
+                    .withAutomaticReconnect()
+                    .build();
+
+                setConnection(connect);
+                connect
+                    .start()
+                    .then(() => {
+                        connect.on(
+                            'ReceiveMessage',
+                            ({ accountID, message }: { accountID: string; message: string }) => {
+                                const name = memberMap.get(accountID) ?? 'Unknown';
+
+                                setMessages((prevMessages) => [
+                                    ...prevMessages,
+                                    <div key={Date.now() + accountID + Math.random()}>
+                                        {name} - {message}
+                                    </div>,
+                                ]);
+                            }
+                        );
+
+                        connect.on('ReceiveError', (err: string) => {
+                            setError({
+                                errors: {},
+                                message: err,
+                                statusCode: 500,
+                            });
+                        });
+
+                        connect.on('UserConnected', (id) => {
+                            const name = memberMap.get(id) ?? 'Unknown';
+
+                            setMessages((prevMessages) => [
+                                ...prevMessages,
+                                <div key={Date.now() + id} className="text-success">
+                                    {name} Connected!
+                                </div>,
+                            ]);
+                        });
+
+                        connect.on('UserDisconnected', (id) => {
+                            const name = memberMap.get(id) ?? 'Unknown';
+
+                            setMessages((prevMessages) => [
+                                ...prevMessages,
+                                <div key={Date.now() + id} className="text-danger">
+                                    {name} Disconnected!
+                                </div>,
+                            ]);
+                        });
+
+                        connect.on('UserLeft', (member: Member) => {
+                            console.log(member);
+                        });
+
+                        connect.on('UserJoined', (userID: string) => {
+                            memberMap.delete(userID);
+                            console.log(userID);
+                        });
+                    })
+                    .catch((error: Error) => {
+                        setError({
+                            errors: {},
+                            message: error.message,
+                            statusCode: 500,
+                        });
+                    });
+            } catch (err) {
                 setError({
                     errors: {},
                     message: 'Could not get chat room data.',
                     status: 0,
-                })
-            );
-
-        const connect = new HubConnectionBuilder()
-            .withUrl(`/chat?chatRoomID=${chatID}`)
-            .withAutomaticReconnect()
-            .build();
-
-        setConnection(connect);
+                });
+            }
+        })();
 
         return () => {
             connection?.stop();
         };
     }, [chatID]);
-
-    useEffect(() => {
-        if (!connection) return;
-
-        connection
-            .start()
-            .then(() => {
-                connection.on(
-                    'ReceiveMessage',
-                    ({ accountID, message }: { accountID: string; message: string }) => {
-                        const name = memberMap.get(accountID) ?? 'Unknown';
-
-                        setMessages((prevMessages) => [
-                            ...prevMessages,
-                            <div key={Date.now() + accountID + Math.random()}>
-                                {name} - {message}
-                            </div>,
-                        ]);
-                    }
-                );
-
-                connection.on('ReceiveError', (err: string) => {
-                    setError({
-                        errors: {},
-                        message: err,
-                        statusCode: 500,
-                    });
-                });
-
-                connection.on('UserConnected', (id) => {
-                    const name = memberMap.get(id) ?? 'Unknown';
-
-                    setMessages((prevMessages) => [
-                        ...prevMessages,
-                        <div key={Date.now() + id} className="text-danger">
-                            {name} Left!
-                        </div>,
-                    ]);
-                });
-
-                connection.on('UserDisconnected', (id) => {
-                    const name = memberMap.get(id) ?? 'Unknown';
-
-                    setMessages((prevMessages) => [
-                        ...prevMessages,
-                        <div key={Date.now() + id} className="text-success">
-                            {name} Connected!
-                        </div>,
-                    ]);
-                });
-
-                connection.on('UserLeft', (member: Member) => {
-                    console.log(member);
-                });
-
-                connection.on('UserJoined', (userID: string) => {
-                    memberMap.delete(userID);
-                    console.log(userID);
-                });
-            })
-            .catch((error: Error) => {
-                setError({
-                    errors: {},
-                    message: error.message,
-                    statusCode: 500,
-                });
-            });
-    }, [connection]);
 
     async function sendMessage() {
         if (input.length > 1000 || input.length === 0) {

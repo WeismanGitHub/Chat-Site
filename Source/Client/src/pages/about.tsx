@@ -32,9 +32,6 @@ export default function About() {
                                 <a className="m-1" href={'https://github.com/WeismanGitHub/Chat-Site-v2'}>
                                     <Button className="btn-lg">GitHub</Button>
                                 </a>
-                                <a className="m-1" href={'/swagger/index.html'}>
-                                    <Button className="btn-lg">Swagger</Button>
-                                </a>
                             </div>
                         </Card.Text>
                     </Card.Body>

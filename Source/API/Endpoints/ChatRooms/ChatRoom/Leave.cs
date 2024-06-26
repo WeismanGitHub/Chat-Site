@@ -10,12 +10,17 @@ public sealed class Request {
 }
 
 public sealed class Endpoint : Endpoint<Request> {
+	private readonly IHubContext<ChatHub> _hub;
+
 	public override void Configure() {
 		Post("/{ChatRoomID}/Leave");
 		Group<ChatRoomGroup>();
 		Version(1);
 
 		Description(builder => builder.Accepts<Request>());
+	}
+	public Endpoint(IHubContext<ChatHub> hubContext) {
+		_hub = hubContext;
 	}
 
 	public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
@@ -43,10 +48,6 @@ public sealed class Endpoint : Endpoint<Request> {
 			ThrowError("Could not find your account.", 404);
 		}
 
-		var hub = HttpContext.RequestServices.GetRequiredService<IHubContext<ChatHub>>();
-
-		if (hub != null) {
-			await hub.Clients.Group(chatUpdateRes.ID).SendAsync("UserLeft", req.AccountID, cancellationToken: cancellationToken);
-		}
+		await _hub.Clients.Group(chatUpdateRes.ID).SendAsync("UserLeft", req.AccountID, cancellationToken: cancellationToken);
 	}
 }

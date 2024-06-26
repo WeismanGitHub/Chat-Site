@@ -15,12 +15,18 @@ public sealed class Response {
 }
 
 public sealed class Endpoint : Endpoint<Request, Response> {
+	private readonly IHubContext<ChatHub> _hub;
+
 	public override void Configure() {
 		Post("/{ID}/Join");
 		Group<ChatRoomGroup>();
 		Version(1);
 
 		Description(builder => builder.Accepts<Request>());
+	}
+
+	public Endpoint(IHubContext<ChatHub> hubContext) {
+		_hub = hubContext;
 	}
 
 	public override async Task HandleAsync(Request req, CancellationToken cancellationToken) {
@@ -48,14 +54,7 @@ public sealed class Endpoint : Endpoint<Request, Response> {
 
 		await transaction.CommitAsync(cancellationToken);
 
-		var hub = HttpContext.RequestServices.GetRequiredService<IHubContext<ChatHub>>();
-
-		if (hub != null) {
-			await hub.Clients.Group(chat.ID).SendAsync("UserJoined", new Member() { Id = req.AccountID, Name = user.Name }, cancellationToken: cancellationToken);
-		}
-
-		Console.WriteLine(hub == null);
-
+		await _hub.Clients.Group(chat.ID).SendAsync("UserJoined", new Member() { Id = req.AccountID, Name = user.Name }, cancellationToken: cancellationToken);
 		await SendAsync(new Response() { CreatedAt = chat.CreatedAt, Name = chat.Name }, cancellation: cancellationToken);
 	}
 }

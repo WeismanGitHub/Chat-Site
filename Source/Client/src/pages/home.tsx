@@ -16,6 +16,7 @@ import {
     InputGroup,
     ListGroup,
     Modal,
+    Offcanvas,
     Row,
     Toast,
     ToastContainer,
@@ -69,6 +70,7 @@ function Chats({
     chatID: string | null;
 }) {
     const [chats, setChats] = useState<Chats>([]);
+    const [show, setShow] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -107,40 +109,29 @@ function Chats({
 
     return (
         <>
-            <button
-                className="btn btn-primary d-md-none ms-1 p-1"
-                type="button"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasResponsive"
-                aria-controls="offcanvasResponsive"
+            <Button
+                onClick={() => setShow(true)}
+                className="btn-primary d-md-none ms-1 p-1"
                 style={{ position: 'absolute', top: '50%', left: 0, width: 'fit-content' }}
             >
                 {'>'}
-            </button>
+            </Button>
 
-            <div
-                className="offcanvas offcanvas-start bg-primary-subtle p-0"
+            <Offcanvas
+                className="bg-primary-subtle p-0 offcanvas-start d-md-none"
                 tabIndex={-1}
+                show={show}
                 style={{ maxWidth: '50%' }}
-                id="offcanvasResponsive"
-                aria-labelledby="offcanvasResponsiveLabel"
+                onHide={() => setShow(false)}
+                responsive="sm"
             >
-                <div className="offcanvas-header" style={{ backgroundColor: '#593196', color: 'white' }}>
-                    <h5 className="offcanvas-title" id="offcanvasResponsiveLabel">
-                        Chat Rooms
-                    </h5>
-                    <button
-                        type="button"
-                        className="btn-close custom-close-btn"
-                        data-bs-dismiss="offcanvas"
-                        data-bs-target="#offcanvasResponsive"
-                        aria-label="Close"
-                    ></button>
-                </div>
-                <div className="offcanvas-body w-100" style={{ backgroundColor: '#7756b0' }}>
+                <Offcanvas.Header style={{ backgroundColor: '#593196', color: 'white' }} closeButton>
+                    <h5 className="offcanvas-title">Chat Rooms</h5>
+                </Offcanvas.Header>
+                <Offcanvas.Body className="w-100 d-sm-none" style={{ backgroundColor: '#7756b0' }}>
                     <ChatsList />
-                </div>
-            </div>
+                </Offcanvas.Body>
+            </Offcanvas>
 
             <div
                 className="col-2 d-none d-md-block p-0 m-0"
@@ -270,15 +261,15 @@ function Chats({
                     validateOnChange
                     onSubmit={async (values) => {
                         try {
-                            const res = await axios.post<{ id: string }>('/API/ChatRooms/v1', {
+                            const res = await axios.post<{ chatRoomID: string }>('/API/ChatRooms/v1', {
                                 name: values.name,
                             });
 
                             setChats([
                                 ...(chats ?? []),
-                                { createdAt: new Date().toString(), id: res.data.id, name: values.name },
+                                { createdAt: new Date().toString(), id: res.data.chatRoomID, name: values.name },
                             ]);
-
+                            
                             setShowCreate(false);
                         } catch (err) {
                             if (axios.isAxiosError<APIError<unknown>>(err) && err.response?.data) {

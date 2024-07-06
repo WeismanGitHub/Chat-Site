@@ -578,6 +578,7 @@ function Chat({ chatID, setError }: { chatID: string | null; setError: setState<
                 </ul>
                 <Row className="d-flex justify-content-center ps-2 pe-2 m-0 mb-1">
                     <input
+                        autoFocus
                         type="text"
                         className="form-control rounded m-0"
                         style={{ width: '85%' }}

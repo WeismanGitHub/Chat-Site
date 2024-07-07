@@ -267,9 +267,13 @@ function Chats({
 
                             setChats([
                                 ...(chats ?? []),
-                                { createdAt: new Date().toString(), id: res.data.chatRoomID, name: values.name },
+                                {
+                                    createdAt: new Date().toString(),
+                                    id: res.data.chatRoomID,
+                                    name: values.name,
+                                },
                             ]);
-                            
+
                             setShowCreate(false);
                         } catch (err) {
                             if (axios.isAxiosError<APIError<unknown>>(err) && err.response?.data) {

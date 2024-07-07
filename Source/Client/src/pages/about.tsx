@@ -8,21 +8,25 @@ export default function About() {
         <>
             <Navbar />
             <div className="full-height-minus-navbar d-flex align-items-center justify-content-center">
-                <Card style={{ width: '80%', maxWidth: '500px' }}>
+                <Card style={{ width: '80%' }}>
                     <Card.Header className="bg-primary text-white">
                         <h2>About Chat Site v2</h2>
                     </Card.Header>
                     <Card.Body className="fs-4">
                         <Card.Text>
                             <p>
-                                Chat Site v2 is a remake of an{' '}
+                                Chat Site v2 is a platform for users to send and receive messages in
+                                real-time. It's a remake of an{' '}
                                 <Link
                                     to="https://github.com/WeismanGitHub/Chat-Website"
                                     className="link-underline-primary"
                                 >
                                     older project
                                 </Link>
-                                . This time, I've chosen to use <strong>ASP.NET</strong> and the{' '}
+                                .
+                            </p>
+                            <p>
+                                This time, I've chosen to use <strong>ASP.NET</strong> and the{' '}
                                 <strong>FastEndpoints</strong> library for my back-end and{' '}
                                 <strong>Typescript, React, and Bootstrap</strong> for the front-end. By
                                 revisiting and enhancing my prior work, I reinforce my existing knowledge but
